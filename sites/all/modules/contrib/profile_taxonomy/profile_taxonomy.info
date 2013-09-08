@@ -1,0 +1,14 @@
+;$Id$
+name = "Profile Taxonomy"
+description = "Assign taxonomy terms to user profiles."
+core = "6.x"
+package = "Profile"
+dependencies[] = profile
+dependencies[] = taxonomy
+dependencies[] = user
+; Information added by drupal.org packaging script on 2012-08-02
+version = "6.x-1.4"
+core = "6.x"
+project = "profile_taxonomy"
+datestamp = "1343906571"
+

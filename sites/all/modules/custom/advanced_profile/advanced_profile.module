@@ -1,0 +1,169 @@
+<?php
+/**
+ * @file
+ * This module provides additional fields (description, picture, etc.) in user's profile
+ *
+ *
+ * @author Eugene Zenko
+ */
+
+
+function advanced_profile_menu() {
+  $items = array();
+  $items['admin/settings/advanced_profile'] = array(
+    'title' => 'Advanced profile settings',
+    'description' => 'Select what roles will have advanced profile.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('advanced_profile_admin_settings'),
+    'access arguments' => array('manage advanced profile'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'advanced_profile.admin.inc',
+  );
+  
+  $items['user/end_register'] = array(
+    'title' => 'User registration',
+    'description' => 'End user registration.',
+    'page callback' => 'advanced_profile_display_end_form',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  $items['user/professional_register'] = array(
+    'title' => 'User registration',
+    'description' => 'Professional user registration.',
+    'page callback' => 'advanced_profile_display_form',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+    
+  return $items;
+}
+
+/**
+* Implementation of hook_perm().
+*/
+function advanced_profile_perm () {
+  return array('manage advanced profile');
+}
+
+
+function advanced_profile_display_form(&$form, &$form_state) {
+    if($_GET['type'] == 'professional') {
+        return theme('advanced_profile_professional_user_register', $data);
+    } else {
+        return theme('advanced_profile_end_user_register', $data);
+    }
+}
+
+function advanced_profile_form_user_profile_form_alter(&$form, &$form_state) {
+  global $user;
+  $keys = array_keys($user->roles);
+  $photo = false;
+  if (array_intersect($keys, variable_get('advanced_profile_roles', array()))) {  
+    if (isset($form_state['post']) && $form_state['post']['advanced']) {
+      $info = $form_state['post']['advanced'];
+    } else {
+      $info = advanced_profile_load($user->uid);
+      if ($info['photo']) {
+        $photo = true;
+      }
+    } 
+    
+    $form['#attributes']['enctype'] = 'multipart/form-data';
+    
+    $form['advanced'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Professional user information'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#weight' => 0,
+    );
+    
+    $form['advanced']['photo'] = array(
+      '#type' => 'file',
+      '#title' => t('Top image'),
+      '#description' => t('Upload your new or update existing image that would appear at the top of your professional page.'),
+      '#default_value' => $info['photo'],
+    );   
+    
+    if ($photo) {
+      $form['advanced']['current_photo'] = array(
+        '#type' => 'markup',
+        '#value' => '<img src="'.imagecache_create_url('top_image', $info['photo']).'" class="profile-picture" />',
+      );
+      
+      $form['advanced']['delete_photo'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Delete current photo'),
+        '#description' => t('Check this to delete your current photo.'),
+        '#default_value' => FALSE,
+      );
+    }
+    
+    $form['#validate'][] = 'advanced_profile_form_user_profile_validate';
+    $form['#submit'][] = 'advanced_profile_form_user_profile_submit';
+  }
+}
+
+function advanced_profile_form_user_profile_submit ($form, $form_state) {
+  global $user;
+  $result = db_query('SELECT COUNT(user_id) as user_exists FROM {advanced_profile} WHERE user_id = %d', $user->uid);
+  $user_exists = db_result($result);
+  if ($file = file_save_upload('photo', array('file_validate_is_image' => array()))) {
+    $path = variable_get('advanced_profile_photo_path', 'sites/default/files');
+    if (!$path) {
+      drupal_set_message('Photo wasn\t saved: file storage location is not set (see admin/settings/advanced_profile).', 'warning');
+    } else {
+      $parts = pathinfo($file->filename);
+      
+      $filename = rtrim($path, '/') . '/' . $user->uid . '.' . $parts['extension'];
+      if (!file_copy( $file, $filename, FILE_EXISTS_REPLACE)) {
+        $filename = '';
+      }
+    }
+    
+    if (!$user_exists) {
+      $sql = "INSERT INTO {advanced_profile} (user_id, fullname, bio, photo) VALUES (%d, '%s', '%s', '%s')";
+      db_query($sql, array($user->uid, '', '', $filename));
+    } else {
+      $sql = "UPDATE {advanced_profile} SET fullname = '%s', bio = '%s', photo = '%s' WHERE user_id = %d";
+      db_query($sql, array('', '', $filename, $user->uid));
+    }
+  } else if (!empty($form_state['values']['fullname']) || !empty($form_state['values']['bio']) ) {
+    if (!$user_exists) {
+      $sql = "INSERT INTO {advanced_profile} (user_id, fullname, bio) VALUES (%d, '%s', '%s')";
+      db_query($sql, array($user->uid, '', ''));
+    } else {
+      if (isset($form_state['values']['delete_photo']) && $form_state['values']['delete_photo']) {
+        $sql = "UPDATE {advanced_profile} SET fullname = '%s', bio = '%s', photo = '' WHERE user_id = %d";  
+      } else {
+        $sql = "UPDATE {advanced_profile} SET fullname = '%s', bio = '%s' WHERE user_id = %d";
+      }
+      db_query($sql, array('', '', $user->uid));
+    }
+  }
+}
+
+function advanced_profile_load ($uid) {
+  $result = db_query("SELECT * FROM {advanced_profile} WHERE user_id = %d", $uid);
+  return db_fetch_array($result);
+}
+
+function advanced_profile_theme(){
+    return array(
+        'advanced_profile_professional_user_register' => array(
+        	'arguments' => array(
+        		'data' => NULL,
+        	),
+        	'template' => 'themes/professional_user_register',
+        ),
+        'advanced_profile_end_user_register' => array(
+        	'arguments' => array(
+        		'data' => NULL,
+        	),
+        	'template' => 'themes/end_user_register',
+        ),
+    );
+}

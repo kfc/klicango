@@ -1,0 +1,14 @@
+; $Id$
+name = Userpoints No Negative
+description = Has no UI.  Once enabled, prevents transactions that would move accounts negative.  Allows currently negative users to make positive transactions.  
+package = Userpoints
+dependencies[] = userpoints
+core = 6.x
+
+
+; Information added by drush on 2013-01-18
+version = "6.x-1.0-beta1+3-dev"
+core = "6.x"
+project = "userpoints_contrib"
+datestamp = "1358473524"
+

@@ -1,0 +1,4 @@
+name = Events
+description = Events functionality.
+package = Custom
+core = 6.x

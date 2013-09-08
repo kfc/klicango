@@ -1,0 +1,15 @@
+; $Id$
+name = Userpoints Download
+description = Deduct points from users when they download private files
+package = Userpoints
+core = 6.x
+dependencies[] = userpoints
+dependencies[] = upload
+
+
+; Information added by drush on 2013-01-18
+version = "6.x-1.0-beta1+3-dev"
+core = "6.x"
+project = "userpoints_contrib"
+datestamp = "1358473524"
+

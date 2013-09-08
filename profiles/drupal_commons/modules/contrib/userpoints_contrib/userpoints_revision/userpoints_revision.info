@@ -1,0 +1,16 @@
+; $Id$
+name = Userpoints Revision
+description = Gives users points for creating revisions on nodes that are not their own.
+core = 6.x
+package = Userpoints
+version = "6.x-1.0"
+project = userpoints_revision
+dependencies[] = userpoints
+
+
+; Information added by drush on 2013-01-18
+version = "6.x-1.0-beta1+3-dev"
+core = "6.x"
+project = "userpoints_contrib"
+datestamp = "1358473524"
+

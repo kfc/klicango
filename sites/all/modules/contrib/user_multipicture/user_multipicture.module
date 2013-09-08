@@ -1,0 +1,319 @@
+<?php
+
+/**
+ * @file
+ * User multipicture
+ *
+ * @author
+ * Stefan Auditor <stefan.auditor@erdfisch.de>
+ */
+ 
+
+/**
+ * Implementation of hook_menu().
+ */
+function user_multipicture_menu() {
+  $items = array();
+  $items['user-multipicture/%user/%'] = array(
+    'page callback' => 'user_multipicture_delete',
+    'page arguments' => array(1, 2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+* Implementation of hook_perm
+*/
+function user_multipicture_perm(){
+  return array('administer multipicture');
+}
+
+/**
+ * Implementation of hook_user().
+ */
+function user_multipicture_user($op, &$edit, &$account, $category = NULL) {
+  switch ($op) {
+    case 'form':
+      if ($category == 'account') {
+        if (variable_get('user_pictures', 0)) {
+          drupal_add_css(drupal_get_path('module', 'user_multipicture') .'/user_multipicture.css');
+          drupal_add_js(drupal_get_path('module', 'user_multipicture') .'/user_multipicture.js', 'module');
+
+          // Add help text
+          $form['picture']['help'] = array(
+            '#weight' => -10,
+            '#type' => 'markup',
+            '#value' => t('Change the order of the pictures by dragging them up or down.'),
+          );
+
+          $options = array();
+          $files = user_multipicture_get_files($account->uid);
+          $form['picture']['multipicture'] = array(
+            '#theme' => 'user_multipicture_picture_form',
+            '#tree' => TRUE,
+            '#weight' => -1,
+          );
+          foreach ($files as $file) {
+            $token = drupal_get_token($file->fid);
+            $current = ($account->picture == $file->filepath) ? TRUE : FALSE;
+
+            $output = '<div class="wrapper">';
+            $output .= '<div class="filename">'. $file->filename .'</div>';
+            $output .= '<div class="timestamp">'. t('Uploaded !time', array('!time' => format_date($file->timestamp, 'small'))) .'</div>';
+            $output .= '<div class="delete">'. l(t('Delete this image'), 'user-multipicture/'. $account->uid .'/'. $file->fid, array('query' => 'token='. $token)) .'</div>';
+            if ($current) {
+              $output .= '<div class="current">'. t('Currently set as profile image') .'</div>';
+            }
+            $output .= '</div>';
+            $options[$file->filepath] = '';
+            $form['picture']['multipicture'][$file->filepath]['image'] = array(
+              '#type' => 'markup',
+              '#value' => theme('image', $file->filepath),
+            );
+            $form['picture']['multipicture'][$file->filepath]['output'] = array(
+              '#type' => 'markup',
+              '#value' => $output,
+            );
+            $form['picture']['multipicture'][$file->filepath]['weight'] = array(
+              '#type' => 'weight',
+              '#default_value' => $file->weight,
+              '#delta' => 10,
+            );
+          }
+          $form['#validate'][] = 'user_multipicture_validate_picture';
+        }
+        return $form;
+      }
+      break;
+    case 'load':
+      $files = user_multipicture_get_files($account->uid);
+      $account->multipicture = $files;
+      break;
+    case 'view':
+      if (count($account->multipicture) > 1) {
+        $account->content['user_multipicture'] = array(
+          '#value' => theme('user_multipicture', $account),
+          '#weight' => -10,
+        );
+      }
+      break;
+    case 'update':
+      if ($category == 'account') {
+        if (is_array($edit['multipicture'])) {
+          foreach ($edit['multipicture'] as $key => $value) {
+            // find out the fid for the filepath.
+            $fid = db_result(db_query("SELECT fid FROM {files} WHERE filepath = '%s'", $key));
+            db_query("UPDATE {user_multipicture} SET weight = %d WHERE uid = %d AND fid = %d", $edit['multipicture'][$key]['weight'], $account->uid, $fid);
+          }
+          // Store the first one as user picture.
+          uasort($edit['multipicture'], 'element_sort');
+          $picture = array_shift(array_keys($edit['multipicture']));
+          db_query("UPDATE {users} SET picture = '%s' WHERE uid = %d", $picture, $account->uid);
+        }
+
+        // Remove multipicture from edit
+        unset($edit['multipicture']);
+      }
+      break;
+    case 'delete':
+      db_query("DELETE FROM {user_multipicture} WHERE uid = %d", $account->uid);
+      break;
+  }
+}
+
+/**
+ * Theme multipicture form
+ */
+function theme_user_multipicture_picture_form($form) {
+  // render table.
+  $rows = array();
+  foreach (element_children($form) as $key) {
+    $row = array();
+    // radio button
+    $row[] = array('data' => drupal_render($form[$key]['image']), 'class' => 'td-img');
+    $row[] = array('data' => drupal_render($form[$key]['output']));
+
+    $form[$key]['weight']['#attributes']['class'] = 'weight';
+    $row[] = drupal_render($form[$key]['weight']);
+
+    $rows[] = array('data' => $row, 'class' => 'draggable');
+  }
+
+  $header = array('', '', '');
+
+  // Render the full output.
+  $output = theme('table', $header, $rows, array('id' => 'user-multipicture-picture-form'));
+  drupal_add_tabledrag('user-multipicture-picture-form', 'order', 'sibling', 'weight');
+  $output .= drupal_render($form);
+
+  return $output;
+}
+
+/**
+ * Get a user's pictures
+ */
+function user_multipicture_get_files($uid) {
+  $files = array();
+  $sql = "SELECT *, um.weight as weight FROM {files} f
+            LEFT JOIN {user_multipicture} um ON f.fid = um.fid
+            WHERE um.uid = %d
+            ORDER BY um.weight ASC, f.fid ASC";
+  $result = db_query($sql, $uid);
+  while ($row = db_fetch_object($result)) {
+    $files[$row->fid] = $row;
+  }
+  return $files;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function user_multipicture_form_user_profile_form_alter(&$form, &$form_state) {
+  if (arg(3) === NULL) {
+    unset($form['picture']['picture_delete']);
+    unset($form['picture']['current_picture']);
+    foreach ($form['#validate'] as $key => $value) {
+      if ($value == 'user_validate_picture') {
+        unset($form['#validate'][$key]);
+      }
+    }
+
+    $quantity = variable_get('multipicture_quantity', 4);
+    $count = count(element_children($form['picture']['multipicture']));
+    $left = (($quantity - $count) > 0) || $quantity == 0 ? TRUE : FALSE;
+
+    $title = $quantity ? format_plural(($quantity - $count), 'Add new picture <em>1 more allowed</em>', 'Add new picture <em>@count more allowed</em>') : t('Add new picture');
+
+    $form['picture']['picture_upload_title'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Title'),
+      '#weight' => 0,
+      '#prefix' => '<div class="multipicture-upload"><strong>'. $title .'</strong>',
+    );
+    $form['picture']['picture_upload']['#title'] = t('File');
+    $form['picture']['picture_upload']['#suffix'] = '</div>';
+    if (!$left) {
+      unset($form['picture']['picture_upload']);
+      unset($form['picture']['picture_upload_title']);
+      $form['picture']['picture_upload'] = array(
+        '#value' => t('The maximum of uploadable pictures has been reached. Please remove one, before uploading a new picture.'),
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function user_multipicture_form_user_admin_settings_alter(&$form, &$form_state) {
+  $form['pictures']['settings']['multipicture_quantity'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Quantity'),
+    '#default_value' => variable_get('multipicture_quantity', 4),
+    '#size' => 15,
+    '#description' => t('Maximum number of pictures a user may upload. Enter <em>0</em> for no limit.'),
+  );
+  $form['#validate'][] = 'user_multipicture_validate_settings';
+}
+
+/**
+ * Form validation
+ */
+function user_multipicture_validate_settings(&$form, &$form_state) {
+  variable_set('multipicture_quantity', $form_state['values']['multipicture_quantity']);
+}
+
+/**
+ * User profile form validation
+ */
+function user_multipicture_validate_picture(&$form, &$form_state) {
+  // If required, validate the uploaded picture.
+  $validators = array(
+    'file_validate_is_image' => array(),
+    'file_validate_image_resolution' => array(variable_get('user_picture_dimensions', '85x85')),
+    'file_validate_size' => array(variable_get('user_picture_file_size', '30') * 1024),
+  );
+  if ($file = file_save_upload('picture_upload', $validators)) {
+    $file->filename = $form_state['values']['picture_upload_title'] ? check_plain($form_state['values']['picture_upload_title']) : $file->filename;
+    $info = image_get_info($file->filepath);
+    $destination = variable_get('user_picture_path', 'pictures') .'/picture-'. $form['#uid'] .'.'. $info['extension'];
+    file_move($file->filepath, $destination, FILE_EXISTS_RENAME);
+    file_set_status($file, FILE_STATUS_PERMANENT);
+
+    // Isn't there a drupal function for that?
+    db_query("UPDATE {files} SET filepath = '%s', filename = '%s' WHERE fid = %d", $file->filepath, $file->filename, $file->fid);
+    db_query("INSERT INTO {user_multipicture} SET uid = %d, fid = %d", $form['#uid'], $file->fid);
+    db_query("UPDATE {users} SET picture = '%s' WHERE uid = %d", $file->filepath, $form['#uid']);
+    $form_state['redirect'] = array('path' => 'user/'. $form['#uid'] .'/edit', 'fragment' => 'multipicture');
+
+    drupal_set_message(t('<a href="@url#multipicture">Upload more pictures?</a>', array('@url' => url($form_state['redirect']['path']))));
+  }
+}
+
+/**
+ * Menu callback; Delete user image.
+ */
+function user_multipicture_delete($account, $fid) {
+  global $user;
+  $uid = $account->uid;
+  $token = $_REQUEST['token'];
+
+  // Check for valid token
+  if (!drupal_valid_token($token, $fid)) {
+    drupal_access_denied();
+    exit();
+  }
+
+  if (is_numeric($fid) && is_numeric($uid) && ($user->uid == $uid OR user_access("administer multipicture"))) {
+    if ($file = db_fetch_object(db_query("SELECT f.* FROM {files} f INNER JOIN {user_multipicture} um ON f.fid = um.fid WHERE um.fid = %d AND um.uid = %d", $fid, $uid))) {
+      db_query("DELETE FROM {user_multipicture} WHERE fid = %d", $file->fid);
+      file_set_status($file, FILE_STATUS_TEMPORARY);
+
+      if ($file->filepath == $account->picture) {
+        db_query("UPDATE {users} SET picture = '' WHERE uid = %d", $uid);
+
+        if ($file = db_fetch_object(db_query_range("SELECT f.* FROM {files} f INNER JOIN {user_multipicture} um ON f.fid = um.fid WHERE um.uid = %d ORDER BY um.weight ASC", $uid, 0, 1))) {
+          db_query("UPDATE {users} SET picture = '%s' WHERE uid = %d", $file->filepath, $uid);
+        }
+      }
+
+      drupal_set_message(t('The chosen picture has been deleted.'));
+      drupal_goto('user/'. $uid .'/edit', NULL, 'multipicture');
+    }
+  }
+  drupal_not_found();
+}
+
+/**
+ * Implements hook_theme().
+ */
+function user_multipicture_theme($existing, $type, $theme, $path) {
+  return array(
+    'user_multipicture' => array(
+      'arguments' => array('account' => NULL),
+      'template' => 'user-multipicture',
+    ),
+    'user_multipicture_picture_form' => array(
+      'arguments' => array('form' => NULL),
+    ),
+  );
+}
+
+/**
+ * Batch callback; Migrate user pictures on installation
+ */
+function user_multipicture_migrate($uid, $picture) {
+  $file = new stdClass();
+  $file->uid = $uid;
+  $file->filename = t('My Avatar');
+  $file->filepath = $picture;
+  $file->filemime = file_get_mimetype($file->filename);
+  $file->filesize = filesize($picture);
+  $file->status = FILE_STATUS_PERMANENT;
+  $file->timestamp = time();
+  drupal_write_record('files', $file);
+  db_query("INSERT INTO {user_multipicture} SET fid = %d, uid = %d", $file->fid, $uid);
+}

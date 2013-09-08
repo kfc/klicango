@@ -1,0 +1,5 @@
+; $Id$
+name = Customization
+description = Several small customizations.
+package = Custom
+core = 6.x

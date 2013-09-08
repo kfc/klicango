@@ -1,0 +1,14 @@
+; $Id$
+name = Userpoints Modr8
+description = Moderators get awarded points for moderating via the modr8 module
+package = Userpoints
+core = 6.x
+dependencies[] = userpoints
+
+
+; Information added by drush on 2013-01-18
+version = "6.x-1.0-beta1+3-dev"
+core = "6.x"
+project = "userpoints_contrib"
+datestamp = "1358473524"
+

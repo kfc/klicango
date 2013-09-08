@@ -1,0 +1,39 @@
+form .form-item input.error{
+  border-color: red;
+}
+
+form .form-item input.error::-webkit-input-placeholder {
+   color: red;
+}
+
+form .form-item input.error:-moz-placeholder { /* Firefox 18- */
+   color: red;  
+}
+
+form .form-item input.error::-moz-placeholder {  /* Firefox 19+ */
+   color: red;  
+}
+
+form .form-item input.error:-ms-input-placeholder {  
+   color: red;  
+}
+
+form .form-item textarea.error{
+  border-color: red;
+}
+
+form .form-item textarea.error::-webkit-input-placeholder {
+   color: red;
+}
+
+form .form-item textarea.error:-moz-placeholder { /* Firefox 18- */
+   color: red;  
+}
+
+form .form-item textarea.error::-moz-placeholder {  /* Firefox 19+ */
+   color: red;  
+}
+
+form .form-item textarea.error:-ms-input-placeholder {  
+   color: red;  
+}

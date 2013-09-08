@@ -1,0 +1,5 @@
+name = Advanced Profile
+description = This module provides additional fields (description, picture, etc.) in user's profile
+core = 6.x
+package = Colours
+php = 5.2

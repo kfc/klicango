@@ -1,0 +1,95 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * User multipicture
+ *
+ * @author
+ * Stefan Auditor <stefan.auditor@erdfisch.de>
+ */
+
+/**
+ * Implementationof hook_schema().
+ */
+function user_multipicture_schema() {
+  $schema['user_multipicture'] = array(
+    'description' => t('User multipicture - allow multiple profile pictures'),
+    'fields' => array(
+      'uid' => array(
+        'description' => 'User id from table users',
+        'type' => 'int',
+        'not null' => TRUE,
+        'disp-width' => '11',
+      ),
+      'fid' => array(
+        'description' => 'File id from table files',
+        'type' => 'int',
+        'not null' => TRUE,
+        'disp-width' => '11',
+      ),
+      'weight' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+        'description' => 'User picture weight',
+      ),
+    ),
+    'primary key' => array('fid'),
+    'indexes' => array(
+      'uid' => array('uid'),
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function user_multipicture_install() {
+  $operations = array();
+  drupal_install_schema('user_multipicture');
+
+  $result = db_query("SELECT uid, picture FROM {users} WHERE picture <> '' ORDER BY uid ASC");
+  while ($row = db_fetch_object($result)) {
+    $operations[] = array('user_multipicture_migrate', array($row->uid, $row->picture));
+  }
+  $batch = array(
+    'title' => t('Migrating user pictures'),
+    'operations' => $operations,
+  );
+  batch_set($batch);
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function user_multipicture_uninstall() {
+  $query = "UPDATE {files} f
+              INNER JOIN {user_multipicture} um ON f.fid = um.fid
+              SET f.status = %d";
+  db_query($query, FILE_STATUS_TEMPORARY);
+
+  drupal_uninstall_schema('user_multipicture');
+  variable_del('multipicture_quantity');
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Add weight for the userpicture files.
+ */
+function user_multipicture_update_6001() {
+  $ret = array();
+
+  db_add_field($ret, 'user_multipicture', 'weight', array(
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+    'size' => 'tiny',
+    'description' => 'User picture weight',
+  ));
+
+  return $ret;
+}

@@ -1,0 +1,14 @@
+; $Id$
+name = Votingpoints
+description = Rules integration for users earning points as they vote on nodes. With the rules approach, the node author can be assigned userpoints too.
+package = Userpoints
+dependencies[] = userpoints
+dependencies[] = rules
+core = 6.x
+
+; Information added by drush on 2013-01-18
+version = "6.x-1.0-beta1+3-dev"
+core = "6.x"
+project = "userpoints_contrib"
+datestamp = "1358473524"
+

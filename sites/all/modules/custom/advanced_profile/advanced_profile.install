@@ -1,0 +1,62 @@
+<?php
+
+/**
+ * @file
+ * Advanced profile install/schema hooks.
+ */
+
+/**
+ * Implementation of hook_schema().
+ */
+function advanced_profile_schema() {
+  $schema = array();
+
+  $schema['advanced_profile'] = array(
+    'description' => 'Holds information regarding additional profile information',
+    'fields' => array(
+      'user_id' => array(
+        'description' => 'Identifier of user.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'fullname' => array(
+        'description' => 'User\'s full name.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'bio' => array(
+        'description' => 'User\'s bio.',
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+      'photo' => array(
+        'description' => 'Path to user\'s photo.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('user_id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function advanced_profile_install() {
+  drupal_install_schema('advanced_profile');
+  variable_set('advanced_profile_photo_path', 'sites/all/files');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function advanced_profile_uninstall() {
+  drupal_uninstall_schema('advanced_profile');
+  variable_del('advanced_profile_photo_path');
+}

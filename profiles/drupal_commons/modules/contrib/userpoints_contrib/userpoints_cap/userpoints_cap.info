@@ -1,0 +1,12 @@
+name = Userpoints Cap
+description = Limit the number of points a user can earn.
+package = Userpoints
+dependencies[] = userpoints
+core = 6.x
+
+; Information added by drush on 2013-01-18
+version = "6.x-1.0-beta1+3-dev"
+core = "6.x"
+project = "userpoints_contrib"
+datestamp = "1358473524"
+

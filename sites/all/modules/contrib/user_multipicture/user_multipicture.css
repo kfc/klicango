@@ -1,0 +1,23 @@
+.multipicture-options .description {
+  clear:left;
+}
+
+.multipicture-options .wrapper {
+  float:left;
+  margin-left:10px;
+}
+
+.multipicture-options .form-radios label.option {
+  float:left;
+  display:block;
+  height:80px;
+}
+
+.multipicture-options .form-radios label.option .form-radio {
+  vertical-align:top;
+}
+
+.multipicture-options .form-radios .form-item {
+  clear:both;
+  height:80px;
+}

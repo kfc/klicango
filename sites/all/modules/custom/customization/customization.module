@@ -1,0 +1,409 @@
+<?php
+
+function customization_menu(){
+  $items = array();
+  
+  $items['mark_ads/%'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'customization_mark_ads',
+    'page arguments' =>array(1),
+    'access callback' => 'user_is_logged_in'
+  );
+  
+  $items['messages'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'customization_fake',
+    'access callback' => 'user_is_logged_in'
+  );
+  
+  $items['main'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'customization_front',
+    'access callback' => true,
+  );
+  
+  return $items;
+  
+  
+}
+
+function customization_front() {
+    return '';
+}
+
+
+function customization_form_alter(&$form, &$form_state, $form_id) {
+    global $user;
+    if ($form_id == 'user_profile_form') {
+        $form['#submit'][] = 'customization_set_user_role';
+    }
+    if ($form_id == 'user_register') {
+        $form['#submit'][] = 'customization_set_user_role';
+    }
+    
+    if($form_id == 'photos_editlist'){
+      if(in_array('professional',$user->roles)){ 
+        $ads = customization_get_adv_images(arg(1));
+        foreach($form['photos'] as $fid => &$item){
+          if(is_array($item)){
+            $item['adv'] = array(
+              '#type' => 'checkbox',
+              '#title' => t('Advertise'),
+              '#default_value' => in_array($fid, $ads),
+            );  
+          }
+        }
+        $form['submit']['#submit'][] = 'customization_save_advertise_images'; 
+      }
+      $form['submit']['#submit'][] = 'customization_save_featured_ads';
+      
+    }
+    return $form;
+}
+
+
+function customization_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  global $user;
+  switch ($op) {
+    case 'delete':
+      if($node->type == 'photos'){
+        profile_load_profile($user);
+        if($node->nid == $user->profile_featured_ads_album){
+          $user->profile_featured_ads_album = 0;  
+          $res = db_query("SELECT fid FROM {profile_fields} WHERE name = 'profile_featured_ads_album'");
+          $fid = db_fetch_array($res);
+          $fid = $fid['fid'];
+          db_query("DELETE FROM {profile_values} WHERE fid = %d AND uid = %d", $fid, $user->uid);
+          db_query("INSERT INTO {profile_values} (fid, uid, value) VALUES (%d, %d, '%s')",$fid,  $user->uid, 0);
+        }
+        
+      }
+      $node->content['my_additional_field'] = array(
+        '#value' => theme('mymodule_my_additional_field', $additional_field),
+        '#weight' => 10,
+      );
+      break;
+  }
+}
+
+function customization_fake(){
+  return '';
+}
+
+function customization_save_advertise_images(&$form, &$form_state){
+  foreach($form_state['values']['photos'] as $fid => $key) {
+      db_query("UPDATE {x_image} SET is_adv = %d WHERE fid = %d", $key['adv'], $fid);    
+  }
+}
+
+function customization_save_featured_ads(&$form, &$form_state){
+  global $user;
+  profile_load_profile($user);
+  foreach($form_state['values']['photos'] as $fid => $key) {
+    if (!empty($key['del'])) {
+      customization_remove_user_featured_ads($user, $fid);    
+        
+    }    
+  }
+}
+
+
+function customization_set_user_role($form, &$form_state) {
+    global $user;
+    $roles = $user->roles;
+    $arkeys = array_keys($roles);
+    if (!empty($form_state['values']['profile_professional_page']) && !in_array(7, $arkeys, true)) {
+        $roles[7] = 'professional';
+        if(($key = array_key_exists(6, $roles)) !== false) {
+            unset($roles[6]);
+        }
+    }
+
+    if (empty($form_state['values']['profile_professional_page'])) {
+        if(($key = array_key_exists(7, $roles)) !== false) {
+            unset($roles[7]);
+        }
+        $roles[6] = 'individual';
+    }
+    module_invoke('user', 'save', $user, array('roles' => $roles)); 
+} 
+
+function customization_block($op = 'list', $delta = 0, $edit = array()) {
+    if ($op == 'list') {
+        $blocks[0] = array(
+            'title' => t('Activity stream'),
+            'info' => t('Activity stream feed'),
+            'weight' => 0,
+        );
+        
+        $blocks[1] = array(
+            'title' => t('Image ADs'),
+            'info' => t('Image ADs'),
+            'weight' => 0,
+        );
+        
+        return $blocks;
+    } else if ($op == 'view') {
+        switch ($delta) {
+          case 0:
+            // Your module will need to define this function to render the block.
+            $block = array(
+              'subject' => t('Activity stream'),
+              'content' => customization_get_activity_stream(),
+            );
+            break;
+          
+          case 1:
+            // Your module will need to define this function to render the block.
+            $block = array(
+              'subject' => '<none>',
+              'content' => customization_get_image_ads(),
+            );
+            break;  
+            
+        }
+        return $block;
+    }
+}
+
+function customization_init() {
+    if (!user_is_logged_in() && ($_GET['q'] != 'user/login' && $_GET['q'] != 'user/register') && ($_GET['q'] != 'fboauth/connect')) {
+        //drupal_goto('main');
+    }
+}
+
+function customization_get_activity_stream() {
+    if (user_is_anonymous()) {
+        $prompt = array();
+        $prompt[] = t('Share your own status updates, and follow the updates & activities of others by !register.', array('!register' => l(t('creating your own account'), 'user/register')));
+        $prompt[] = t('Or, remember to !login If you already have an account.', array('!login' => l(t('log in'), 'user/login')));
+        return implode('<br/><br/>', $prompt);
+    }
+        // Check access to view/use activity messages
+        else if (user_access('view all activity messages')) {
+        return theme('facebook_status_form_display', NULL, NULL, 'activity_log_stream');
+    }
+    // Logged in, but without access
+    else {
+        return '';
+    }
+}
+
+function customization_views_query_alter(&$view, &$query) {
+  if($view->name == 'content_event_calendar' && ($view->current_display == 'calendar_1' || $view->current_display == 'calendar_period_2' || $view->current_display == 'calendar_period_3') ){
+    array_pop($query->where[0]['clauses']);   
+    array_pop($query->where[0]['args']);
+    $query->where[0]['clauses'][] = $query->where['date']['clauses'][0];
+    //$query->where[0]['args'][] = $query->where['date']['args'][0];
+    unset($query->where['date']);   
+    $query->where[] = array(
+      'clauses'=>array('notifications.uid = %d'),
+      'args'=>array($view->args[2]),
+      'type' =>'AND'
+    ); 
+    $query->group_operator = 'OR';
+  }
+   
+}
+
+function customization_get_adv_images($album_id = null){
+  $images = array();
+  if(!empty($album_id))
+    $images_res = db_query('SELECT fid from {x_image}  WHERE is_adv = 1 AND pid=%d', $album_id);
+  else
+    $images_res = db_query('SELECT fid from {x_image} WHERE is_adv = 1');   
+  
+  while( $img = db_fetch_array($images_res)){
+    $images[] = $img['fid']; 
+  }
+  return $images;
+}
+
+function customization_get_image_ads(){
+   global $user;
+   $output = '';
+  /* if(arg(0) == 'user'){
+    $uid = arg(1);
+    if(!empty($uid))
+      $_user = user_load($uid);  
+     
+   }
+   else{*/
+    $_user = user_load($user->uid);
+    $uid = $user->uid;
+   //}
+   
+   $images = customization_get_image_ads_for_user($_user);
+   
+   profile_load_profile($user);
+   $featured_ads = customization_get_user_featured_ads($user);
+   
+   $output = '<div class="ads-wrapper">';
+   foreach($images as $image){
+    $output .= '<div class="ads-item">'.theme('image',$image['thumb']['192x288']).'<span>'.(!empty($image['des']) ? $image['des'] : '&nbsp;').'</span>';
+    if(in_array('individual',$user->roles) && !in_array($image['fid'],array_keys($featured_ads)))
+      $output .= l('<span class="like-icon">'.theme('image',drupal_get_path('theme','commons_origins').'/images/like.jpg').'</span>', 'mark_ads/'.$image['fid'], array('html'=>TRUE,'query'=>drupal_get_destination()));
+    $output .= '</div>';
+   }
+   $output .= '</div>';
+   return $output;
+}
+
+function customization_get_image_ads_for_user($user){
+  $photos = array();
+  if(in_array('individual', $user->roles)){
+    if(!empty($user->user_terms)){ 
+      $user_interests = array_keys($user->user_terms);
+    }  
+    //taxonomy_te
+    if(!empty($user_interests)){
+      $result = taxonomy_select_nodes($user_interests);
+      $albums = array(); 
+      while ($row = db_fetch_object($result)) {
+        $albums[] = $row->nid;
+      }
+    }
+    $photos = customization_get_photos_for_albums($albums, true);
+  }
+  elseif(in_array('professional', $user->roles)){
+    $result = db_query('SELECT nid FROM {node} WHERE type=\'photos\' AND uid = '.$user->uid);
+     while ($row = db_fetch_object($result)) {
+        $albums[] = $row->nid;
+     }
+     $photos = customization_get_photos_for_albums($albums, true);
+     //dpm($albums);  
+  }
+  else return array();
+  if(empty($photos))
+    $photos = array();
+  return $photos;
+}
+
+function customization_get_photos_for_albums($albums = array(), $is_adv = false){
+  if(empty($albums))
+    return array();
+  if(!is_array($albums))
+    $albums = array($albums);
+  $result = db_query('
+    SELECT f.filepath, f.filemime, f.timestamp, f.filename, f.filesize, u.uid, u.name, p.* 
+    FROM {files} f 
+    INNER JOIN {x_image} p ON f.fid = p.fid 
+    INNER JOIN {users} u ON f.uid = u.uid 
+    WHERE p.pid IN (%s)
+    '.(($is_adv == true) ? ' AND is_adv = 1' : '').'
+    ', implode(',',$albums));
+    
+  while($data = db_fetch_array($result)){
+    $images[] = photos_get_info(0, $data);
+  }  
+    
+  return $images;
+  
+}
+
+function customization_mark_ads($fid){
+  global $user;
+  profile_load_profile($user); 
+  
+  if(!isset($user->profile_featured_ads_album) || empty($user->profile_featured_ads_album) ) {
+    //die($user->profile_featured_ads_album);
+    $node = new StdClass();
+    $node->type = 'photos';
+    $node->status = 1;
+    $node->uid = $user->uid;
+    $node->title = "My Featured Ads";
+    node_save($node);
+    
+    db_query("UPDATE {x_album} SET data = '%s' WHERE pid=%d",'a:15:{s:9:"viewpager";s:2:"10";s:10:"imageorder";s:14:"timestamp|desc";s:14:"list_imagesize";s:7:"240x180";s:14:"view_imagesize";s:7:"640x480";s:5:"slide";s:7:"640x480";s:11:"slide_music";s:0:"";s:12:"page_display";s:1:"1";s:12:"page_viewnum";s:2:"10";s:14:"page_imagesize";s:5:"thumb";s:10:"page_slide";s:7:"640x480";s:3:"pid";s:2:"12";s:14:"teaser_display";s:1:"2";s:14:"teaser_viewnum";s:1:"4";s:16:"teaser_imagesize";s:5:"thumb";s:12:"teaser_slide";s:7:"640x480";}',$node->nid);
+    
+    $user->profile_featured_ads_album = $node->nid;
+    $res = db_query("SELECT fid FROM {profile_fields} WHERE name = 'profile_featured_ads_album'");
+    $_fid = db_fetch_array($res);
+    $_fid = $_fid['fid'];
+    db_query("DELETE FROM {profile_values} WHERE fid = %d AND uid = %d", $_fid, $user->uid);
+    db_query("INSERT INTO {profile_values} (fid, uid, value) VALUES (%d, %d, '%s')",$_fid,  $user->uid, $node->nid);
+  }
+  
+  $featured_ads = customization_get_user_featured_ads($user);
+  
+  if(!empty($user->profile_featured_ads_album) && !in_array($fid,array_keys($featured_ads))){
+    
+    // copy file record
+    $file = db_fetch_object(db_query("SELECT * FROM {files} WHERE fid = %d", $fid));
+    
+    $filename = $file->filename;
+   
+    $file->filename = basename($file->filepath);
+    $new_filename = str_replace('.','_copy.',$file->filepath);
+    
+    if(!file_exists('/'.$new_filename))
+      file_copy($file->filepath, $new_filename);
+   
+    db_query('INSERT INTO files(uid, filename, filepath, filemime, filesize, status, timestamp) (SELECT '.$user->uid.',\'%s\', \'%s\', filemime, filesize, status, '.time().' from files WHERE fid=%d)',$filename,$new_filename, $fid);
+    $new_fid = db_last_insert_id('files','fid');
+    $file = db_fetch_object(db_query('
+      SELECT f.filepath, f.filemime, f.timestamp, f.filename, f.filesize,u.uid, u.name, p.* 
+      FROM {files} f 
+      INNER JOIN {x_image} p ON f.fid = p.fid 
+      INNER JOIN {node} n ON p.pid = n.nid 
+      INNER JOIN {users} u ON f.uid = u.uid 
+      WHERE f.fid = %d'. $fid));
+    
+    $file->fid = $new_fid;
+    $file->pid = $user->profile_featured_ads_album;
+    $file->title = $filename;
+    photos_image_date($file, 1);
+    customization_add_user_featured_ads($user, $fid,$new_fid);
+       
+  }
+  drupal_goto();
+  return  '';
+}
+
+function customization_get_user_featured_ads($user){
+  if(isset($user->profile_featured_ads) && !empty($user->profile_featured_ads)){
+    $featured_ads = unserialize($user->profile_featured_ads);
+    return $featured_ads;
+  }
+  else return array();
+}
+
+function customization_add_user_featured_ads(&$user, $fid,$new_fid){
+    $featured_ads = unserialize($user->profile_featured_ads);
+    if(empty($featured_ads))
+      $featured_ads = array();
+    if(!in_array($fid, $featured_ads))
+      $featured_ads[$fid] = $new_fid;
+    
+    $res = db_query("SELECT fid FROM {profile_fields} WHERE name = 'profile_featured_ads'");
+    $_fid = db_fetch_array($res);
+    $_fid = $_fid['fid'];
+    db_query("DELETE FROM {profile_values} WHERE fid = %d AND uid = %d", $_fid, $user->uid);
+    db_query("INSERT INTO {profile_values} (fid, uid, value) VALUES (%d, %d, '%s')",$_fid,  $user->uid, serialize($featured_ads));
+    $user->profile_featured_ads = serialize($featured_ads);
+    return true;
+}
+
+
+function customization_remove_user_featured_ads(&$user, $fid){ 
+  if(isset($user->profile_featured_ads) && !empty($user->profile_featured_ads)){  
+    $featured_ads = unserialize($user->profile_featured_ads);
+    $key = array_search($fid,$featured_ads);
+    unset($featured_ads[$key]);
+    
+    $res = db_query("SELECT fid FROM {profile_fields} WHERE name = 'profile_featured_ads'");
+    $_fid = db_fetch_array($res);
+    $_fid = $_fid['fid'];
+    db_query("DELETE FROM {profile_values} WHERE fid = %d AND uid = %d", $_fid, $user->uid);
+    db_query("INSERT INTO {profile_values} (fid, uid, value) VALUES (%d, %d, '%s')",$_fid,  $user->uid, serialize($featured_ads));
+    
+    return true;
+  }
+  else return false;
+}
+
+function customization_fboauth_user_save($account, $fbuser) {
+	$roles = $account->roles;
+	$roles[6] = 'individual';
+	module_invoke('user', 'save', $account, array('roles' => $roles));
+}

@@ -1,0 +1,13 @@
+name = Activity Log Pages
+description = "Creates a page (with pathauto integration) for each activity message."
+dependencies[] = activity_log
+package = Activity Log
+core = 6.x
+
+
+; Information added by drush on 2013-01-18
+version = "6.x-2.0-beta1+62-dev"
+core = "6.x"
+project = "activity_log"
+datestamp = "1358473516"
+

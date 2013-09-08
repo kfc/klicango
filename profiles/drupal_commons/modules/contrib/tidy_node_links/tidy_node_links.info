@@ -1,0 +1,9 @@
+name = Tidy node links
+description = Cleans up the links typically presented at the bottom of a node by putting all links other than the "Add new comment" control in a dropdown control. 
+core = 6.x
+
+; Information added by drush on 2013-01-18
+version = ""
+project = "tidy_node_links"
+datestamp = "1358473503"
+

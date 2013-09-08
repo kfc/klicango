@@ -1,0 +1,14 @@
+;$Id$
+name = User Points Node Limit
+description = Limits the creation of specific nodes based on the available number of userpoints
+package = Userpoints
+core = 6.x
+dependencies[] = userpoints
+
+
+; Information added by drush on 2013-01-18
+version = "6.x-1.0-beta1+3-dev"
+core = "6.x"
+project = "userpoints_contrib"
+datestamp = "1358473524"
+

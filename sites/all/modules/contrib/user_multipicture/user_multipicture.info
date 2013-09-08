@@ -1,0 +1,10 @@
+name = User multipicture
+description = Support for multiple profile pictures per user.
+core = 6.x
+
+; Information added by drupal.org packaging script on 2011-12-01
+version = "6.x-1.0"
+core = "6.x"
+project = "user_multipicture"
+datestamp = "1322739345"
+

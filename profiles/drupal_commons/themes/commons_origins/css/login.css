@@ -1,0 +1,87 @@
+/* Login form */
+/*
+  CSS Reset
+*/
+html, body, div, span, applet, object, iframe, del, dfn, em, font, ins, kbd, q, s, samp, small, strike, strong, tt, var, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, menu {margin: 0; padding: 0; border: 0; outline: 0; vertical-align: baseline; background: transparent;}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block; margin: 0; padding: 0;}
+img {border: none; vertical-align: top;}
+input[type="checkbox"], input[type="radio"] {margin: 0 3px 0 0; padding: 0; //height: 12px; //width: 12px; vertical-align: middle; margin-bottom: 2px;}
+.clearfix:after {content: "."; display: block; height: 0; clear: both; visibility: hidden; line-height: 0; font-size: 0;}
+.clearfix {//zoom: 1; //display: block;}
+body {font-size: 15px; line-height: 20px; background: url(../images/body_bg.gif);}
+ul, ol {list-style: none outside none;}
+a {color: #7e9f0a; text-decoration: none;}
+a:hover {text-decoration: underline;}
+
+@font-face {font-family: Calibri-Bold; src: url('../f/calibri.eot');}
+@font-face {font-family: Calibri; src: local("Calibri"), url(../f/calibri.ttf);}
+
+@font-face {font-family: Calibri-Bold; src: url('../f/calibrib.eot');}
+@font-face {font-family: Calibri-Bold; src: local("Calibri-Bold"), url(../f/calibrib.ttf);}
+
+textarea, input[type="text"], input[type="password"], .form-text {border: solid 1px #ccc; padding: 7px 8px; font-size: 1em;}
+label {cursor: pointer;}
+
+
+body,
+textarea,
+input,
+select,
+button  {font-family: Arial, Helvetica, sans-serif;}
+
+body,
+textarea,
+input,
+select,
+button {font-family: Calibri; color: #999;}
+.page header h1,
+.page .siteContent h3,
+.socLink {font-family: Calibri-Bold;}
+
+.page {width: 860px; margin: 0 auto; padding: 40px 0;}
+
+	.page header {text-align: center; padding: 0 0 30px 0;}
+		.page header img {text-align: center; margin: 0 auto;}
+		.page header h1 {font-size: 29px; line-height: 35px; font-weight: normal; padding: 6px 10px; color: #8c8c8c;}
+		
+	.page footer {padding: 25px 0 0 0;}
+		.page footer .footerNav {float: left; max-width: 85%; color: #8e8e8e; margin-right: 20px;}
+			.page footer .footerNav a {color: #8e8e8e;}
+		.page footer .copiesNav {overflow: hidden; text-align: right; color: #c7c6c6;}
+			.page footer .copiesNav a {color: #c7c6c6;}
+			
+	.page .siteContent {padding: 30px 0 25px 0;}
+		.page .siteContent aside {float: left; width: 430px;}
+		
+		.page .siteContent article {width: 305px; float: right;}
+			.page .siteContent h2 {font-size: 19px; line-height: 22px; color: #686868; font-weight: normal; margin-bottom: 13px;}
+			.page .siteContent h3 {font-size: 17px; line-height: 20px; color: #7e9f0a; font-weight: normal; margin: 10px 0;}
+			.page .siteContent .formItem {margin: 10px 0;}
+			.page .siteContent .formItem p {margin: 10px 0;}
+			
+			.socialsWrapper {margin-bottom: 30px;}
+				.socLink {display: block; font-size: 16px; text-align: center; padding: 7px; color: #FFF; text-shadow: 0 1px 1px rgba(0,0,0,0.2); background-color: #999; margin: 10px 0; border: solid 1px #666; box-shadow: 0 1px 3px rgba(0,0,0,0.3); //zoom: 1;}
+					.socLink:hover {text-decoration: none;}
+				.socLink.fb {border-color: #6c7b95 #5e6d86 #354560 #5e718f; background: #7e96b6; background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzdlOTZiNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM1Zjc0OWUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+); background: -moz-linear-gradient(top,  #7e96b6 0%, #5f749e 100%); background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7e96b6), color-stop(100%,#5f749e)); background: -webkit-linear-gradient(top,  #7e96b6 0%,#5f749e 100%); background: -o-linear-gradient(top,  #7e96b6 0%,#5f749e 100%); background: -ms-linear-gradient(top,  #7e96b6 0%,#5f749e 100%); background: linear-gradient(to bottom,  #7e96b6 0%,#5f749e 100%);}
+				.ie7 .socLink.fb,
+				.ie8 .socLink.fb {filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7e96b6', endColorstr='#5f749e',GradientType=0 );}
+				.socLink.fb:hover {background: #5f749e; filter: none;}
+				.socLink.tw	 {border-color: #5f9db3 #4d869e #3584a3 #52a7c3; background: #5cc7ec; background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzVjYzdlYyIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0M2I2ZTUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+); background: -moz-linear-gradient(top,  #5cc7ec 0%, #43b6e5 100%); background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5cc7ec), color-stop(100%,#43b6e5)); background: -webkit-linear-gradient(top,  #5cc7ec 0%,#43b6e5 100%); background: -o-linear-gradient(top,  #5cc7ec 0%,#43b6e5 100%); background: -ms-linear-gradient(top,  #5cc7ec 0%,#43b6e5 100%); background: linear-gradient(to bottom,  #5cc7ec 0%,#43b6e5 100%);}
+				.ie7 .socLink.tw,
+				.ie8 .socLink.tw {filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5cc7ec', endColorstr='#43b6e5',GradientType=0 );}
+				.socLink.tw:hover {background: #43b6e5; filter: none;}
+			
+			.page .siteContent textarea,
+			.page .siteContent input[type="text"],
+			.page .siteContent input[type="password"] {width: 287px;}
+
+article fieldset {
+    background-color: inherit;
+    border: 0px !important;
+    overflow: hidden;
+}
+/* End of login form */
+
+.error {
+    color: red;
+}

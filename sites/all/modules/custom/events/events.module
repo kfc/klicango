@@ -1,0 +1,147 @@
+<?php
+
+function events_menu(){
+  $items = array(
+    'create_event_if_valid' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'create_event_if_valid',
+      'access callback' => 'user_is_logged_in'
+    ),
+    
+    'check_event_fields' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'check_event_fields',
+      'access callback' => 'user_is_logged_in'
+    ),
+    
+    'check_event_form_values' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'check_event_form_values',
+      'access callback' => 'user_is_logged_in'
+    ),
+    
+  );
+  
+ 
+  
+  return $items;
+  
+  
+}
+
+function events_theme() {
+    return array(
+      'create_event_form' => array(
+        'template' => 'create-event',
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),
+    );
+}
+
+
+function events_form_alter(&$form, &$form_state, $form_id) {
+   
+}
+
+
+function events_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  
+}
+
+function check_event_fields($values, &$errors){
+  $is_valid = true;
+  if(!isset($values['title']) || empty($values['title'])){
+    $errors['title'] = t('Enter event title'); 
+    $is_valid = false;
+  }
+  
+  if(!isset($values['details']) || empty($values['details'])){
+    $errors['details'] = t('Enter event details'); 
+    $is_valid = false;
+  }
+  
+  if(!isset($values['location']) || empty($values['location'])){
+    $errors['location'] = t('Enter event location'); 
+    $is_valid = false;
+  }
+  
+  if(!isset($values['date']) || empty($values['date'])){
+    $errors['date'] = t('Enter event date'); 
+    $is_valid = false;
+  }
+  
+  if(isset($values['date']) && !empty($values['date']) && strtotime($values['date']) == -1){
+    $errors['date'] = t('Enter valid date'); 
+    $is_valid = false;
+  }
+  
+  if(!isset($values['time']) || empty($values['time'])){
+    $errors['time'] = t('Enter event time'); 
+    $is_valid = false;
+  }
+  
+  
+  if(isset($values['email']) && !empty($values['email']) && !valid_email_address($values['email'])){
+    $errors['email'] = t('Enter valid e-mail address'); 
+    $is_valid = false;
+  }
+  
+  return $is_valid;
+}
+
+function check_event_form_values(){
+  if(isset($_POST)){
+    $errors = $return = array();
+    $is_valid = check_event_fields($_POST, $errors);  
+    if(!$is_valid){
+      $return = array('isValid' => false, 'errors'=>$errors);
+    }
+    else 
+    $return = array('isValid' => true);  
+  }
+  else $return = array('success' => false);
+  
+  echo json_encode($return);
+  exit;
+}
+
+function create_event_if_valid(){
+  
+  if(isset($_POST)){
+    $errors = $return = array();
+    $is_valid = check_event_fields($_POST, $errors);
+    if(!$is_valid){
+      
+    } else{
+      
+      global $user;   
+      $event = new stdClass();
+      $event->type = 'event';
+      $event->uid = $user->uid;
+      $event->status = 1;
+      $event->title = check_plain($_POST['title']);
+      $event->field_event_details[0]['value']= check_plain($_POST['details']);
+      $event->field_location[0]['value']= check_plain($_POST['location']);
+      $event->field_date[0]['value']= date('c', strtotime(check_plain($_POST['date']).' '.check_plain($_POST['time'])));
+      $event->field_event_email[0]['value']= check_plain($_POST['email']);
+      $event->field_event_contact_phone[0]['value']= check_plain($_POST['phone']);
+      if(in_array('professional', $user->roles)){
+         $event->field_event_gratuity[0]['value']= check_plain($_POST['gratuity']);  
+        
+      }
+      $event->field_event_type[0]['value']= (in_array('individual', $user->roles) ? 'private' : 'public');
+      if ($file = file_save_upload('photo')) {
+        $event->field_content_images[0] = (array)$file;  
+      }
+      
+      node_save($event);
+      
+      //die();
+    }
+  }
+  dpm($user);
+  dpm($_POST);
+  dpm($_FILES);
+  return '123';
+}
+

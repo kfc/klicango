@@ -1,0 +1,14 @@
+name = Views Content Cache Tests Helper
+description = Provides helpers for testing the views cache plugin.
+package = Views
+core = 6.x
+dependencies[] = views
+dependencies[] = ctools
+hidden = TRUE
+
+; Information added by drupal.org packaging script on 2012-08-31
+version = "6.x-2.3"
+core = "6.x"
+project = "views_content_cache"
+datestamp = "1346394506"
+

@@ -1,0 +1,15 @@
+; $Id$
+name = Userpoints Badges
+description = Assign badges to users as they get certain number of userpoints.
+package = Userpoints
+dependencies[] = userpoints
+dependencies[] = user_badges
+core = 6.x
+
+
+; Information added by drush on 2013-01-18
+version = "6.x-1.0-beta1+3-dev"
+core = "6.x"
+project = "userpoints_contrib"
+datestamp = "1358473524"
+
