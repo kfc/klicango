@@ -31,7 +31,7 @@ $(function() {
           $("#form_create_event input").removeClass('error')
           $.each(data.errors, function( key, value){
             $("#form_create_event input[name='"+key+"'], #form_create_event textarea[name='"+key+"']").addClass('error');
-            $("#form_create_event input[name='"+key+"'], #form_create_event textarea[name='"+key+"']").attr('placeholder',value);
+            //$("#form_create_event input[name='"+key+"'], #form_create_event textarea[name='"+key+"']").attr('placeholder',value);
           });
         }
       },

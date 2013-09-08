@@ -15,8 +15,8 @@
   </div>
   <div class="form-item">
     <label><?php echo t('When')?></label>
-    <input type="text" name="date" placeholder="<?php echo ('date');?>" />
-    <input type="text" name="time" placeholder="<?php echo ('ex: 20:30 - 00:00');?>" />
+    <input type="text" name="date" placeholder="<?php echo ('format: d/m/Y');?>" />
+    <input type="text" name="time" placeholder="<?php echo ('ex: 20:30');?>" />
   </div>
   <?php if(in_array('professional', $user->roles)):?>
     <div class="form-item">

@@ -5,7 +5,7 @@
 
 <head>
   <title><?php print $head_title; ?></title>
-  <?php print $head; ?>
+  <?php //print $head; ?>
   <?php print $styles; ?>
   <?php print $setting_styles; ?>
   <!--[if IE 8]>
@@ -18,13 +18,15 @@
   <?php //print $ie6_styles; ?>
   <![endif]-->
   <?php print $local_styles; ?>
-  <?php print $scripts; ?>
+  <?php //print $scripts; ?>
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/style.css" type="text/css" media="screen, projection" />
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/custom.css" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <!--[if lte IE 6]><link rel="stylesheet" href="styles/style_ie.css" type="text/css" media="screen, projection" /><![endif]-->
     
     
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.carouFredSel-6.2.1-packed.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.formstyler.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/events.js"></script>
@@ -49,7 +51,7 @@
     			<nav class="main_menu">
     				<ul class="menu">
     					<li>
-    						<a href="">Calendar</a>
+    						<a href="/user">Calendar</a>
     						<span class="counter">2</span>
     					</li>
     					<li>

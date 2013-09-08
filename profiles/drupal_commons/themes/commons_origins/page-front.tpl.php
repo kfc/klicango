@@ -127,7 +127,7 @@
     			<nav class="main_menu">
     				<ul class="menu">
     					<li>
-    						<a href="">Calendar</a>
+    						<a href="/user">Calendar</a>
     						<span class="counter">2</span>
     					</li>
     					<li>

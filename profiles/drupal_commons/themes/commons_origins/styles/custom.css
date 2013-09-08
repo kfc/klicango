@@ -1,16 +1,16 @@
 form .form-item input.error{
   border-color: red;
 }
-
+/*
 form .form-item input.error::-webkit-input-placeholder {
    color: red;
 }
 
-form .form-item input.error:-moz-placeholder { /* Firefox 18- */
+form .form-item input.error:-moz-placeholder { /
    color: red;  
 }
 
-form .form-item input.error::-moz-placeholder {  /* Firefox 19+ */
+form .form-item input.error::-moz-placeholder {  
    color: red;  
 }
 
@@ -26,14 +26,15 @@ form .form-item textarea.error::-webkit-input-placeholder {
    color: red;
 }
 
-form .form-item textarea.error:-moz-placeholder { /* Firefox 18- */
+form .form-item textarea.error:-moz-placeholder { 
    color: red;  
 }
 
-form .form-item textarea.error::-moz-placeholder {  /* Firefox 19+ */
+form .form-item textarea.error::-moz-placeholder {  
    color: red;  
 }
 
 form .form-item textarea.error:-ms-input-placeholder {  
    color: red;  
 }
+*/

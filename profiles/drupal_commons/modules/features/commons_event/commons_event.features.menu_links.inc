@@ -12,7 +12,9 @@ function commons_event_menu_default_menu_links() {
     'link_path' => 'content/events',
     'router_path' => 'content/events',
     'link_title' => 'Events',
-    'options' => array(),
+    'options' => array(
+      'alter' => TRUE,
+    ),
     'module' => 'commons',
     'hidden' => '0',
     'external' => '0',

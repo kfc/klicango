@@ -1,19 +1,26 @@
-<?php dpm($node);?>
+<?php 
+global $user;
+dpm($node);?>
 <div class="public-event-top-banner">
   <img src="/profiles/drupal_commons/themes/commons_origins/images/top-banner.png" alt="" />
 </div>
-
-<div class="public-event-modify-link">
-  <a href="">Modify this event</a>
-</div>
+<?php if($node->uid == $user->uid):?>
+  <div class="public-event-modify-link">
+    <a href="">Modify this event</a>
+  </div>
+<?php endif;?>
 
 <div class="public-event-coupon">
   <div class="event-coupon">
   <div class="first-column public-event-col">
     <div class="profile-info">
-      <div class="profile-thumbnail"><img src="/profiles/drupal_commons/themes/commons_origins/images/profile-thumbnail.jpg" alt="" /></div>
-      <div class="profile-name">Lounge Bar Promenade</div>
-      <div class="profile-city">Nice</div>
+      <?php 
+      $location_info = user_load($node->uid);
+      profile_load_profile($location_info);
+      ?>
+      <div class="profile-thumbnail"><?php echo theme_imagecache('user_picture_meta', $location_info->picture);?></div>
+      <div class="profile-name"><?php echo $location_info->name;?></div>
+      <div class="profile-city"><?php echo $location_info->profile_location;?></div>
     </div>
     <div class="powered-by"><img src="/profiles/drupal_commons/themes/commons_origins/images/powered-by.png" alt="" /></div>
   </div>
@@ -34,8 +41,14 @@
           $output_date .= '<div>'.date('H:i', $start_date).'</div>';  
         }
         elseif(!empty($start_date) && !empty($end_date) && date('m/d/Y', $start_date) == date('m/d/Y', $end_date)){
-          $output_date = '<div>'.date('l, F j', $start_date).'</date>';
+          $output_date = '<div>'.date('l, F j', $start_date).'</div>';
           $output_date .= '<div>'.date('H:i', $start_date).' - '.date('H:i', $end_date).'</div>';  
+        }
+        elseif(!empty($start_date) && !empty($end_date) && $start_date == $end_date){
+          $output_date = '<div>'.date('l, F j H:i', $start_date).'</div>';
+        }
+        elseif(!empty($start_date) && empty($end_date)){
+          $output_date = '<div>'.date('l, F j H:i', $start_date).'</div>';
         }
         echo $output_date;  
       ?>
