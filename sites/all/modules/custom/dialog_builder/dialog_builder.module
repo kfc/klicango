@@ -1,0 +1,246 @@
+<?php
+/**
+ * @file
+ * This module provides additional fields (description, picture, etc.) in user's profile
+ *
+ *
+ * @author Eugene Zenko
+ */
+
+
+function dialog_builder_menu() {
+  $items = array();
+  
+  $items['dialog/open'] = array(
+    'title' => 'Dialog builder',
+    'description' => 'Dialog builder callback.',
+    'page callback' => 'dialog_builder_content',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  $items['dialog/validate'] = array(
+    'title' => 'Validate dialog',
+    'description' => 'Validate dialog callback',
+    'page callback' => 'dialog_builder_validate',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  $items['user/signup'] = array(
+    'title' => 'Signup user',
+    'description' => 'Signup user callback',
+    'page callback' => 'dialog_builder_signup_user',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+    
+  return $items;
+}
+
+function dialog_builder_forms_list() {
+    return array('professional_user_register', 'end_user_register', 'log_in');
+}
+
+function dialog_builder_content() {
+    if (isset($_GET['id']) && in_array($_GET['id'], dialog_builder_forms_list(), true)) {
+        $data = dialog_builder_load_data($_GET['id']);
+        echo theme($_GET['id'], $data);
+        exit;
+    }
+}
+
+function dialog_builder_load_data() {
+    return array();
+}
+
+function dialog_builder_validate() {
+    
+    if (isset($_POST['id']) && in_array($_POST['id'], dialog_builder_forms_list(), true) && function_exists('dialog_builder_' . $_POST['id'] . '_validate')) {
+         $func = 'dialog_builder_' . $_POST['id'] . '_validate';
+         call_user_func($func, $_POST);     
+    } 
+    exit;
+}
+
+function dialog_builder_log_in_validate($variables) {
+    $result = db_query('SELECT uid FROM users WHERE name = "%s" AND pass = "%s"', @$variables['name'], md5(@$variables['pass']));
+    if (!empty($result) && $uid = db_result($result)) {
+        $account = user_authenticate(array('name' => $variables['name'], 'pass' => $variables['pass']));   
+        drupal_json(array('success' => true, 'action' => 'redirect', 'value' => '/user'));
+    } else {
+        drupal_json(array('success' => false, 'message' => t('Incorrect login or password'), 'id' => array('name', 'pass')));
+    }
+    exit;    
+}
+
+function dialog_builder_end_user_register_validate($variables, $server_check = false) {    
+    $required = array('name', 'surname', 'mail', 'pass', 'pass_confirm', 'birthday', 'country', 'city', 'conditions');
+    $errors = array();
+    
+    foreach($required as $field) {
+        if (empty($variables[$field]) || $variables[$field] == '0') {
+            $errors[$field] = 1;
+        }
+    }
+    
+    if ($variables['pass'] !== $variables['pass_confirm'] || strlen($variables['pass']) < 6) {
+        $errors['pass'] = $errors['pass_confirm'] = 1;
+    }
+    
+    if (!valid_email_address($variables['mail'])) {
+        $errors['mail'] = 1;
+    }
+
+    //check birthday
+    if (!empty($errors)) {
+        if ($server_check) {
+            return false;
+        }
+        drupal_json(array('success' => false, 'message' => t('Fields marked in red are missing or incorrect '), 'id' => array_keys($errors)));
+    } else {
+        
+        $result = db_query('SELECT uid FROM users WHERE mail = "%s"', @$variables['mail']);
+        if (!empty($result) && $uid = db_result($result)) {
+            if ($server_check) {
+                return false;
+            }
+            drupal_json(array('success' => false, 'message' => t('User with such email already exists '), 'id' => array('mail')));
+            exit;
+        }
+        
+        if ($server_check) {
+            return true;
+        }
+        drupal_json(array('success' => true, 'action' => 'submit'));
+    }
+    exit;    
+}
+
+function dialog_builder_professional_user_register_validate($variables, $server_check = false) {
+    $required = array('name', 'mail', 'pass', 'pass_confirm', 'address', 'zip', 'country', 'city', 'phone', 'conditions');
+    $errors = array();
+    
+    foreach($required as $field) {
+        if (empty($variables[$field]) || $variables[$field] == '0') {
+            $errors[$field] = 1;
+        }
+    }
+    
+    if ($variables['pass'] !== $variables['pass_confirm'] || strlen($variables['pass']) < 6) {
+        $errors['pass'] = $errors['pass_confirm'] = 1;
+    }
+    
+    if (!valid_email_address($variables['mail'])) {
+        $errors['mail'] = 1;
+    }
+    
+    if (!empty($variables['siret']) && strlen($variables['siret']) != 14) {
+        $errors['siret'] = 1;
+    }
+    
+    if ($variables['category'] == 0 && empty($variables['category_other'])) {
+        $errors['category'] = $errors['category_other'] = 1;
+    }
+    
+    //check birthday
+    if (!empty($errors)) {
+        if ($server_check) {
+            return false;
+        }
+        drupal_json(array('success' => false, 'message' => t('Fields marked in red are missing or incorrect '), 'id' => array_keys($errors)));
+    } else {
+        
+        $result = db_query('SELECT uid FROM users WHERE mail = "%s"', @$variables['mail']);
+        if (!empty($result) && $uid = db_result($result)) {
+            if ($server_check) {
+                return false;
+            }
+            drupal_json(array('success' => false, 'message' => t('User with such email already exists '), 'id' => array('mail')));
+            exit;
+        }
+        
+        if ($server_check) {
+            return true;
+        }
+        drupal_json(array('success' => true, 'action' => 'submit'));
+    }
+    exit;
+}
+
+function dialog_builder_signup_user() {
+    $variables = $_POST;
+    if ($variables['user_type'] == '6') {
+        $check = dialog_builder_end_user_register_validate($variables, true);
+    } else {
+        $check = dialog_builder_professional_user_register_validate($variables, true);
+    }
+    
+    if (!$check || !in_array($variables['user_type'], array('6', '7'), true)) {
+        die(t('Incorrect data'));
+    }
+    
+    
+    
+    $variables['first_name'] = $variables['name'];
+    $userinfo = array(
+      'name' => $variables['mail'],
+      'init' => $variables['mail'],
+      'mail' => $variables['mail'],
+      'pass' => $variables['pass'],
+      'roles' => array(
+        DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+        $variables['user_type'] => ($variables['user_type'] == '6') ? 'individual' : 'professional',
+      ),
+      'status' => 1
+    );
+
+    $account = user_save('', $userinfo);
+    
+    dialog_builder_save_user($account, $variables);
+    
+    $user = user_authenticate(array('name' => $variables['mail'], 'pass' => $variables['pass']));
+    drupal_goto('user');
+}
+
+function dialog_builder_save_user($account, $variables) {
+    if ($variables['user_type'] == 6) {
+        $fields = array('first_name', 'surname', 'sex', 'birthday', 'country', 'city', 'university', 'degree');
+    } else {
+        $variables['category'] = (!empty($variables['category'])) ? $variables['category'] : $variables['category_other'];
+        $fields = array('first_name', 'address', 'zip', 'country', 'city', 'phone', 'siret', 'category');
+    }
+    
+    $db_fields = array();
+    $result = db_query('SELECT fid, name FROM profile_fields WHERE name IN ("' . implode('", "', $fields) . '")');
+    while ($row = db_fetch_array($result)) {
+        $db_fields[$row['name']] = $row['fid'];
+    }
+    
+    foreach ($db_fields as $field => $fid) {
+        db_query('INSERT INTO profile_values (fid, uid, value) VALUES (%d, %d, "%s")', $fid, $account->uid, $variables[$field]);
+    }
+}
+
+function dialog_builder_theme(){
+    return array(
+        'professional_user_register' => array(
+        	'arguments' => array(
+        		'data' => NULL,
+        	),
+        	'template' => 'theme/professional_user_register',
+        ),
+        'end_user_register' => array(
+        	'arguments' => array(
+        		'data' => NULL,
+        	),
+        	'template' => 'theme/end_user_register',
+        ),
+        'log_in' => array(
+        	'arguments' => array(
+        		'data' => NULL,
+        	),
+        	'template' => 'theme/log_in',
+        ),
+    );
+}

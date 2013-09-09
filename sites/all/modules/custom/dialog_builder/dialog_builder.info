@@ -1,0 +1,5 @@
+name = Dialog builder
+description = This module is used to create dialogs
+core = 6.x
+package = Klicango
+php = 5.2

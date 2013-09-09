@@ -1,6 +1,136 @@
 form .form-item input.error{
   border-color: red;
 }
+
+div.error-message {
+    margin-bottom: 20px;
+    color: red;
+}
+
+::-webkit-input-placeholder { font: 11px/25px Arial; }
+::-moz-placeholder { font: 11px/25px Arial; } /* firefox 19+ */
+:-ms-input-placeholder { font: 11px/25px Arial; } /* ie */
+input:-moz-placeholder { font: 11px/25px Arial; }
+
+body .ui-widget-content .long input[type="text"]{
+	width: 294px;
+}
+
+#auth-block a{
+	text-decoration: none;
+	text-transform: uppercase;
+	font: 14px Arial;
+	color: #96c12b;
+	margin-top: 14px;
+	display: inline-block;
+}
+
+#middle .inner .links {
+    display: none;
+}
+
+.jq-selectbox.jqselect.error .jq-selectbox__select {
+    border-color: red !important;
+}
+
+
+/* LOGIN FORM START */
+.login-form .form-item.login-links a#forgot-pass{
+	font: 11px Arial;
+	color: #96c12b;
+	text-decoration: none;
+}
+.login-form .form-submit{
+	width: 100%;
+	clear: both;
+	display: inline-block;
+}
+.login-form .form-item.login-links a#forgot-pass:hover{
+	text-decoration: underline;
+}
+.login-form .form-item.login-links{
+	float: left;
+}
+.login-form .form-item.login-links label{
+	width: 150px;
+}
+.login-form div.form-type-checkbox{
+	float: right;
+	clear: none;
+	padding-top: 4px;
+	width: 141px;
+}
+.login-form div.form-type-checkbox label{
+	line-height: 14px;
+}
+body .login-form.ui-widget-content .form-submit input[type="submit"]{
+	float: left;
+}
+body .login-form.ui-widget-content .form-submit a#signup{
+	background: none;
+	font: bold 12px/30px Arial;
+	color: #35332f;
+	float: right;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	width: 139px;
+	height: 30px;
+	border: 1px solid #bebebe;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	-o-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-icab-border-radius: 3px;
+	border-radius: 3px;
+	text-align: center;
+	text-decoration: none;
+}
+body .login-form.ui-widget-content .form-item.facebook-log-in{
+	padding-top: 15px;
+}
+body .login-form form{
+	width: 322px;
+margin: 0 auto;
+}
+body .login-form.ui-widget-content .form-item.facebook-log-in a{
+	background: #c1c0c0;
+	font: bold 12px/30px Arial;
+	color: #FFF;
+	float: right;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	width: 320px;
+	height: 30px;
+	border: 1px solid #aab0bf;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	-o-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-icab-border-radius: 3px;
+	border-radius: 3px;
+	text-align: center;
+	text-decoration: none;
+	margin: 0 auto;
+}
+body .login-form form {
+    margin: 0 auto;
+    width: 322px;
+}
+
+/* LOGIN FORM END */
+
+.ui-dialog form input[type="text"],
+.ui-dialog form input[type="password"]{
+	padding: 0 5px;
+	width: 130px;
+	font: 11px/25px Arial;
+	color: #858586;
+}
+
 /*
 form .form-item input.error::-webkit-input-placeholder {
    color: red;

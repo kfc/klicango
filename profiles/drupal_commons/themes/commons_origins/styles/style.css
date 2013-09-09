@@ -308,7 +308,7 @@ body .ui-widget-content .ui-widget-header{
 }
 body .ui-widget-content input[type="text"],
 body .ui-widget-content input[type="password"],
-.selectbox.jqselect div.select{
+.jq-selectbox.jqselect div.jq-selectbox__select{
 	width: 140px;
 	height: 25px;
 	border: 1px solid #a6a6a6;
@@ -321,6 +321,18 @@ body .ui-widget-content input[type="password"],
     border-radius: 3px; /* CSS3 */
 	margin-right: 12px;
 	float: left;
+}
+.jq-selectbox.jqselect div.jq-selectbox__select{
+	width: 140px !important;
+}
+#field-image-upload-styler .jq-file__browse{
+	
+}
+span.checkbox.error{
+	border: 1px solid red;
+}
+.selectbox.jqselect div.select.selecterror{
+	border-color: red;
 }
 div.post-box{
 	margin-bottom: 25px;
@@ -340,31 +352,33 @@ div.post-box form input[type="text"]{
 	outline: none;
 	padding: 8px 10px 0;
 }
-.selectbox.jqselect{
+.selectbox.jqselect,
+.jq-selectbox.jqselect{
 	float: left;
+	width: 153px;
 }
-.selectbox.jqselect div.select .text{
+.jq-selectbox.jqselect div.jq-selectbox__select-text{
 	float: left;
 	width: 50px;
 	padding: 0 5px;
 	font: 11px/25px Arial;
 	color: #858586;
 }
-.selectbox.jqselect div.select .trigger{
+.jq-selectbox.jqselect .jq-selectbox__trigger{
 	width: 25px;
 	height: 25px;
 	background: #e9e7e7 url(../images/arrow.jpg) center center no-repeat;
 	float: right;
 	cursor: pointer;
 }
-.selectbox.jqselect .dropdown{
+.jq-selectbox.jqselect .jq-selectbox__dropdown{
 	top: 27px !important;
 	background: #FFF;
 	padding: 5px;
 	border: 1px solid #a6a6a6;
 	width: 130px;
 }
-.selectbox.jqselect .dropdown ul li{
+.jq-selectbox.jqselect .jq-selectbox__dropdown ul li{
 	cursor: pointer;
 	font: 11px Arial;
 	color: #858586;
@@ -391,7 +405,8 @@ body .ui-widget-content .form-item label{
 body .ui-widget-content .form-item.profile-links{
 	padding-left: 85px;
 }
-body .ui-widget-content .form-item.profile-links a{
+body .ui-widget-content .form-item.profile-links a,
+#field-image-upload-styler .jq-file__browse{
 	padding-left: 28px;
 	display: inline-block;
 	font: bold 11px/25px Arial;
@@ -399,12 +414,31 @@ body .ui-widget-content .form-item.profile-links a{
 	text-decoration: none;
 	height: 24px;
 }
-body .ui-widget-content .form-item.profile-links a:hover{
+#field-image-upload-styler .jq-file__browse{
+	color: #96c12b !important;
+}
+body .ui-widget-content .form-item.profile-links a:hover,
+#field-image-upload-styler .jq-file__browse:hover{
 	color: #96c12b;
 }
-body .ui-widget-content .form-item.profile-links #add-prof-photo{
+body .ui-widget-content .form-item.profile-links #add-prof-photo,
+#field-image-upload-styler .jq-file__browse{
 	background: url(../images/prof-photo.png) left center no-repeat;
 	margin-right: 25px;
+	cursor: pointer;
+}
+#field-image-upload-styler input:hover{
+	cursor: pointer;	
+}
+#field-image-upload-styler{
+	float: left;
+}
+#field-image-upload-styler .jq-file__name{
+	font: 11px Arial;
+	color: #96c12b;
+	padding-left: 28px;
+	float: none !important;
+	white-space: normal !important;
 }
 body .ui-widget-content .form-item.profile-links #add-friends{
 	background: url(../images/add-friend.png) left center no-repeat;
@@ -443,7 +477,7 @@ body .ui-widget-content .form-submit label{
 body .ui-widget-content .form-submit label a{
 	color: #96c12b;
 }
-span.checkbox{
+.jq-checkbox{
 	display: inline-block;
 	background: url(../images/check.jpg) 0 0 no-repeat;
 	width: 14px;
@@ -451,7 +485,12 @@ span.checkbox{
 	margin-right: 5px;
 	float: left;
 }
-span.checkbox.checked{
+.jq-checkbox{
+	display: block;
+	width: 14px;
+	height: 13px;
+}
+.jq-checkbox.checked{
 	background-position: 0 -13px;
 }
 div.public-event-coupon{
@@ -731,4 +770,176 @@ div.public-event-coupon div.public-event-col.first-column .profile-info .profile
 	left: 20px;
 	top: 20px;
 	color: #FFF;
+}
+.date-nav .date-prev a,
+.date-nav .date-next a{
+	width: 8px;
+	height: 7px;
+	background: url(../images/prev-next-month.jpg) no-repeat;
+	font-size: 0;
+	text-indent: -999px;
+	text-decoration: none;
+	display: block;
+	margin-top: 3px;
+}
+div.calendar-calendar{
+	text-align: center;
+	padding-bottom: 20px;
+}
+.date-nav .date-prev a{
+	background-position: 0 0;
+	margin-right: 13px;
+}
+.date-nav .date-next a{
+	background-position: 0 -7px;
+	margin-left: 13px;
+}
+.date-nav .date-prev{
+	display: inline;
+	float: left;
+}
+.date-heading{
+	font: bold 14px/14px Arial;
+	color: #2b2b2b;
+	display: inline;
+	float: left;
+}
+.date-nav .date-next{
+	display: inline;
+	float: left;
+}
+.date-nav{
+	display: inline-block;
+}
+.calendar-calendar .month-view table{
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+.calendar-calendar td div.day{
+	font: 12px Arial;
+	color: #b2b2b2;
+	text-align: right;
+	padding: 3px 4px 0 0;
+}
+.calendar-calendar .month-view table tbody{
+	border: 1px solid #b1b0b0;
+}
+.block .calendar-calendar .month-view table tr td{
+	width: 117px;
+	height: 106px;
+	border: 1px solid #d3d3d2;
+	border-collapse: collapse;
+	border-spacing: 0;
+	vertical-align: top;
+}
+.block .calendar-calendar .month-view table tr td.empty{
+	background: #e5e5e5;
+}
+.ui-dialog form .form-item.placeholder{ position:relative }
+.ui-dialog form .form-item.placeholder label  { position:absolute; top:0; left:5px; text-align: left; line-height: 25px;font: 11px/25px Arial;color: #858586;}
+.ui-dialog form .form-item.placeholder input[type="text"],
+.ui-dialog form .form-item.placeholder input[type="password"]{
+	padding: 0 5px;
+	width: 130px;
+	font: 11px/25px Arial;
+	color: #858586;
+}
+#login-form .form-item.login-links a#forgot-pass{
+	font: 11px Arial;
+	color: #96c12b;
+	text-decoration: none;
+}
+#login-form .form-submit{
+	width: 100%;
+	clear: both;
+	display: inline-block;
+}
+#login-form .form-item.login-links a#forgot-pass:hover{
+	text-decoration: underline;
+}
+#login-form .form-item.login-links{
+	float: left;
+}
+#login-form .form-item.login-links label{
+	width: 150px;
+}
+#login-form div.form-type-checkbox{
+	float: right;
+	clear: none;
+	padding-top: 4px;
+	width: 141px;
+}
+#login-form div.form-type-checkbox label{
+	line-height: 14px;
+}
+body #login-form.ui-widget-content .form-submit input[type="submit"]{
+	float: left;
+}
+body #login-form.ui-widget-content .form-submit a#signup{
+	background: none;
+	font: bold 12px/30px Arial;
+	color: #35332f;
+	float: right;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	width: 139px;
+	height: 30px;
+	border: 1px solid #bebebe;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	-o-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-icab-border-radius: 3px;
+	border-radius: 3px;
+	text-align: center;
+	text-decoration: none;
+}
+body #login-form.ui-widget-content .form-item.facebook-log-in{
+	padding-top: 15px;
+}
+body #login-form form{
+	width: 322px;
+margin: 0 auto;
+}
+body #login-form.ui-widget-content .form-item.facebook-log-in a{
+	background: #c1c0c0;
+	font: bold 12px/30px Arial;
+	color: #FFF;
+	float: right;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	width: 320px;
+	height: 30px;
+	border: 1px solid #aab0bf;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	-o-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-icab-border-radius: 3px;
+	border-radius: 3px;
+	text-align: center;
+	text-decoration: none;
+	margin: 0 auto;
+}
+span.submit-or{
+	font: 12px/30px Arial;
+	color: #35332f;
+	padding-left: 15px;
+}
+div.activity-stream-list.left{
+	width: 405px;
+	float: left;
+}
+.activity-stream-list.left .stream-item .stream-item-content {
+	width: 350px;
+}
+#block-calendar-1{
+	margin-bottom: 55px;
+}
+span.file{
+	
 }

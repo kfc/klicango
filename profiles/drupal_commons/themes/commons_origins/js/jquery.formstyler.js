@@ -23,8 +23,7 @@
 			// checkbox
 			if (el.is(':checkbox')) {
 				el.css({position: 'absolute', left: -9999}).each(function() {
-					if (el.next('span.checkbox').length < 1) {
-						var span = $('<span class="checkbox" style="display:inline-block"><span></span></span>');
+					if (el.next('span.checkbox').length < 1) {											if (el.hasClass("error") == true){							var span = $('<span class="checkbox error" style="display:inline-block"><span></span></span>');						} else {							var span = $('<span class="checkbox" style="display:inline-block"><span></span></span>');						}
 						el.after(span);
 						if (el.is(':checked')) span.addClass('checked');
 						if (el.is(':disabled')) span.addClass('disabled');
