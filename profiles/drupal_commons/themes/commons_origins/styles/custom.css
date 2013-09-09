@@ -125,8 +125,6 @@ body .login-form form {
 
 .ui-dialog form input[type="text"],
 .ui-dialog form input[type="password"]{
-	padding: 0 5px;
-	width: 130px;
 	font: 11px/25px Arial;
 	color: #858586;
 }
