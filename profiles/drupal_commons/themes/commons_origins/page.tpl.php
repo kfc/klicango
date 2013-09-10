@@ -6,7 +6,7 @@
 <head>
   <title><?php print $head_title; ?></title>
   <?php //print $head; ?>
-  <?php print $styles; ?>
+  <?php //print $styles; ?>
   <?php print $setting_styles; ?>
   <!--[if IE 8]>
   <?php //print $ie8_styles; ?>
@@ -18,7 +18,7 @@
   <?php //print $ie6_styles; ?>
   <![endif]-->
   <?php print $local_styles; ?>
-  <?php //print $scripts; ?>
+  <?php print $scripts; ?>
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/style.css" type="text/css" media="screen, projection" />
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/custom.css" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
@@ -38,7 +38,7 @@
     
     <div id="wrapper">
     
-    	<header id="header" style="display: none;">
+    	<header id="header">
     		
     		<div class="container">
     		

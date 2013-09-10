@@ -1,9 +1,19 @@
+<?php 
+global $user;
+
+$values = array();
+$nid = arg(1);
+$node = node_load($nid);
+if($node->type == 'event' && $node->uid == $user->uid){
+  $values = (array)$node;
+}
+?>
 <div id="create-event-form" title="Create Event">
   <form action="/create_event_if_valid" method="post" id="form_create_event" enctype="multipart/form-data">
   <div id="create_event_form_errors"></div>
   <div class="form-item">
     <label><?php echo t('Title')?></label>
-    <input type="text" name="title" style="width: 294px;" placeholder="<?php echo t('such as birtday party')?>" />
+    <input type="text" name="title" value="<?php echo (isset($values['title']) ? $values['title'] : '');?>" style="width: 294px;" placeholder="<?php echo t('such as birtday party')?>" />
   </div>
   <div class="form-item">
     <label><?php echo t('Details')?></label>
@@ -33,12 +43,11 @@
   </div>
   
  
-  <div class="form-item">
-    <label><?php echo t('Photo')?></label>
-    <input id="add-prof-photo" type="file" name="files[photo]">
+  <div class="form-item profile-links">
+    <input type="file" id="field-image-upload" name="files[photo]" class="form-file profile-upload" />
   </div>
-  <div class="form-submit">
-    
+  
+  <div class="form-submit">   
     <input type="submit" value="<?php echo t('Create')?>"/>
   </div>
   </form>
