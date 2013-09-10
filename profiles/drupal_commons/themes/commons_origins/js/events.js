@@ -9,6 +9,13 @@ $(function() {
   $("#create-event-link")
     .click(function(e) {
     e.preventDefault();
+    $('#create-event-form .profile-upload').styler({browseText: 'Add event photo'});
+    $( "#create-event-form" ).dialog( "open" );
+  });
+  
+  $("#modify-event-link")
+    .click(function(e) {
+    e.preventDefault();
     $( "#create-event-form" ).dialog( "open" );
   });
   

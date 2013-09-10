@@ -1,12 +1,16 @@
 <?php 
 global $user;
-dpm($node);?>
+$location_info = user_load($node->uid);
+$advanced_info = advanced_profile_load($location_info->uid);
+?>
+<?php if(!empty($advanced_info['photo'])):?>
 <div class="public-event-top-banner">
-  <img src="/profiles/drupal_commons/themes/commons_origins/images/top-banner.png" alt="" />
+  <?php echo theme_imagecache('event_image',$advanced_info['photo']);?>
 </div>
+<?php endif;?>
 <?php if($node->uid == $user->uid):?>
   <div class="public-event-modify-link">
-    <a href="">Modify this event</a>
+    <a id="modify-event-link" href="">Modify this event</a>
   </div>
 <?php endif;?>
 
@@ -14,10 +18,6 @@ dpm($node);?>
   <div class="event-coupon">
   <div class="first-column public-event-col">
     <div class="profile-info">
-      <?php 
-      $location_info = user_load($node->uid);
-      profile_load_profile($location_info);
-      ?>
       <div class="profile-thumbnail"><?php echo theme_imagecache('user_picture_meta', $location_info->picture);?></div>
       <div class="profile-name"><?php echo $location_info->name;?></div>
       <div class="profile-city"><?php echo $location_info->profile_location;?></div>
@@ -155,5 +155,5 @@ dpm($node);?>
     </div>
     
   </div>
-  
 </div>
+

@@ -21,13 +21,32 @@ function events_menu(){
     ),
     
   );
-  
- 
-  
   return $items;
   
-  
 }
+
+function events_block($op = 'list', $delta = 0, $edit = array()) {
+    if ($op == 'list') {
+        $blocks[0] = array(
+            'title' => t('Event Photos Right'),
+            'info' => t('Event Photos Right'),
+            'weight' => 0,
+        );
+        return $blocks;
+    } else if ($op == 'view') {
+        switch ($delta) {
+          case 0:
+            // Your module will need to define this function to render the block.
+            $block = array(
+              'content' => events_get_events_photos(),
+            );
+            break; 
+        }
+        return $block;
+    }
+}
+
+
 
 function events_theme() {
     return array(
@@ -35,9 +54,12 @@ function events_theme() {
         'template' => 'create-event',
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
+      'event_photos_list' => array(
+        'template' => 'event-photos-list',
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),
     );
 }
-
 
 function events_form_alter(&$form, &$form_state, $form_id) {
    
@@ -163,5 +185,11 @@ function create_event_if_valid(){
  // dpm($_POST);
  // dpm($_FILES);
   return '';
+}
+
+function events_get_events_photos(){
+  return theme('event_photos_list');
+  
+  
 }
 
