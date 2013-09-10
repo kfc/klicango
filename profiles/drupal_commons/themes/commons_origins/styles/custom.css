@@ -132,10 +132,13 @@ body .login-form form {
 /* LOGIN FORM END */
 
 .ui-dialog form input[type="text"],
-.ui-dialog form input[type="password"]{
+.ui-dialog form input[type="password"],
+.ui-dialog form textarea
+{
 	font: 11px/25px Arial;
 	color: #858586;
 }
+
 
 /*
 form .form-item input.error::-webkit-input-placeholder {
