@@ -92,13 +92,13 @@
         			</div>
                     <?php 
                         global $user;
+                        profile_load_profile($user);
+                        
                         $adv = advanced_profile_load($user->uid);
                         
-                        if (!empty($adv['photo'])) {
-                            echo '<div id="auth-block" style="margin-top: 10px;"><img src="/' . $adv['photo'] . '" style="height: 30px;" /></div>';
+                        if (!empty($user->picture)) {
+                            echo '<div id="auth-block" style="margin-top: 10px;"><img src="/' . $user->picture . '" style="height: 30px;" /></div>';
                         }
-                        
-                        profile_load_profile($user);
                     ?>                   
    			        <div id="auth-block" class="name">
                        <a href="javascript: void(0);"><?php echo $user->first_name; ?></a>

@@ -139,7 +139,7 @@ function dialog_builder_professional_user_register_validate($variables, $server_
         $errors['siret'] = 1;
     }
     
-    if ($variables['category'] == 0 && empty($variables['category_other'])) {
+    if ($variables['category'] == '0' && empty($variables['category_other'])) {
         $errors['category'] = $errors['category_other'] = 1;
     }
     
@@ -229,7 +229,7 @@ function dialog_builder_save_profile_photo($account, $variables) {
     $result = db_query('SELECT COUNT(user_id) as user_exists FROM {advanced_profile} WHERE user_id = %d', $account->uid);
     $account_exists = db_result($result);
     
-    if ($file = file_save_upload('files-photo', array('file_validate_is_image' => array()))) {
+    if ($file = file_save_upload('files-banner', array('file_validate_is_image' => array()))) {
         $path = variable_get('advanced_profile_photo_path', 'sites/default/files');
         if (!$path) {
           drupal_set_message('Photo wasn\t saved: file storage location is not set (see admin/settings/advanced_profile).', 'warning');
@@ -250,7 +250,22 @@ function dialog_builder_save_profile_photo($account, $variables) {
           db_query($sql, array('', '', $filename, $account->uid));
         }
     }
-
+    
+    if ($file = file_save_upload('files-photo', array('file_validate_is_image' => array()))) {
+        $path = 'sites/default/files/pictures';
+        if (!$path) {
+          drupal_set_message('Photo wasn\t saved: file storage location is not set (see admin/settings/advanced_profile).', 'warning');
+        } else {
+          $parts = pathinfo($file->filename);
+        
+          $filename = rtrim($path, '/') . '/picture-' . $account->uid . '.' . $parts['extension'];
+          if (!file_copy( $file, $filename, FILE_EXISTS_REPLACE)) {
+            $filename = '';
+          }
+        }
+          $sql = "UPDATE {users} SET picture = '%s' WHERE uid = %d";
+          db_query($sql, array($filename, $account->uid));
+    }
 }
 
 function dialog_builder_theme(){
