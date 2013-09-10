@@ -154,19 +154,19 @@ function create_event_if_valid(){
       $event->type = 'event';
       $event->uid = $user->uid;
       $event->status = 1;
-      $event->title = trim(check_plain($_POST['title']));
-      $event->field_event_details[0]['value']= trim(check_plain($_POST['details']));
-      $event->field_location[0]['value']= trim(check_plain($_POST['location']));
+      $event->title = trim($_POST['title']);
+      $event->field_event_details[0]['value']= trim($_POST['details']);
+      $event->field_location[0]['value']= trim($_POST['location']);
       $date_arr = explode('/',trim($_POST['date']));
       $time = $_POST['time']; 
       if(strpos($time,'-') !== false)
         $time = trim(substr($_POST['time'],0,strpos($_POST['time'],'-')));
       $time = explode(':',$time);  
       $event->field_date[0]['value']= $event->field_date[0]['value2']= date('c', mktime($time[0],$time[1],0,$date_arr[1],$date_arr[0],$date_arr[2]));
-      $event->field_event_email[0]['value']= check_plain($_POST['email']);
-      $event->field_event_contact_phone[0]['value']= check_plain($_POST['phone']);
+      $event->field_event_email[0]['value']= $_POST['email'];
+      $event->field_event_contact_phone[0]['value']= $_POST['phone'];
       if(in_array('professional', $user->roles)){
-         $event->field_event_gratuity[0]['value']= check_plain($_POST['gratuity']);  
+         $event->field_event_gratuity[0]['value']= $_POST['gratuity'];  
         
       }
       $event->field_event_type[0]['value']= (in_array('individual', $user->roles) ? 'private' : 'public');
