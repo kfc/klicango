@@ -40,80 +40,12 @@
 				pauseOnHover	: true
 			}					
 		});	
-		$( "#dialog-form" ).dialog({
-		  autoOpen: false,
-		  height: 412,
-		  width: 484,
-		  modal: true
-		});
-	 
-		$( "#login" )
-		  .click(function(e) {
-			e.preventDefault();
-			$( "#dialog-form" ).dialog( "open" );
-		});
-		
-		$("select").styler();
-		$('input[type="checkbox"]').styler();
-		
+	
 	  });
 	  </script>
 </head>
 
 <body class="front">
-
-    <div id="dialog-form" title="Sign up">
-      <form>
-    	<div class="form-item">
-    		<label>Name</label>
-    		<input type="text" />
-    		<input type="text" />
-    	</div>
-    	<div class="form-item field-e-mail">
-    		<label>E-mail</label>
-    		<input type="text" />
-    	</div>
-    	<div class="form-item">
-    		<label>Password</label>
-    		<input type="password" />
-    		<input type="password" />
-    	</div>
-    	<div class="form-item">
-    		<label>Identity</label>
-    		<select>
-    			<option>male</option>
-    			<option>female</option>
-    		</select>
-    		<input type="text" />
-    	</div>
-    	<div class="form-item">
-    		<label>Location</label>
-    		<select>
-                <option>France</option>
-    			<option>Germany</option>
-    			<option>Belarus</option>
-    		</select>
-    		<input type="text" />
-    	</div>
-    	<div class="form-item">
-    		<label>University</label>
-    		<input type="text" />
-    		<select>
-    			<option>degree</option>
-    			<option>agree</option>
-    		</select>
-    	</div>
-    	<div class="form-item profile-links">
-    		<a id="add-prof-photo" href="">Add profile photo</a>
-    		<a id="add-friends" href="">Add friends</a>
-    	</div>
-    	<div class="form-submit">
-    		<label><input type="checkbox"/>J’accepte les <a href="">conditions d’utilisation</a> du service</label>
-    		<input type="submit" value="Sign up"/>
-    	</div>
-      </form>
-    </div>
-    
     <div id="wrapper">
     
     	<header id="header">
@@ -149,7 +81,19 @@
         			<div id="auth-block">
         				<a href="/user?q=logout">LOGOUT</a>
         			</div>
-    			
+                    <?php 
+                        global $user;
+                        $adv = advanced_profile_load($user->uid);
+                        
+                        if (!empty($adv['photo'])) {
+                            echo '<div id="auth-block" style="margin-top: 10px;"><img src="/' . $adv['photo'] . '" style="height: 30px;" /></div>';
+                        }
+                        
+                        profile_load_profile($user);
+                    ?>                   
+   			        <div id="auth-block" class="name">
+                       <a href="javascript: void(0);"><?php echo $user->first_name; ?></a>
+        			</div>
                 <?php
                     else :
                 ?>

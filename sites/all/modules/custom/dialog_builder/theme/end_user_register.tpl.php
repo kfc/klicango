@@ -1,5 +1,5 @@
 <div id="dialog-end_user_register" title="Sign up" width="484">
-      <form method="post" action="/user/signup">
+      <form method="post" action="/user/signup" enctype="multipart/form-data">
     	<div class="form-item">
     		<label>Name</label>
     		<input type="text" name="name" placeholder="<?php echo t('first name')?>" />
@@ -47,7 +47,7 @@
     	</div>
     	<div class="form-item profile-links">
     		<!--<a id="add-prof-photo" name="photo" href="">Add profile photo</a>-->
-            <input type="file" id="field-image-upload" name="files-photo" class="form-file profile-upload" />
+            <input type="file" id="field-image-upload" name="files[files-photo]" class="form-file profile-upload" />
     		<a id="add-friends" name="friends" href="">Add friends</a>
     	</div>
     	<div class="form-submit">

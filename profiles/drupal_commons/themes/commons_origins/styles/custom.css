@@ -29,6 +29,10 @@ body .ui-widget-content .long input[type="text"]{
     display: none;
 }
 
+.name a {
+    text-transform: none !important;
+}
+
 .jq-selectbox.jqselect.error .jq-selectbox__select {
     border-color: red !important;
 }

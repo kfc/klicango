@@ -197,6 +197,9 @@ function dialog_builder_signup_user() {
 
     $account = user_save('', $userinfo);
     
+    //save photo
+    dialog_builder_save_profile_photo($account, $variables);
+    
     dialog_builder_save_user($account, $variables);
     
     $user = user_authenticate(array('name' => $variables['mail'], 'pass' => $variables['pass']));
@@ -220,6 +223,34 @@ function dialog_builder_save_user($account, $variables) {
     foreach ($db_fields as $field => $fid) {
         db_query('INSERT INTO profile_values (fid, uid, value) VALUES (%d, %d, "%s")', $fid, $account->uid, $variables[$field]);
     }
+}
+
+function dialog_builder_save_profile_photo($account, $variables) {
+    $result = db_query('SELECT COUNT(user_id) as user_exists FROM {advanced_profile} WHERE user_id = %d', $account->uid);
+    $account_exists = db_result($result);
+    
+    if ($file = file_save_upload('files-photo', array('file_validate_is_image' => array()))) {
+        $path = variable_get('advanced_profile_photo_path', 'sites/default/files');
+        if (!$path) {
+          drupal_set_message('Photo wasn\t saved: file storage location is not set (see admin/settings/advanced_profile).', 'warning');
+        } else {
+          $parts = pathinfo($file->filename);
+
+          $filename = rtrim($path, '/') . '/' . $account->uid . '.' . $parts['extension'];
+          if (!file_copy( $file, $filename, FILE_EXISTS_REPLACE)) {
+            $filename = '';
+          }
+        }
+
+        if (!$account_exists) {
+          $sql = "INSERT INTO {advanced_profile} (user_id, fullname, bio, photo) VALUES (%d, '%s', '%s', '%s')";
+          db_query($sql, array($account->uid, '', '', $filename));
+        } else {
+          $sql = "UPDATE {advanced_profile} SET fullname = '%s', bio = '%s', photo = '%s' WHERE user_id = %d";
+          db_query($sql, array('', '', $filename, $account->uid));
+        }
+    }
+
 }
 
 function dialog_builder_theme(){

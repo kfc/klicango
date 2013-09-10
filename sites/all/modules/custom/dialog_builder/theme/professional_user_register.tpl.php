@@ -1,5 +1,5 @@
 <div id="dialog-professional_user_register" title="Sign up pro" width="484">
-      <form method="post" action="/user/signup">
+      <form method="post" action="/user/signup" enctype="multipart/form-data">
     	<div class="form-item long">
     		<label>Name</label>
     		<input type="text" name="name" placeholder="<?php echo t('name of your place')?>" />
@@ -52,8 +52,8 @@
     		<input type="text" name="category_other" placeholder="<?php echo t('Other')?>" />
     	</div>
     	<div class="form-item profile-links">
-            <input type="file" id="field-image-upload" name="files-photo" class="form-file profile-upload" />
-            <input type="file" id="field-image-upload" name="files-banner" class="form-file banner-upload" />
+            <input type="file" id="field-image-upload" name="files[files-photo]" class="form-file profile-upload" />
+            <input type="file" id="field-image-upload" name="files[files-banner]" class="form-file banner-upload" />
     		<!--<a id="add-prof-photo" name="profile_photo" href="">Add profile photo</a>
     		<a id="add-prof-photo" name="banner_photo" href="">Add banner photo</a>-->
     	</div>
