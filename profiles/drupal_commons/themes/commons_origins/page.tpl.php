@@ -28,7 +28,7 @@
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.carouFredSel-6.2.1-packed.js"></script>
-    <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.formstyler.js"></script>
+    <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.formstyler.new.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/events.js"></script>
 </head>
 
@@ -47,8 +47,7 @@
     					<img src="/profiles/drupal_commons/themes/commons_origins/images/logo.png" alt=""/>
     				</a>
     			</div>
-    		
-    			<nav class="main_menu">
+    			<!--<nav class="main_menu">
     				<ul class="menu">
     					<li>
     						<a href="/user">Calendar</a>
@@ -66,14 +65,68 @@
     						<a id="create-event-link" href=""><?php echo t('+ Create event');?></a>
     					</li>
     				</ul>
-    			</nav>
-    			
-    			<div id="auth-block">
-    				<a id="login" href="">LOGIN</a>
-                    <a id="login" href="">|</a>
-                    <a id="login" href="">SIGN UP</a>
-    			</div>
-    			
+    			</nav>-->
+                <?php if(user_is_logged_in()) : ?>
+        			<nav class="main_menu">
+        				<ul class="menu">
+        					<li>
+        						<a href="/user">Calendar</a>
+        						<span class="counter">2</span>
+        					</li>
+        					<li>
+        						<a href="">Friends</a>
+        						<span class="counter">12</span>
+        					</li>
+        					<li>
+        						<a href="">Public events</a>
+        						<span class="counter">10</span>
+        					</li>
+        					<li class="create_event">
+        						<a id="create-event-link" href=""><?php echo t('+ Create event');?></a>
+        					</li>
+        				</ul>
+        			</nav>
+        			
+        			<div id="auth-block">
+        				<a href="/user?q=logout">LOGOUT</a>
+        			</div>
+                    <?php 
+                        global $user;
+                        $adv = advanced_profile_load($user->uid);
+                        
+                        if (!empty($adv['photo'])) {
+                            echo '<div id="auth-block" style="margin-top: 10px;"><img src="/' . $adv['photo'] . '" style="height: 30px;" /></div>';
+                        }
+                        
+                        profile_load_profile($user);
+                    ?>                   
+   			        <div id="auth-block" class="name">
+                       <a href="javascript: void(0);"><?php echo $user->first_name; ?></a>
+        			</div>
+                <?php
+                    else :
+                ?>
+                    <nav class="main_menu">
+        				<ul class="menu">
+        					<li>
+        						<a href="/">Home</a>
+        					</li>
+                            <li>
+        						<a href="">Public events</a>
+        					</li>
+        				</ul>
+        			</nav>
+        			
+        			<div id="auth-block">
+        				<a class="popup" id="log_in" href="">LOGIN</a>
+                        <a id="login" href="">|</a>
+                        <a class="popup" id="professional_user_register" href="javascript:void(0);">SIGN UP PROFESSIONAL</a>
+                        <a id="login" href="">|</a>
+                        <a class="popup" id="end_user_register" href="javascript:void(0);">SIGN UP USER</a>
+        			</div>
+                <?php
+                    endif;
+                ?>
     			<!-- Форма поиска -->
     				<div id="search-form">
     					<form action="" method="post">

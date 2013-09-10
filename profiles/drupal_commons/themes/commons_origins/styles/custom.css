@@ -33,6 +33,10 @@ body .ui-widget-content .long input[type="text"]{
     text-transform: none !important;
 }
 
+a.context-block-region {
+    display: none;
+}
+
 .jq-selectbox.jqselect.error .jq-selectbox__select {
     border-color: red !important;
 }
