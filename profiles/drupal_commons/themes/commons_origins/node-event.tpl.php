@@ -1,6 +1,6 @@
 <?php 
 global $user;
-$location_info = user_load($node->uid);
+$location_info = user_load($node->uid);   
 $advanced_info = advanced_profile_load($location_info->uid);
 ?>
 <?php if(!empty($advanced_info['photo'])):?>
