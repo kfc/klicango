@@ -119,12 +119,12 @@ Drupal.behaviors.photos = function (context) {
   },function(){
     $(this).removeClass('photot_ajax_hover');
   });
-  $('.jQueryeditable_edit_filename').editable('/photos/image', {width: '50%', submit : atext[0], cancel : atext[1], indicator : atext[2], tooltip: atext[3], loadtype: 'POST'}, function(){
+  /*$('.jQueryeditable_edit_filename').editable('/photos/image', {width: '50%', submit : atext[0], cancel : atext[1], indicator : atext[2], tooltip: atext[3], loadtype: 'POST'}, function(){
     return false;
-  });
-  $('.jQueryeditable_edit_des').editable('/photos/image', {height: 140, submit : atext[0], cancel : atext[1], indicator : atext[2],tooltip: atext[3], type: 'textarea', loadtype: 'POST'}, function(){
+  }); */
+  /*$('.jQueryeditable_edit_des').editable('/photos/image', {height: 140, submit : atext[0], cancel : atext[1], indicator : atext[2],tooltip: atext[3], type: 'textarea', loadtype: 'POST'}, function(){
     return false;
-  });
+  });*/
   $('.jQueryeditable_edit_delete').click(function(){ 
     d = $(this).attr('alt');
     $(this).addClass('photos_ajax_del_img');

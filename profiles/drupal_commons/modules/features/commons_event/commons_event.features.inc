@@ -14,6 +14,56 @@ function commons_event_ctools_plugin_api() {
 }
 
 /**
+ * Implementation of hook_imagecache_default_presets().
+ */
+function commons_event_imagecache_default_presets() {
+  $items = array(
+    'event_image' => array(
+      'presetname' => 'event_image',
+      'actions' => array(
+        '0' => array(
+          'weight' => '-10',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '830',
+            'height' => '',
+            'upscale' => 1,
+          ),
+        ),
+        '1' => array(
+          'weight' => '-9',
+          'module' => 'imagecache',
+          'action' => 'imagecache_crop',
+          'data' => array(
+            'width' => '830',
+            'height' => '350',
+            'xoffset' => 'center',
+            'yoffset' => 'center',
+          ),
+        ),
+      ),
+    ),
+    'homepage_event_image' => array(
+      'presetname' => 'homepage_event_image',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '300',
+            'height' => '',
+            'upscale' => 1,
+          ),
+        ),
+      ),
+    ),
+  );
+  return $items;
+}
+
+/**
  * Implementation of hook_node_info().
  */
 function commons_event_node_info() {
