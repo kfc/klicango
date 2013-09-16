@@ -47,86 +47,11 @@
     					<img src="/profiles/drupal_commons/themes/commons_origins/images/logo.png" alt=""/>
     				</a>
     			</div>
-    			<!--<nav class="main_menu">
-    				<ul class="menu">
-    					<li>
-    						<a href="/user">Calendar</a>
-    						<span class="counter">2</span>
-    					</li>
-    					<li>
-    						<a href="">Friends</a>
-    						<span class="counter">12</span>
-    					</li>
-    					<li>
-    						<a href="">Public events</a>
-    						<span class="counter">10</span>
-    					</li>
-    					<li class="create_event">
-    						<a id="create-event-link" href=""><?php echo t('+ Create event');?></a>
-    					</li>
-    				</ul>
-    			</nav>-->
-                <?php if(user_is_logged_in()) : ?>
-        			<nav class="main_menu">
-        				<ul class="menu">
-        					<li>
-        						<a href="/user">Calendar</a>
-        						<span class="counter">2</span>
-        					</li>
-        					<li>
-        						<a href="">Friends</a>
-        						<span class="counter">12</span>
-        					</li>
-        					<li>
-        						<a href="">Public events</a>
-        						<span class="counter">10</span>
-        					</li>
-        					<li class="create_event">
-        						<a id="create-event-link" href=""><?php echo t('+ Create event');?></a>
-        					</li>
-        				</ul>
-        			</nav>
-        			
-        			<div id="auth-block">
-        				<a href="/user?q=logout">LOGOUT</a>
-        			</div>
-                    <?php 
-                        global $user;
-                        profile_load_profile($user);
-                        
-                        $adv = advanced_profile_load($user->uid);
-                        
-                        if (!empty($user->picture)) {
-                            echo '<div id="auth-block" style="margin-top: 10px;"><img src="/' . $user->picture . '" style="height: 30px;" /></div>';
-                        }
-                    ?>                   
-   			        <div id="auth-block" class="name">
-                       <a href="javascript: void(0);"><?php echo $user->first_name; ?></a>
-        			</div>
+    			
                 <?php
-                    else :
+                    include_once 'menu.tpl.php';
                 ?>
-                    <nav class="main_menu">
-        				<ul class="menu">
-        					<li>
-        						<a href="/">Home</a>
-        					</li>
-                            <li>
-        						<a href="">Public events</a>
-        					</li>
-        				</ul>
-        			</nav>
-        			
-        			<div id="auth-block">
-        				<a class="popup" id="log_in" href="">LOGIN</a>
-                        <a id="login" href="">|</a>
-                        <a class="popup" id="professional_user_register" href="javascript:void(0);">SIGN UP PROFESSIONAL</a>
-                        <a id="login" href="">|</a>
-                        <a class="popup" id="end_user_register" href="javascript:void(0);">SIGN UP USER</a>
-        			</div>
-                <?php
-                    endif;
-                ?>
+                
     			<!-- Форма поиска -->
     				<div id="search-form">
     					<form action="" method="post">
@@ -146,7 +71,7 @@
     
     		<div id="container">
     			<div id="content">
-            <?php print $messages; ?>
+                    <?php print $messages; ?>
     				<?php print $content; ?>
     			</div><!-- #content-->
     		</div><!-- #container-->
@@ -157,20 +82,10 @@
     
     </div><!-- #wrapper -->
     
-    <footer id="footer">
-    	<div class="footer-left-block">
-    		<img src="/profiles/drupal_commons/themes/commons_origins/images/footer-ico.png" alt="" />
-    		<span>Clipby, partenaire officiel</span>
-    	</div>
-    	<div class="footer-right-block">
-    		<ul class="menu">
-    			<li><a href="">mentions légales</a></li>
-    			<li><a href="">signaler un abus</a></li>
-    			<li><a href="">contact</a></li>
-    		</ul>
-    		<span class="copyrights">© KLICANGO 2013</span>
-    	</div>
-    </footer><!-- #footer -->
+    <?php
+        include_once 'footer.tpl.php';
+    ?>
+    
     <?php print $closure; ?>
     <?php print $create_event_form; ?>
 </html>

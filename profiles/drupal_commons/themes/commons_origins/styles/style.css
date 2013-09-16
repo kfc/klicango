@@ -485,6 +485,12 @@ body .ui-widget-content .form-submit label a{
 	margin-right: 5px;
 	float: left;
 }
+.jq-checkbox.error{
+	background-position: 0 -26px;
+}
+.jq-checkbox.error.checked{
+	background-position: 0 -39px;
+}
 .jq-checkbox{
 	display: block;
 	width: 14px;
@@ -942,4 +948,47 @@ div.activity-stream-list.left{
 }
 span.file{
 	
+}
+#auth-block .accaunt-thumbnail{
+	float: right;
+	margin-left: 4px;
+	padding-top: 7px;
+}
+#auth-block .accaunt-name{
+	float: right;
+	padding-top: 7px;
+	position: relative;
+}
+#auth-block .accaunt-name a{
+	text-decoration: none;
+	font: 11px/29px Arial;
+	color: #96c12b;
+}
+#auth-block .accaunt-name a:hover,
+#auth-block .accaunt-name #accaunt-menu ul li a:hover{
+	text-decoration: underline;
+}
+#accaunt-menu{
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 35px;
+	background: url(../images/profile-dropdown.png) 0 0 no-repeat;
+	width: 99px;
+	height: 53px;
+	padding: 16px 0 0 15px;
+}
+#auth-block{
+	position: relative;
+	
+}
+#auth-block .accaunt-name #accaunt-menu ul li{
+	margin: 0 0 4px 0;
+	padding: 0;
+	list-style: none;
+}
+#auth-block .accaunt-name #accaunt-menu ul li a{
+	text-decoration: none;
+	color: #000;
+	font: 14px Arial;
 }

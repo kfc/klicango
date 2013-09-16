@@ -16,7 +16,16 @@ body .ui-widget-content .long input[type="text"]{
 	width: 294px;
 }
 
-#auth-block a{
+/*#auth-block a{
+	text-decoration: none;
+	text-transform: uppercase;
+	font: 14px Arial;
+	color: #96c12b;
+	margin-top: 14px;
+	display: inline-block;
+}*/
+
+#auth-block #log_in{
 	text-decoration: none;
 	text-transform: uppercase;
 	font: 14px Arial;
@@ -139,7 +148,9 @@ body .login-form form {
 	color: #858586;
 }
 
-
+.content .fusion-block-config {
+    diplay: none;
+}
 /*
 form .form-item input.error::-webkit-input-placeholder {
    color: red;

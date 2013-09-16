@@ -46,10 +46,9 @@
     function signUp() {
         $('#dialog-log_in').dialog('close'); 
         if($('#field-pro').prop('checked')) {
-            $('#professional_user_register').click();
+            showDialog('professional_user_register');
         } else {
-            $('#end_user_register').click();
+            showDialog('end_user_register');
         }
-          
     }
 </script>

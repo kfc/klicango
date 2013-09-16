@@ -21,6 +21,15 @@ function customization_menu(){
     'page callback' => 'customization_front',
     'access callback' => true,
   );
+  $items['admin/settings/carousel'] = array(
+    'title' => 'Carousel settings',
+    'description' => 'Settings of main carousel (homepage) and professional carousel.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('customization_carousel_settings'),
+    'access arguments' => array('administer nodes'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'customization.admin.inc',
+  );
   
   return $items;
   
@@ -141,7 +150,9 @@ function customization_block($op = 'list', $delta = 0, $edit = array()) {
             'info' => t('Image ADs'),
             'weight' => 0,
         );
-        
+        $blocks[2] = array(
+            'info' => t('Homepage carousel'),
+        );
         return $blocks;
     } else if ($op == 'view') {
         switch ($delta) {
@@ -160,7 +171,12 @@ function customization_block($op = 'list', $delta = 0, $edit = array()) {
               'content' => customization_get_image_ads(),
             );
             break;  
-            
+          case 2:
+            $block = array(
+              'subject' => '<none>',
+              'content' => customization_carousel_contents(),
+            );
+            break;
         }
         return $block;
     }
@@ -407,3 +423,35 @@ function customization_fboauth_user_save($account, $fbuser) {
 	$roles[6] = 'individual';
 	module_invoke('user', 'save', $account, array('roles' => $roles));
 }
+
+function customization_carousel_contents() {
+    $result = db_query('SELECT user_id, photo FROM advanced_profile ORDER BY RAND() LIMIT 0, 5');
+    $slides = array();
+    while ($place = db_fetch_array($result)) {
+        $udata = user_load($place['user_id']);
+        $slides[] = array(
+                        'uid' => $place['user_id'],
+                        'photo' => $place['photo'],
+                        'profile_picture' => $udata->picture,
+                        'name' => $udata->first_name,
+                        'address' => $udata->address,
+                        'city' => $udata->city,
+                        'zip' => $udata->zip,
+                    );
+    }
+    
+    return theme('homepage_carousel', $slides);
+}
+
+function customization_theme(){
+    return array(
+        'homepage_carousel' => array(
+            'template' => 'theme/homepage_carousel',
+            'arguments' => array(
+                'slides' => null, 
+            ),
+
+        ),
+    );
+}
+

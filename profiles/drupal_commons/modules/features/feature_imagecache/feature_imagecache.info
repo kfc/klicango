@@ -1,0 +1,5 @@
+name = "Imagecache"
+description = "Feature to store all imagecache presets"
+core = "6.x"
+package = "Features"
+features[imagecache][] = "homepage_carousel"

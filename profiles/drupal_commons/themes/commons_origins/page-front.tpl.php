@@ -21,7 +21,7 @@
   <?php //print $scripts; ?>
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/style.css" type="text/css" media="screen, projection" />
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/custom.css" type="text/css" media="screen, projection" />
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <!--[if lte IE 6]><link rel="stylesheet" href="styles/style_ie.css" type="text/css" media="screen, projection" /><![endif]-->
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -30,19 +30,7 @@
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.formstyler.new.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/events.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/main.js"></script>
-    <script>
-	  $(function() {
-		$("#main-slider ul").carouFredSel({
-			items				: 1,
-			scroll : {
-				items			: 1,
-				duration		: 500,							
-				pauseOnHover	: true
-			}					
-		});	
-	
-	  });
-	  </script>
+    
 </head>
 
 <body class="front">
@@ -57,69 +45,11 @@
     					<img src="/profiles/drupal_commons/themes/commons_origins/images/logo.png" alt=""/>
     				</a>
     			</div>
-                <?php if(user_is_logged_in()) : ?>
-        			<nav class="main_menu">
-        				<ul class="menu">
-        					<li>
-        						<a href="/user">Calendar</a>
-        						<span class="counter">2</span>
-        					</li>
-        					<li>
-        						<a href="">Friends</a>
-        						<span class="counter">12</span>
-        					</li>
-        					<li>
-        						<a href="">Public events</a>
-        						<span class="counter">10</span>
-        					</li>
-        					<li class="create_event">
-        						<a id="create-event-link" href=""><?php echo t('+ Create event');?></a>
-        					</li>
-        				</ul>
-        			</nav>
-        			
-        			<div id="auth-block">
-        				<a href="/user?q=logout">LOGOUT</a>
-        			</div>
-                    <?php 
-                        global $user;
-                        profile_load_profile($user);
-                        
-                        $adv = advanced_profile_load($user->uid);
-                        
-                        if (!empty($user->picture)) {
-                            echo '<div id="auth-block" style="margin-top: 10px;"><img src="/' . $user->picture . '" style="height: 30px;" /></div>';
-                        }
-                        
-                        
-                    ?>                   
-   			        <div id="auth-block" class="name">
-                       <a href="javascript: void(0);"><?php echo $user->first_name; ?></a>
-        			</div>
+                
                 <?php
-                    else :
+                    include_once 'menu.tpl.php';
                 ?>
-                    <nav class="main_menu">
-        				<ul class="menu">
-        					<li>
-        						<a href="/">Home</a>
-        					</li>
-                            <li>
-        						<a href="">Public events</a>
-        					</li>
-        				</ul>
-        			</nav>
-        			
-        			<div id="auth-block">
-        				<a class="popup" id="log_in" href="">LOGIN</a>
-                        <a id="login" href="">|</a>
-                        <a class="popup" id="professional_user_register" href="javascript:void(0);">SIGN UP PROFESSIONAL</a>
-                        <a id="login" href="">|</a>
-                        <a class="popup" id="end_user_register" href="javascript:void(0);">SIGN UP USER</a>
-        			</div>
-                <?php
-                    endif;
-                ?>
+                
     			<!-- Форма поиска -->
     				<div id="search-form">
     					<form action="" method="post">
@@ -132,22 +62,7 @@
     	
     	<section id="spacer"></section>
     	
-    	<section id="main-slider">
-    		<ul>
-    			<li>
-    				<img src="/profiles/drupal_commons/themes/commons_origins/images/slide1.jpg" alt="" />
-    				<div class="slider-text">
-    					<img src="/profiles/drupal_commons/themes/commons_origins/images/profile-thumbnail.jpg" />
-    					<div class="profile-name">Lounge Bar Promenade</div>
-    					<div class="profile-address">3 Rue Barillerie - 06300 Nice</div>
-    					<div class="profile-link"><a href="">more...</a></div>
-    				</div>
-    			</li>
-    			<li>
-    				<img src="/profiles/drupal_commons/themes/commons_origins/images/slide2.jpg" alt="" />
-    			</li>
-    		</ul>
-    	</section>
+    	<?php print $carousel; ?>
     	
     	<div class="clear-fix"></div>
     
@@ -163,19 +78,10 @@
     
     </div><!-- #wrapper -->
     
-    <footer id="footer">
-    	<div class="footer-left-block">
-    		<img src="/profiles/drupal_commons/themes/commons_origins/images/footer-ico.png" alt="" />
-    		<span>Clipby, partenaire officiel</span>
-    	</div>
-    	<div class="footer-right-block">
-    		<ul class="menu">
-    			<li><a href="">mentions légales</a></li>
-    			<li><a href="">signaler un abus</a></li>
-    			<li><a href="">contact</a></li>
-    		</ul>
-    		<span class="copyrights">© KLICANGO 2013</span>
-    	</div>
-    </footer><!-- #footer -->
-     <?php print $create_event_form; ?>
+    
+    <?php
+        include_once 'footer.tpl.php';
+    ?>
+    
+    <?php print $create_event_form; ?>
 </html>

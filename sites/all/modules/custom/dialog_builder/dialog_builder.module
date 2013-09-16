@@ -50,8 +50,15 @@ function dialog_builder_content() {
     }
 }
 
-function dialog_builder_load_data() {
-    return array();
+function dialog_builder_load_data($dialog_id) {
+    $data = array();
+    switch ($dialog_id) {
+        case 'end_user_register':
+        case 'professional_user_register':
+            $data = dialog_builder_user_data();
+            break;
+    }
+    return $data;
 }
 
 function dialog_builder_validate() {
@@ -75,7 +82,12 @@ function dialog_builder_log_in_validate($variables) {
 }
 
 function dialog_builder_end_user_register_validate($variables, $server_check = false) {    
-    $required = array('name', 'surname', 'mail', 'pass', 'pass_confirm', 'birthday', 'country', 'city', 'conditions');
+    if (user_is_logged_in()) {
+        $required = array('name', 'surname', 'mail', 'birthday', 'country', 'city');
+    } else {
+        $required = array('name', 'surname', 'mail', 'pass', 'pass_confirm', 'birthday', 'country', 'city', 'conditions');
+    }
+    
     $errors = array();
     
     foreach($required as $field) {
@@ -117,17 +129,21 @@ function dialog_builder_end_user_register_validate($variables, $server_check = f
     exit;    
 }
 
-function dialog_builder_professional_user_register_validate($variables, $server_check = false) {
-    $required = array('name', 'mail', 'pass', 'pass_confirm', 'address', 'zip', 'country', 'city', 'phone', 'conditions');
-    $errors = array();
+function dialog_builder_professional_user_register_validate($variables, $server_check = false) {    
+    if (user_is_logged_in()) {
+        $required = array('name', 'mail', 'address', 'zip', 'country', 'city', 'phone');
+    } else {
+        $required = array('name', 'mail', 'pass', 'pass_confirm', 'address', 'zip', 'country', 'city', 'phone', 'conditions');
+    }
     
+    $errors = array();
     foreach($required as $field) {
         if (empty($variables[$field]) || $variables[$field] == '0') {
             $errors[$field] = 1;
         }
     }
     
-    if ($variables['pass'] !== $variables['pass_confirm'] || strlen($variables['pass']) < 6) {
+    if (!empty($variables['pass']) && $variables['pass'] !== $variables['pass_confirm'] || strlen($variables['pass']) < 6) {
         $errors['pass'] = $errors['pass_confirm'] = 1;
     }
     
@@ -181,31 +197,46 @@ function dialog_builder_signup_user() {
     }
     
     
-    
+        
     $variables['first_name'] = $variables['name'];
-    $userinfo = array(
-      'name' => $variables['mail'],
-      'init' => $variables['mail'],
-      'mail' => $variables['mail'],
-      'pass' => $variables['pass'],
-      'roles' => array(
-        DRUPAL_AUTHENTICATED_RID => 'authenticated user',
-        $variables['user_type'] => ($variables['user_type'] == '6') ? 'individual' : 'professional',
-      ),
-      'status' => 1
-    );
-
-    $account = user_save('', $userinfo);
     
+    if (user_is_logged_in()) {
+        global $user;
+        $userinfo = array(
+          'name' => $variables['mail'],
+          'init' => $variables['mail'],
+          'mail' => $variables['mail'],
+        );
+        
+        if (!empty($variables['pass'])) {
+            $userinfo['pass'] = $variables['pass'];
+        }
+        
+        $account = user_save($user, $userinfo);
+    } else {
+        $userinfo = array(
+          'name' => $variables['mail'],
+          'init' => $variables['mail'],
+          'mail' => $variables['mail'],
+          'pass' => $variables['pass'],
+          'roles' => array(
+            DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+            $variables['user_type'] => ($variables['user_type'] == '6') ? 'individual' : 'professional',
+          ),
+          'status' => 1
+        );
+    
+        $account = user_save('', $userinfo);
+    }      
     //save photo
     dialog_builder_save_profile_photo($account, $variables);
-    
+           
     dialog_builder_save_user($account, $variables);
-    
+           
     $user = user_authenticate(array('name' => $variables['mail'], 'pass' => $variables['pass']));
     drupal_goto('user');
-}
-
+}          
+           
 function dialog_builder_save_user($account, $variables) {
     if ($variables['user_type'] == 6) {
         $fields = array('first_name', 'surname', 'sex', 'birthday', 'country', 'city', 'university', 'degree');
@@ -219,6 +250,8 @@ function dialog_builder_save_user($account, $variables) {
     while ($row = db_fetch_array($result)) {
         $db_fields[$row['name']] = $row['fid'];
     }
+    
+    db_query('DELETE FROM profile_values WHERE uid = %d', $account->uid);
     
     foreach ($db_fields as $field => $fid) {
         db_query('INSERT INTO profile_values (fid, uid, value) VALUES (%d, %d, "%s")', $fid, $account->uid, $variables[$field]);
@@ -242,13 +275,8 @@ function dialog_builder_save_profile_photo($account, $variables) {
           }
         }
 
-        if (!$account_exists) {
           $sql = "INSERT INTO {advanced_profile} (user_id, fullname, bio, photo) VALUES (%d, '%s', '%s', '%s')";
           db_query($sql, array($account->uid, '', '', $filename));
-        } else {
-          $sql = "UPDATE {advanced_profile} SET fullname = '%s', bio = '%s', photo = '%s' WHERE user_id = %d";
-          db_query($sql, array('', '', $filename, $account->uid));
-        }
     }
     
     if ($file = file_save_upload('files-photo', array('file_validate_is_image' => array()))) {
@@ -289,4 +317,16 @@ function dialog_builder_theme(){
         	'template' => 'theme/log_in',
         ),
     );
+}
+
+function dialog_builder_user_data() {
+    if (!user_is_logged_in()) {
+        return array();
+    }
+    
+    global $user;
+    profile_load_profile($user);
+    $user->advanced_profile = advanced_profile_load($user->uid);
+    
+    return $user;
 }
