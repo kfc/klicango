@@ -53,8 +53,7 @@ $(function() {
 			$(".accaunt-name > a, .accaunt-thumbnail > a").removeClass("active");
 		}
 		
-	});
-      
+	});  
 });
 
 function validateRemote(id, data) {

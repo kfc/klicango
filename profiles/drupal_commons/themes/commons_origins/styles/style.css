@@ -427,10 +427,12 @@ body .ui-widget-content .form-item.profile-links #add-prof-photo,
 	margin-right: 25px;
 	cursor: pointer;
 }
-#field-image-upload-styler input:hover{
+#field-image-upload-styler input:hover,
+#field-more-image-upload-styler input:hover{
 	cursor: pointer;	
 }
-#field-image-upload-styler{
+#field-image-upload-styler,
+#field-more-image-upload-styler{
 	float: left;
 }
 #field-image-upload-styler .jq-file__name{
@@ -519,7 +521,8 @@ div.public-event-coupon{
 div.public-event-coupon div.public-event-col{
 	float: left;
 }
-div.public-event-coupon div.public-event-col.first-column{
+div.public-event-coupon div.public-event-col.first-column,
+#profile_info .first-column{
 	width: 150px;
 	margin-right: 20px;
 }
@@ -527,17 +530,20 @@ div.public-event-coupon div.public-event-col.second-column{
 	width: 170px;
 	margin-right: 20px;
 }
+div.location-calendar-top-banner{margin-bottom: 16px;}
 div.public-event-coupon div.public-event-col.second-column .public-event-date-time{
 	font: 14px/16px Arial;
 	color: #FFF;
 	margin-bottom: 18px;
 }
-div.public-event-coupon div.public-event-col.second-column .public-event-address{
+div.public-event-coupon div.public-event-col.second-column .public-event-address,
+#profile_info div.second-column .public-event-address{
 	font: 11px/16px Arial;
 	color: #2b2b2b;
 	margin-bottom: 4px;
 }
-div.public-event-coupon div.public-event-col.second-column .public-event-contacts{
+div.public-event-coupon div.public-event-col.second-column .public-event-contacts,
+#profile_info div.second-column .public-event-contacts{
 	font: 11px/16px Arial;
 	color: #858586;
 }
@@ -607,7 +613,8 @@ div.public-event-modify-link a{
 	color: #f34921;
 	margin-right: 5px;
 }
-div.public-event-coupon div.public-event-col.first-column .profile-info{
+div.public-event-coupon div.public-event-col.first-column .profile-info,
+#profile_info .first-column .profile-info{
 	width: 100%;
 	clear: both;
 	display: inline-block;
@@ -617,13 +624,15 @@ div.public-event-coupon div.public-event-col.first-column .profile-thumbnail{
 	float: left;
 	margin-right: 8px;
 }
-div.public-event-coupon div.public-event-col.first-column .profile-info .profile-name{
+div.public-event-coupon div.public-event-col.first-column .profile-info .profile-name,
+#profile_info .first-column .profile-name{
 	font: 12px/16px Arial;
 	color: #393938;
 	padding-top: 10px;
 	margin-bottom: 4px;
 }
-div.public-event-coupon div.public-event-col.first-column .profile-info .profile-city{
+div.public-event-coupon div.public-event-col.first-column .profile-info .profile-city,
+#profile_info .first-column .profile-city{
 	font: bold 12px Arial;
 	color: #2b2b2b;
 }
@@ -821,11 +830,53 @@ div.calendar-calendar{
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+.calendar-calendar td.has-events:hover div.day,
+.calendar-calendar td.has-events:hover div.day a{
+	color: #FFF;
+	
+}
+.block .calendar-calendar td.has-event-no-pic .view-data-node-title a{
+	color: #000;
+}
+.block .calendar-calendar td.has-event-no-pic .event-time,
+.block .calendar-calendar td.has-event-no-pic .event-location{
+	color: #000;
+	text-align: right;
+	padding-right: 6px;
+}
+.block .calendar-calendar td.has-event-no-pic .event-location{font-weight: bold;}
+#parties-photos-block{
+	width: 195px;
+}
+.no-pic-wrapper{padding-top: 20px;}
+#parties-photos-block .party-title{
+	text-align: center;
+}
+#parties-photos-block .party-title a{
+	text-decoration: none;
+	font: 12px Arial;
+	color: #767676;
+}
+#parties-photos-block .item{
+	margin-bottom: 20px;
+}
+.calendar-calendar td .more-events{
+	text-align: left;
+	padding-left: 4px;
+}
+.calendar-calendar td .more-events a{
+	text-decoration: none;
+}
+.calendar-calendar td div.day a{
+	text-decoration: none;
+}
 .calendar-calendar td div.day{
 	font: 12px Arial;
 	color: #b2b2b2;
 	text-align: right;
 	padding: 3px 4px 0 0;
+	z-index: 200;
+	position: relative;
 }
 .calendar-calendar .month-view table tbody{
 	border: 1px solid #b1b0b0;
@@ -837,6 +888,64 @@ div.calendar-calendar{
 	border-collapse: collapse;
 	border-spacing: 0;
 	vertical-align: top;
+}
+.block .calendar-calendar .month-view table tr td:hover .inner .hover-wrapper{
+	display: block;
+	
+}
+.block .calendar-calendar .month-view table tr td .inner .hover-wrapper .view-data-node-title{
+	padding-top: 30px;
+}
+.block .calendar-calendar .month-view table tr td .view-data-node-title{
+	text-align: right;
+	padding-right: 6px;
+	margin-bottom: 2px;
+}
+.block .calendar-calendar .month-view table tr td .hover-wrapper .event-time{
+	text-align: right;
+	padding-right: 6px;
+	font: 12px Arial;
+	color: #dfdddd;
+	margin-bottom: 2px;
+}
+.block .calendar-calendar .month-view table tr td .hover-wrapper .event-location{
+	text-align: right;
+	padding-right: 6px;
+	font: bold 12px Arial;
+	color: #FFF;
+	margin-bottom: 2px;
+}
+.block .calendar-calendar .month-view table tr td .hover-wrapper a.add-event-link{
+	background: url(../images/add-event.jpg) 0 0 no-repeat;
+	width: 12px;
+	height: 12px;
+	display: block;
+	font-size: 0;
+	text-indent: -999px;
+	text-decoration: none;
+	margin-left: 4px;
+	position: absolute;
+	left: 4px;
+	bottom: 9px;
+}
+.block .calendar-calendar .month-view table tr td .view-data-node-title a{
+	text-decoration: none;
+}
+.block .calendar-calendar .month-view table tr td .view-data-node-title a:hover{
+	text-decoration: underline;
+}
+.block .calendar-calendar .month-view table tr td .inner{
+	position: relative;
+}
+.block .calendar-calendar .month-view table tr td .inner .hover-wrapper{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: #676767;
+	z-index: 100;
+	display: none;
 }
 .block .calendar-calendar .month-view table tr td.empty{
 	background: #e5e5e5;
@@ -992,3 +1101,88 @@ span.file{
 	color: #000;
 	font: 14px Arial;
 }
+#last-parties-photos{
+	float: right;
+	width: 365px;
+}
+#last-parties-photos h2{
+	font: 18px/18px Arial;
+	color: #2b2a2a;
+	margin-bottom: 15px;
+}
+#last-parties-photos .item-list .item{
+	margin-bottom: 20px;
+}
+#last-parties-photos .item-list .item div.party-thumbnail{
+	float: left;
+	margin-right: 5px;
+}
+#last-parties-photos .item-list .item div.parties-photos-block{
+	width: 100%;
+	clear: both;
+}
+#last-parties-photos .item-list .item div.parties-photos-block a{
+	margin-right: 10px;
+}
+#last-parties-photos .item-list .item div.parties-photos-block a.last{
+	margin-right: 0;
+}
+#last-parties-photos .item-list .item .party-n-d-l{
+	padding-top: 20px;
+	color: #aaabad;
+	margin-top: 5px;
+}
+#last-parties-photos .item-list .item .party-n-d-l a.party-link{
+	font: bold 12px Arial;
+	color: #313232;
+	text-decoration: none;
+}
+#last-parties-photos .item-list .item .party-n-d-l a.party-link:hover,
+#last-parties-photos .item-list .item .party-n-d-l .party-photos-link a:hover,
+div#private-account-info div.account-info-name a:hover{
+	text-decoration: underline;
+}
+#last-parties-photos .item-list .item .party-n-d-l .party-photos-link a{
+	text-decoration: none;
+}
+div#private-account-info{
+	width: 100%;
+	clear: both;
+	display: inline-block;
+	margin-bottom: 12px;
+}
+div#private-account-info .account-info-thumb{float: left; margin-right: 12px;}
+div#private-account-info div.account-info-name a{font: 12px Arial; color: #393938; text-decoration: none;}
+div#private-account-info div.account-info-city{font: bold 12px Arial; color: #393938;}
+div.fixed-slide-text{position: absolute; left: 175px; top: 65px; z-index: 900;font: 24px Arial; color: #FFF; text-shadow: 0px 1px 5px rgba(0,0,0,0.75);}
+div.fixed-slide-text h2{font: 30px Arial; color: #d6d3d3; margin-bottom: 20px; text-shadow: 0px 1px 5px rgba(0,0,0,0.75);}
+#profile_info .first-column,
+#profile_info .second-column{float: left;}
+#profile_info{width: 100%; clear: both; display: inline-block;}
+#profile_info .first-column .profile-thumbnail{float: left; margin-right: 8px;}
+div.i-like-this-place{float: right;}
+div.i-like-this-place a{background: url(../images/ilike.png) 0 0 no-repeat;text-decoration: none; width: 132px;
+height: 34px; font: 12px/34px Arial;color: #2b2b2b; display: block; padding-left: 11px;}
+#field-more-image-upload-styler .jq-file__browse{background: url(../images/add-more-photos.png) 0 center no-repeat;margin-right: 25px;
+cursor: pointer; color: #96c12b !important; padding-left: 28px;
+display: inline-block;
+font-size: 0;
+text-indent: -999px;
+text-decoration: none;
+height: 24px;
+width: 122px;}
+#field-more-image-upload-styler .jq-file__browse{
+	clear: both !important; 
+}
+#field-more-image-upload-styler .jq-file__name{
+	width: 100%;
+	display: inline-block;
+	clear: both;
+}
+#field-more-image-upload-styler .jq-file__name img{max-width: 145px;}
+div.form-file-upload{float: left;}
+div.form-file-upload .uploaded-item > div > a{color: #f34921 !important; float: right;}
+div.form-file-upload .uploaded-item{width: 145px; margin-top: 4px; clear: both;}
+div.form-file-upload .uploaded-item img{max-width: 145px;}
+body .ui-widget-content .form-item.profile-links.profile-pro .uploaded-item{width: 58px; position: absolute; left: -2px; top: 0;}
+body .ui-widget-content .form-item.profile-links.profile-pro{position: relative; min-height: 65px;}

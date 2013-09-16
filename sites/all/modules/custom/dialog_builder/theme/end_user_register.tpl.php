@@ -45,11 +45,24 @@
                 <option value="M2">M2</option>
     		</select>
     	</div>
+        <?php if (!user_is_logged_in()) : ?>
     	<div class="form-item profile-links">
     		<!--<a id="add-prof-photo" name="photo" href="">Add profile photo</a>-->
             <input type="file" id="field-image-upload" name="files[files-photo]" class="form-file profile-upload" />
     		<a id="add-friends" name="friends" href="">Add friends</a>
     	</div>
+        <?php else : ?>
+            <div class="form-item profile-links profile-pro">
+        		<div class="form-file-upload">
+                <input type="file" id="field-image-upload" name="files[files-photo]" class="form-file profile-upload-update" />
+        			<div class="uploaded-item">
+        				<img src="<?php echo imagecache_create_url('user_picture_meta', $data->picture); ?>" />
+        			</div>
+        		</div>
+        		<a id="add-friends" href="">Add friends</a>
+        	</div>
+        <? endif; ?>
+        
     	<div class="form-submit">
             <?php if (!user_is_logged_in()) : ?>
     		  <label><input type="checkbox" name="conditions" value="agree" class="error"/>J’accepte les <a href="">conditions d’utilisation</a> du service</label>
@@ -65,7 +78,7 @@
     <?php if (user_is_logged_in()) : ?> 
         <script language="javascript">
             $('#sex').val('<?php echo $data->sex; ?>');
-            $('#category').val('<?php echo $data->category; ?>');
+            $('#country').val('<?php echo $data->country; ?>');
             $('#degree').val('<?php echo $data->degree; ?>');
         </script>
     <?php endif; ?>

@@ -56,8 +56,23 @@
                 <input type="file" id="field-image-upload" name="files[files-photo]" class="form-file profile-upload" />
                 <input type="file" id="field-image-upload" name="files[files-banner]" class="form-file banner-upload" />
     		<?php else : ?>
-                <input type="file" id="field-image-upload" name="files[files-photo]" class="form-file profile-upload-update" />
-                <input type="file" id="field-image-upload" name="files[files-banner]" class="form-file banner-upload-update" />
+                <div class="form-file-upload">
+                    <input type="file" id="field-image-upload" name="files[files-photo]" class="form-file profile-upload-update" />
+                    <div class="uploaded-item">
+        				<img src="<?php echo imagecache_create_url('user_picture_meta', $data->picture); ?>">
+        			</div>
+                </div>
+                <div class="form-file-upload">
+                    <input type="file" id="field-image-upload" name="files[files-banner]" class="form-file banner-upload-update" />
+                    <?php 
+                        foreach ($data->banners as $banner) {
+                            echo '<div class="uploaded-item">';
+                			echo '<img src="' . imagecache_create_url('homepage_carousel', $banner['photo']) . '">';
+               				echo '<div><a class="delete-item" href="javascript:void(0)" id="' . $banner['photo'] . '">Delete</a></div>';
+                			echo '</div>';
+                        }
+                    ?>
+                </div>
             <?php endif; ?>
             <!--<a id="add-prof-photo" name="profile_photo" href="">Add profile photo</a>
     		<a id="add-prof-photo" name="banner_photo" href="">Add banner photo</a>-->
@@ -77,7 +92,19 @@
     
     <?php if (user_is_logged_in()) : ?> 
         <script language="javascript">
-            $('#category').val('<?php echo $data->category; ?>');
+            if ($("#category option[value='<?php echo $data->category; ?>']").length > 0) {
+                $('#category').val('<?php echo $data->category; ?>');    
+            } else {
+                $('input[name="category_other"]').val('<?php echo $data->category; ?>');
+            }
             $('#country').val('<?php echo $data->country; ?>');
+            
+            $("a.delete-item").bind('click', function(e){
+        		e.preventDefault();
+        		$(this).parent().parent().empty();
+                $('.profile-links').append('<input type="hidden" name="delete[]" value="'+ $(this).attr('id') +'">');
+        	});
+            
+            
         </script>
     <?php endif; ?>

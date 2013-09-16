@@ -148,7 +148,11 @@ function advanced_profile_form_user_profile_submit ($form, $form_state) {
 
 function advanced_profile_load ($uid) {     
   $result = db_query("SELECT * FROM {advanced_profile} WHERE user_id = %d", $uid);
-  return db_fetch_array($result);
+  $photos = array();
+  while ($row = db_fetch_array($result)) {
+    $photos[] = $row;
+  }
+  return $photos;
 }
 
 function advanced_profile_theme(){

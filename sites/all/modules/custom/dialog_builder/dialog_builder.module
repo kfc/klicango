@@ -96,7 +96,7 @@ function dialog_builder_end_user_register_validate($variables, $server_check = f
         }
     }
     
-    if ($variables['pass'] !== $variables['pass_confirm'] || strlen($variables['pass']) < 6) {
+    if (!(empty($variables['pass'])) && ($variables['pass'] !== $variables['pass_confirm'] || strlen($variables['pass']) < 6)) {
         $errors['pass'] = $errors['pass_confirm'] = 1;
     }
     
@@ -114,11 +114,16 @@ function dialog_builder_end_user_register_validate($variables, $server_check = f
         
         $result = db_query('SELECT uid FROM users WHERE mail = "%s"', @$variables['mail']);
         if (!empty($result) && $uid = db_result($result)) {
-            if ($server_check) {
-                return false;
+            global $user;
+            if (user_is_logged_in() && $uid == $user->uid) {
+                //everything is ok
+            } else {
+                if ($server_check) {
+                    return false;
+                }
+                drupal_json(array('success' => false, 'message' => t('User with such email already exists '), 'id' => array('mail')));
+                exit;
             }
-            drupal_json(array('success' => false, 'message' => t('User with such email already exists '), 'id' => array('mail')));
-            exit;
         }
         
         if ($server_check) {
@@ -143,7 +148,7 @@ function dialog_builder_professional_user_register_validate($variables, $server_
         }
     }
     
-    if (!empty($variables['pass']) && $variables['pass'] !== $variables['pass_confirm'] || strlen($variables['pass']) < 6) {
+    if (!empty($variables['pass']) && ($variables['pass'] !== $variables['pass_confirm'] || strlen($variables['pass']) < 6)) {
         $errors['pass'] = $errors['pass_confirm'] = 1;
     }
     
@@ -169,11 +174,16 @@ function dialog_builder_professional_user_register_validate($variables, $server_
         
         $result = db_query('SELECT uid FROM users WHERE mail = "%s"', @$variables['mail']);
         if (!empty($result) && $uid = db_result($result)) {
-            if ($server_check) {
-                return false;
+            global $user;
+            if (user_is_logged_in() && $uid == $user->uid) {
+                //everything is ok
+            } else {
+                if ($server_check) {
+                    return false;
+                }
+                drupal_json(array('success' => false, 'message' => t('User with such email already exists '), 'id' => array('mail')));
+                exit;
             }
-            drupal_json(array('success' => false, 'message' => t('User with such email already exists '), 'id' => array('mail')));
-            exit;
         }
         
         if ($server_check) {
@@ -230,11 +240,14 @@ function dialog_builder_signup_user() {
     }      
     //save photo
     dialog_builder_save_profile_photo($account, $variables);
+    dialog_builder_delete_profile_photo($account, $variables);
            
     dialog_builder_save_user($account, $variables);
            
-    $user = user_authenticate(array('name' => $variables['mail'], 'pass' => $variables['pass']));
-    drupal_goto('user');
+    if (!user_is_logged_in()) {
+        $user = user_authenticate(array('name' => $variables['mail'], 'pass' => $variables['pass']));
+    }
+    drupal_goto('<front>');
 }          
            
 function dialog_builder_save_user($account, $variables) {
@@ -258,9 +271,16 @@ function dialog_builder_save_user($account, $variables) {
     }
 }
 
+function dialog_builder_delete_profile_photo($account, $variables) {
+    foreach ($variables['delete'] as $photo) {
+        db_query('DELETE FROM advanced_profile WHERE user_id = %d AND photo = "%s"', $account->uid, $photo);
+    }
+}
+
 function dialog_builder_save_profile_photo($account, $variables) {
     $result = db_query('SELECT COUNT(user_id) as user_exists FROM {advanced_profile} WHERE user_id = %d', $account->uid);
     $account_exists = db_result($result);
+    $file = file_save_upload('files-banner', array('file_validate_is_image' => array()));
     
     if ($file = file_save_upload('files-banner', array('file_validate_is_image' => array()))) {
         $path = variable_get('advanced_profile_photo_path', 'sites/default/files');
@@ -269,12 +289,12 @@ function dialog_builder_save_profile_photo($account, $variables) {
         } else {
           $parts = pathinfo($file->filename);
 
-          $filename = rtrim($path, '/') . '/' . $account->uid . '.' . $parts['extension'];
+          $filename = rtrim($path, '/') . '/' . $account->uid . '-'. time() . '.' . $parts['extension'];
+          
           if (!file_copy( $file, $filename, FILE_EXISTS_REPLACE)) {
             $filename = '';
           }
         }
-
           $sql = "INSERT INTO {advanced_profile} (user_id, fullname, bio, photo) VALUES (%d, '%s', '%s', '%s')";
           db_query($sql, array($account->uid, '', '', $filename));
     }
@@ -326,7 +346,6 @@ function dialog_builder_user_data() {
     
     global $user;
     profile_load_profile($user);
-    $user->advanced_profile = advanced_profile_load($user->uid);
-    
+    $user->banners = advanced_profile_load($user->uid);
     return $user;
 }

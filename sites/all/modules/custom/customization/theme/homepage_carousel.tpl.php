@@ -1,4 +1,8 @@
 <section id="main-slider">
+    <div class="fixed-slide-text">
+		<h2><?php echo variable_get('carousel_message_title', ''); ?></h2>
+		<p><?php echo variable_get('carousel_main_message', ''); ?></p>
+	</div>
 	<ul>
         <?php foreach ($slides as $slide) : ?>
             <li>

@@ -18,8 +18,15 @@ $form['homepage'] = array(
     '#weight' => -5,    
   );
   
+  $form['homepage']['carousel_message_title'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message title'),
+    '#default_value' => variable_get('carousel_message_title', ''),
+    '#description' => 'Message title displayed over the carousel images.',   
+  );
+  
   $form['homepage']['carousel_main_message'] = array(
-    '#type' => 'text',
+    '#type' => 'textarea',
     '#title' => t('Main message'),
     '#default_value' => variable_get('carousel_main_message', ''),
     '#description' => 'Main message displayed over the carousel images.',   
