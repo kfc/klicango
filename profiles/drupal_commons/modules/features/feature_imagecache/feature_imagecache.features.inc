@@ -5,16 +5,47 @@
  */
 function feature_imagecache_imagecache_default_presets() {
   $items = array(
-    'homepage_carousel' => array(
-      'presetname' => 'homepage_carousel',
+    'comment_image' => array(
+      'presetname' => 'comment_image',
       'actions' => array(
         '0' => array(
           'weight' => '0',
           'module' => 'imagecache',
-          'action' => 'imagecache_scale_and_crop',
+          'action' => 'imagecache_scale',
           'data' => array(
-            'width' => '1280',
-            'height' => '417',
+            'width' => '100',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
+    'comment_image_big' => array(
+      'presetname' => 'comment_image_big',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '100%',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
+    'comment_image_right_thumbnail' => array(
+      'presetname' => 'comment_image_right_thumbnail',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '193',
+            'height' => '',
+            'upscale' => 0,
           ),
         ),
       ),

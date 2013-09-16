@@ -101,9 +101,11 @@ $advanced_info = advanced_profile_load($location_info->uid);
 </div>
 
 <div class="event-comment-box">
-  <div class="post-box">
-    <?php echo $comments_form?>
-  </div>
+  <?php if(user_is_logged_in()):?>
+    <div class="post-box">
+      <?php echo $comments_form?>
+    </div>
+  <?php endif;?>
   <div class="activity-stream-list">
     <?php echo $comments_view?>
   </div>
