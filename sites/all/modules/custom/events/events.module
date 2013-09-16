@@ -20,6 +20,12 @@ function events_menu(){
       'access callback' => 'user_is_logged_in'
     ),
     
+    'event_post_comment' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'event_post_comment',
+      'access callback' => 'user_is_logged_in'
+    ),
+    
   );
   return $items;
   
@@ -56,8 +62,17 @@ function events_theme() {
       ),
       'event_photos_list' => array(
         'template' => 'event-photos-list',
+        'arguments' => array('content' => NULL, 'photos_count' => NULL),
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
+      
+      'event_post_box' => array(
+        'template' =>'event-post-box',
+        'path' => drupal_get_path('theme',variable_get('theme_default','')),
+      
+      )
+      
+      
     );
 }
 
@@ -67,7 +82,20 @@ function events_form_alter(&$form, &$form_state, $form_id) {
 
 
 function events_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
-  
+  global $user;
+  switch ($op) {
+    case 'view':
+      if($node->type == 'event'){
+        $view = views_get_view('nodecomments');
+        $view->set_display('nodecomment_comments_1');
+        $args = array($node->nid);
+        $view->set_arguments($args);
+        $node->comments_form = theme('event_post_box');
+        $node->comments_view = $view->render('nodecomment_comments_1');
+      }
+      
+      break;  
+  }
 }
 
 function check_event_fields($values, &$errors){
@@ -181,15 +209,77 @@ function create_event_if_valid(){
       //die();
     }
   }
-  //dpm($user);
- // dpm($_POST);
- // dpm($_FILES);
   return '';
 }
 
 function events_get_events_photos(){
-  return theme('event_photos_list');
   
+  $res = db_query("SELECT field_comment_photo_fid, f.*
+                      FROM content_field_comment_photo ph
+                      INNER JOIN node comment_nid on comment_nid.nid = ph.nid
+                      INNER JOIN node_comments nc on nc.cid = comment_nid.nid
+                      INNER JOIN files f on f.fid = field_comment_photo_fid
+                      WHERE nc.nid = %d AND field_comment_photo_fid IS NOT NULL
+                      ORDER BY comment_nid.created DESC
+                      LIMIT 7
+                      ",arg(1));
+  while ($r = db_fetch_array($res)) {
+    $photos[] = $r;
+  }
+  
+  $count_res = db_query("SELECT count(field_comment_photo_fid) as photos_count
+                      FROM content_field_comment_photo ph
+                      INNER JOIN node comment_nid on comment_nid.nid = ph.nid
+                      INNER JOIN node_comments nc on nc.cid = comment_nid.nid
+                      WHERE nc.nid = %d AND field_comment_photo_fid IS NOT NULL
+                      ",arg(1));                      
+  
+  $count = db_fetch_array($count_res);
+  $count = $count['photos_count'];
+                     
+  $photos_html = '';
+  foreach($photos as $_photo){
+    $photos_html .= '<div class="item"><a href="'.imagecache_create_url('comment_image_big',$_photo['filepath']).'">'.theme_imagecache('comment_image_right_thumbnail',$_photo['filepath']).'</a></div>';
+  }
+  //$view = views_get_view('event_photos');
+  //$view->set_display('block_1');
+  //$view->set_arguments(array(arg(1)));
+  return theme('event_photos_list',$photos_html, $count);//$view->render('block_1');
+}
+
+function event_post_comment(){
+  if(isset($_POST) && isset($_POST['comment_target_nid']) && ($_POST['comment_target_nid'] > 0) && (isset($_POST['comment_body']) || isset($_FILES['files']['photo']))){
+    
+    global $user;   
+    $comment = new stdClass();
+    $comment->type = 'comment';
+    $comment->title = 'Comment "'.substr($_POST['comment_body'],0, 20).'..." from '.$user->name.' for node '.$_POST['comment_target_nid'];
+    $comment->uid = $user->uid;
+    $comment->name = $user->name;
+    $comment->status = 1;
+    $comment->body = trim($_POST['comment_body']);
+
+    if(!empty($_FILES['files'])){
+      $_index = 0;
+      foreach($_FILES['files']['name'] as $_name => $_ph){
+        if ($file = file_save_upload($_name)) {
+          $comment->field_comment_photo[$_index++] = (array)$file;      
+        }
+      }
+    }
+    
+    /*echo '<pre>';
+    print_r($_FILES);
+    print_r($comment);
+    die();*/
+    
+    node_save($comment);
+    if($comment->nid > 0){
+      $comment->comment_target_nid = (int)$_POST['comment_target_nid']; 
+       nodecomment_save($comment);
+    }
+    drupal_goto('node/'.$_POST['comment_target_nid']);
+  }
   
 }
 

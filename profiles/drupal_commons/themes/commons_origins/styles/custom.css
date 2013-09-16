@@ -139,41 +139,7 @@ body .login-form form {
 	color: #858586;
 }
 
-
-/*
-form .form-item input.error::-webkit-input-placeholder {
-   color: red;
+#filesContainer input[type="file"]{
+  clear: both;
+  float: left;
 }
-
-form .form-item input.error:-moz-placeholder { /
-   color: red;  
-}
-
-form .form-item input.error::-moz-placeholder {  
-   color: red;  
-}
-
-form .form-item input.error:-ms-input-placeholder {  
-   color: red;  
-}
-
-form .form-item textarea.error{
-  border-color: red;
-}
-
-form .form-item textarea.error::-webkit-input-placeholder {
-   color: red;
-}
-
-form .form-item textarea.error:-moz-placeholder { 
-   color: red;  
-}
-
-form .form-item textarea.error::-moz-placeholder {  
-   color: red;  
-}
-
-form .form-item textarea.error:-ms-input-placeholder {  
-   color: red;  
-}
-*/

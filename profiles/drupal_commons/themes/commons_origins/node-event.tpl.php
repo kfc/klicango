@@ -102,58 +102,10 @@ $advanced_info = advanced_profile_load($location_info->uid);
 
 <div class="event-comment-box">
   <div class="post-box">
-    <form>
-      <div class="post-box-title"><label>Post comment | </label><a href="">Add photo</a></div>
-      <input type="text" />
-    </form>
+    <?php echo $comments_form?>
   </div>
-  
   <div class="activity-stream-list">
-    <div class="stream-item">
-      <div class="person-thumbnail"><img src="/profiles/drupal_commons/themes/commons_origins/images/thumb1_40x40.jpg" alt="" /></div>
-      <div class="stream-item-content">
-        <div class="person-name"><a href="">Meaghan Perkins</a> <span class="activity_status">is going.</span></div>
-        <div class="person-comment">Cool!</div>
-        <div class="person-activity-time">1 hour ago</div>
-      </div>
-    </div>
-    
-    <div class="stream-item">
-      <div class="person-thumbnail"><img src="/profiles/drupal_commons/themes/commons_origins/images/thumb2_40x40.jpg" alt="" /></div>
-        <div class="stream-item-content">
-        <div class="person-name"><a href="">Max Lamenace</a> <span class="activity_status">is going.</span></div>
-        <div class="person-comment">It’s gonna be so cool! Cheers all!</div>
-        <div class="person-activity-time">yesterday</div>
-      </div>
-    </div>
-    
-    <div class="stream-item">
-      <div class="person-thumbnail"><img src="/profiles/drupal_commons/themes/commons_origins/images/thumb2_40x40.jpg" alt="" /></div>
-      <div class="stream-item-content">
-        <div class="person-name"><a href="">Max Lamenace</a> <span class="activity_status">posted 10 new photo.</span></div>
-          <div class="added-new-photos">
-          <a href=""><img src="/profiles/drupal_commons/themes/commons_origins/images/last-photo-1.jpg" alt="" /></a>
-          <a href=""><img src="/profiles/drupal_commons/themes/commons_origins/images/last-photo-1.jpg" alt="" /></a>
-          <a href=""><img src="/profiles/drupal_commons/themes/commons_origins/images/last-photo-1.jpg" alt="" /></a>
-          <a href=""><img src="/profiles/drupal_commons/themes/commons_origins/images/last-photo-1.jpg" alt="" /></a>
-          <a href=""><img src="/profiles/drupal_commons/themes/commons_origins/images/last-photo-1.jpg" alt="" /></a>
-          </div>
-        <div class="person-activity-time">yesterday</div>
-      </div>
-    </div>
-    
-    <div class="stream-item">
-      <div class="person-thumbnail"><img src="/profiles/drupal_commons/themes/commons_origins/images/thumb2_40x40.jpg" alt="" /></div>
-      <div class="stream-item-content">
-        <div class="person-name"><a href="">Max Lamenace</a> <span class="activity_status">commented on <a href="">Cindy Blondel’s</a> photo:</span></div>
-          <div class="commented-photo">
-          <a href=""><img src="/profiles/drupal_commons/themes/commons_origins/images/commented-photo.jpg" alt="" /></a>
-          Hummm ... you look so good!
-          </div>
-        <div class="person-activity-time">yesterday</div>
-      </div>
-    </div>
-    
+    <?php echo $comments_view?>
   </div>
 </div>
 

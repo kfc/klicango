@@ -45,6 +45,18 @@ $(function() {
     });
        
  });
-
+ 
+ $("#comment_add_photo_link").click(function(e){
+   e.preventDefault();
+   $("#filesContainer").show();
+   var filesNum =  $('input[type="file"]',$('#filesContainer')).length;
+   
+   $('#filesContainer').append(
+    $('<input/>').attr('type', 'file').attr('name', 'files[photo-'+filesNum+']')
+    );
+  if(filesNum == 0) 
+    $(this).html('Add one more photo');  
+   //$
+ });
   
  });

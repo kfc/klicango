@@ -5,7 +5,7 @@
 
 <head>
   <title><?php print $head_title; ?></title>
-  <?php //print $head; ?>
+  <?php print $head; ?>
   <?php //print $styles; ?>
   <?php print $setting_styles; ?>
   <!--[if IE 8]>
