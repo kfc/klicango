@@ -1,43 +1,14 @@
+<?php if(!empty($content)):?>
   <div id="photo-block">
-    <a href="">Photos (48)</a>
+    <a href="<?php echo url($_GET['q']);?>">Photos (<?php echo $photos_count?>)</a>
     <div class="item-list">
-      <div class="item">
-        <a href="">
-          <img src="/profiles/drupal_commons/themes/commons_origins/images/Untitled-2.png" alt="">
-        </a>
-      </div>
-      <div class="item">
-        <a href="">
-          <img src="/profiles/drupal_commons/themes/commons_origins/images/Untitled-3.png" alt="">
-        </a>
-      </div>
-      <div class="item">
-        <a href="">
-          <img src="/profiles/drupal_commons/themes/commons_origins/images/Untitled-4.png" alt="">
-        </a>
-      </div>
-      <div class="item">
-        <a href="">
-          <img src="/profiles/drupal_commons/themes/commons_origins/images/Untitled-5.png" alt="">
-        </a>
-      </div>
-      <div class="item">
-        <a href="">
-          <img src="/profiles/drupal_commons/themes/commons_origins/images/Untitled-6.png" alt="">
-        </a>
-      </div>
-      <div class="item">
-        <a href="">
-          <img src="/profiles/drupal_commons/themes/commons_origins/images/Untitled-7.png" alt="">
-        </a>
-      </div>
-      <div class="item">
-        <a href="">
-          <img src="/profiles/drupal_commons/themes/commons_origins/images/Untitled-8.png" alt="">
-        </a>
-      </div>
+      <?php echo $content;?>
     </div>
-    <div class="more-link">
-      <a href="">more...</a>
-    </div>
+    <?php if($photos_count > 7):?>
+      <div class="more-link">
+        <?php echo l(t('more...'),$_GET['q']);?>
+      </div>
+    <?php endif;?>
+    
   </div>
+<?php endif;?>

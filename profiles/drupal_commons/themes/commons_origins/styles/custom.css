@@ -188,3 +188,8 @@ form .form-item textarea.error:-ms-input-placeholder {
    color: red;  
 }
 */
+#filesContainer input[type="file"]{
+  clear: both;
+  float: left;
+}
+
