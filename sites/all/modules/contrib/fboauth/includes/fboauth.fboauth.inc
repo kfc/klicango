@@ -38,6 +38,7 @@ function fboauth_action_page($action) {
   }
   // The primary action routine after access has been approved by the user.
   elseif ($access_token = fboauth_access_token($_REQUEST['code'], $action_name, $app_id, $app_secret)) {
+    $_SESSION['access_token'] = $access_token;
     $destination = fboauth_action_invoke($action_name, $app_id, $access_token);
     if (empty($destination)) {
       $destination = isset($_REQUEST['destination']) ? $_REQUEST['destination'] : '<front>';
@@ -159,12 +160,16 @@ function fboauth_create_user($fbuser, $options = array()) {
   // Use their Facebook user name (if defined), otherwise their real name.
   // If an account already exists with that name, increment until the namespace
   // is available.
+  
   if ($options['username'] === 'username' && !empty($fbuser->username)) {
     $username = $fbuser->username;
   }
-  else {
+  else if($options['username'] === 'email') {
+    $username = $fbuser->email;
+  } else {
     $username = $fbuser->name;
   }
+  
   $query = "SELECT uid FROM {users} WHERE name = '%s'";
   $uid = db_result(db_query($query, $username));
   $i = 0;
@@ -175,7 +180,7 @@ function fboauth_create_user($fbuser, $options = array()) {
   if ($i > 0) {
     $username = $username . $i;
   }
-
+    
   // Initialize basic properties that are unlikely to need changing.
   $edit = array(
     'name' => $username,
@@ -197,7 +202,6 @@ function fboauth_create_user($fbuser, $options = array()) {
     $function = $module . '_fboauth_user_presave';
     $function($edit, $fbuser);
   }
-
   $account = user_save(NULL, $edit);
 
   // Retrieve the user's picture from Facebook and save it locally.

@@ -186,4 +186,15 @@ function commons_origins_menu_item_link($link){
     
   return l($link['title'], $link['href'], $link['localized_options']);
   
-}                     
+}    
+
+function commons_origins_fboauth_action__connect($action, $link) {
+    $url = url($link['href'], array('query' => $link['query']));
+    $link['attributes']['class'] = isset($link['attributes']['class']) ? $link['attributes']['class'] : 'facebook-action-connect';
+    $link['attributes']['rel'] = 'nofollow';
+    $attributes = isset($link['attributes']) ? drupal_attributes($link['attributes']) : '';
+    $title = isset($link['title']) ? check_plain($link['title']) : '';
+    
+    return '<div class="form-item facebook-log-in"><a ' . $attributes . ' href="' . $url . '">' . t('Log with Facebook') . '</a></div>';
+
+}                 

@@ -36,9 +36,9 @@
 		<span class="submit-or">or</span>
 		<a href="javascript:void(0);" id="signup" onclick="signUp();">Sign up</a>
 	</div>
-	<div class="form-item facebook-log-in">
-		<a href="">Log with Facebook</a>
-	</div>
+    <?php
+        echo fboauth_action_display('connect', '/');
+    ?>
   </form>
 </div>
 

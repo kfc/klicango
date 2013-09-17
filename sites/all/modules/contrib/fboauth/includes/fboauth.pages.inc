@@ -55,6 +55,7 @@ function fboauth_settings_form(&$form_state) {
     '#options' => array(
       'username' => t('Facebook username (i.e. johnsmith)'),
       'name' => t('Real name (i.e. John Smith)'),
+      'email' => t('Facebook email (i.e. johnsmith@gmail.com)'),
     ),
     '#description' => t('Select the Facebook value used to set the user\'s name when connecting with Facebook.'),
     '#default_value' => variable_get('fboauth_user_username', 'username'),
