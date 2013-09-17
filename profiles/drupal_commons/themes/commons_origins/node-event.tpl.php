@@ -3,9 +3,9 @@ global $user;
 $location_info = user_load($node->uid);   
 $advanced_info = advanced_profile_load($location_info->uid);
 ?>
-<?php if(!empty($advanced_info['photo'])):?>
+<?php if(!empty($advanced_info[0]['photo']) || !empty($advanced_info['photo'])):?>
 <div class="public-event-top-banner">
-  <?php echo theme_imagecache('event_image',$advanced_info['photo']);?>
+  <?php echo theme_imagecache('event_image',(!empty($advanced_info['photo']) ? $advanced_info['photo'] : $advanced_info[0]['photo']));?>
 </div>
 <?php endif;?>
 <?php if($node->uid == $user->uid):?>
