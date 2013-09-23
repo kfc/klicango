@@ -28,7 +28,8 @@ function klicango_friends_schema() {
         'description' => t('Status of the invitation (1 - new, 2 - pending, 3 - accepted, 4 - declined).'),
       ),
       'facebook_id' => array(
-        'type' => 'int',
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => FALSE,
         'description' => t('Id of the invitation reciever user (facebook). Can be null if regulat klicango user invited.'),
       ),
@@ -56,6 +57,7 @@ function klicango_friends_schema() {
 }
 
 function klicango_friends_update_6001() {
+    $return = array();
     drupal_install_schema('klicango_friends');
     
     $return[] = array('success' => TRUE, 'query' => 'Klicango friends schema installed');
@@ -64,4 +66,11 @@ function klicango_friends_update_6001() {
 
 function klicango_friends_uninstall() {
   drupal_uninstall_schema('klicango_friends');
+}
+
+function klicango_friends_update_6002() {
+    $return = array();
+    db_query('ALTER TABLE `friends_facebook_invited` ADD UNIQUE (`facebook_id`)');
+    $return[] = array('success' => TRUE, 'query' => 'Klicango friends schema altered');
+    return $return;
 }

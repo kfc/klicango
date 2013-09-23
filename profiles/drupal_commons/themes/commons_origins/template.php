@@ -63,6 +63,11 @@ function commons_origins_preprocess_page(&$variables) {
       }
     }
   }  
+  
+  $scripts_modified = drupal_add_js();  
+  $scripts_modified = array('inline' => $scripts_modified['inline']);
+  
+  $variables['scripts_modified' ] = drupal_get_js('inline' , $scripts_modified);
 }
 
 function commons_origins_preprocess_node(&$variables) {
@@ -197,4 +202,4 @@ function commons_origins_fboauth_action__connect($action, $link) {
     
     return '<div class="form-item facebook-log-in"><a ' . $attributes . ' href="' . $url . '">' . t('Log with Facebook') . '</a></div>';
 
-}                 
+}              

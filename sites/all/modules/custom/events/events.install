@@ -33,7 +33,8 @@ function events_schema() {
         'description' => t('Status of the invitation (1 - new, 2 - pending, 3 - accepted, 4 - declined).'),
       ),
       'facebook_id' => array(
-        'type' => 'int',
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => FALSE,
         'description' => t('Id of the invitation reciever user (facebook). Can be null if regulat klicango user invited.'),
       ),
