@@ -6,7 +6,7 @@ $(function() {
             $.ajax({
                type: 'GET',
                dataType: 'html',
-               url: 'dialog/open',
+               url: '/dialog/open',
                data: {id: e.target.id},
                success : function (data, textStatus, jqXHR) {   
                     $('body').append(data);
@@ -54,12 +54,7 @@ $(function() {
 		}
 		
 	});  
-    
-    $("div.scroll-pane").mCustomScrollbar({
-		scrollButtons:{
-			enable:true
-		}
-	});
+
 
 	$(".scroll-pane").hide();
 	$( "#create-event-form #add-friends")
@@ -74,7 +69,7 @@ function loadFriends() {
     $.ajax({
        type: 'GET',
        dataType: 'html',
-       url: 'friends/load',
+       url: '/friends/load',
        data: {offset: 0, limit: 10},
        success : function (data, textStatus, jqXHR) {   
             $('.scroll-pane').append(data);
@@ -88,7 +83,7 @@ function loadFriends() {
        }, 
        complete : function (jqXHR, textStatus) {  
             $(".scroll-pane").show();
-			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 675, 'top' : 150});
+			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 675, 'top' : 50});
 			$(".ui-dialog-content.ui-widget-content").css({"height" : 600});
 			$(".scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
 			$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top  
@@ -201,11 +196,11 @@ function inviteFriend(object, id) {
 }
 
 function processInvitation(response, event_id) {
-    if($(response.to).length) {
+    if($(response).length && $(response.to).length) {
         $.ajax({
            type: 'GET',
            dataType: 'json',
-           url: 'friends/invite',
+           url: '/friends/invite',
            data: {"to": response.to, "event_id": event_id},
            success : function (data, textStatus, jqXHR) { 
                alert('success');
@@ -226,6 +221,6 @@ function initRequest(ids, event_id) {
     } else {
         setTimeout(function(){
             initRequest(ids, event_id);   
-        }, 3000);
+        }, 1000);
     }
 }
