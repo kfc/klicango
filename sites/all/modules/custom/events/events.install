@@ -12,6 +12,11 @@ function events_schema() {
         'not null' => TRUE,
         'description' => t('Primary key autoincrement.'),
       ),
+      'event_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => t('Id of the event.'),
+      ),
       'sender_id' => array(
         'type' => 'int',
         'not null' => TRUE,
