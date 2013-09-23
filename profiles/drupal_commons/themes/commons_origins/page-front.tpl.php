@@ -34,6 +34,8 @@
 </head>
 
 <body class="front">
+    <?php include_once 'facebook.tpl.php'; ?>
+
     <div id="wrapper">
     
     	<header id="header">

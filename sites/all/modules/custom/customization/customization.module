@@ -481,6 +481,18 @@ function customization_fboauth_user_presave(&$edit, $fbuser) {
 
 function customization_facebook_friends() {
     if (!empty($_SESSION['access_token'])) {
+        
+    /*$parameters = array(
+        'app_id' => variable_get('fboauth_id', ''),
+        'to' => '14603461,697357230',
+        'link' => 'http://klic.zenko.by/',
+        'message' => 'Hello, world!',
+        'redirect_uri' => 'http://klicango.loc/'
+     );
+     $url = 'http://www.facebook.com/dialog/apprequests?'.http_build_query($parameters);
+
+     echo '<script type="text/javascript">window.open('.json_encode(str_replace('&amp;', '&',$url)).');</script>';*/
+        exit;
         $access_token = $_SESSION['access_token'];
         $result = customization_graph_query('/me/friends?limit=10', $access_token);
         echo '<ul>';
