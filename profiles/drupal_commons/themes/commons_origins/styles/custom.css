@@ -193,6 +193,17 @@ form .form-item textarea.error:-ms-input-placeholder {
   float: left;
 }
 
+.block .calendar-calendar .month-view table tr td.has-events:hover .inner .hover-wrapper{
+  display: block;
+}
+
+.block .calendar-calendar .month-view table tr td.has-more-events:hover .inner .hover-wrapper{
+  display: none;  
+}
+
+div#content .profile {
+  display:none;
+}
 #create-event-form div.person-item{
 	width: 100%;
 	height: 77px;

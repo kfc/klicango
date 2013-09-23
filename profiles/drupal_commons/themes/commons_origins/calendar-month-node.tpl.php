@@ -36,18 +36,37 @@
  *   print date_format($calendar_start_date, 'l, j F Y - g:ia');
  * 
  * @see template_preprocess_calendar_month_node.
- */                       
- global $user;  
+ */ 
+ global $user; 
+ $date = explode(' - ',strip_tags($fields['node_data_field_date_field_date_value']['data']));
+ if(!empty($date) && isset($date[1]))
+  $date = $date[1];
+  
 ?>
 <?php 
   if(arg(0) == 'user'){
     $userid = arg(1);
-    if(!empty($userid) && ($userid != $user->uid)){?>
-      <div class="subscribe-event-wrapper">
-        <?php echo l('Subscribe >','notifications/subscribe/'.$user->uid.'/thread/nid/'.$node->nid, array('query'=>drupal_get_destination())); ?>
-      </div>
-<?php }
-  }?>    
+  }?>
+<div class="hover-wrapper">
+  <div class="view-field view-data-node-title node-title">
+    <?php print $fields['node_title']['data']; ?>
+  </div>
+  <div class="event-time"><?php echo $date;?></div>
+  <div class="event-location"><?php echo $fields['node_data_field_date_field_location_value']['data'];?></div>
+  <?php if(events_event_is_available_to_add($node)):?>
+    <a class="add-event-link add-event-from-calendar" id="add-event-from-calendar-<?php echo $node->nid;?>" href="#">+</a>
+  <?php endif;?>
+</div>  
+
+<div class="view-item view-item-<?php print $view->name ?>">
+  <div class="<?php print $node->date_id; ?> calendar monthview">
+    <div class="view-field view-data-node-vid node-vid">
+      <?php print $fields['node_vid']['data']; ?>      
+    </div>  
+  </div>    
+</div>
+  
+<?php /*  
 <div class="view-item view-item-<?php print $view->name ?>">
   <div class="<?php print $node->date_id; ?> calendar monthview">
     <?php print theme('calendar_stripe_stripe', $node); ?>
@@ -60,4 +79,5 @@
       </div>  
     <?php endforeach; ?>
   </div>    
-</div>  
+</div>
+ */ ?>

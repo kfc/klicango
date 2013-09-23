@@ -163,6 +163,7 @@ function commons_origins_preprocess_date_navigation(&$vars) {
   // Add nofollow for next/prev links.
   $vars['prev_options']['attributes'] += array('rel' => 'nofollow');
   $vars['next_options']['attributes'] += array('rel' => 'nofollow');
+  $vars['next_options']['text'] = '123';
 
   
   $vars['next_options']['date'] = date_format($next_date, 'F Y');
@@ -202,4 +203,4 @@ function commons_origins_fboauth_action__connect($action, $link) {
     
     return '<div class="form-item facebook-log-in"><a ' . $attributes . ' href="' . $url . '">' . t('Log with Facebook') . '</a></div>';
 
-}              
+}                 

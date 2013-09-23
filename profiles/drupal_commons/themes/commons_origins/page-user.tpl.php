@@ -7,7 +7,7 @@
   <title><?php print $head_title; ?></title>
   <?php print $head; ?>
   <?php //print $styles; ?>
-  <?php print $setting_styles; ?>
+  <?php //print $setting_styles; ?>
   <!--[if IE 8]>
   <?php //print $ie8_styles; ?>
   <![endif]-->
@@ -21,7 +21,7 @@
   <?php //print $scripts; ?>
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/style.css" type="text/css" media="screen, projection" />
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/custom.css" type="text/css" media="screen, projection" />
-  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <!--[if lte IE 6]><link rel="stylesheet" href="styles/style_ie.css" type="text/css" media="screen, projection" /><![endif]-->
     
     
@@ -33,55 +33,83 @@
     <script src="/profiles/drupal_commons/themes/commons_origins/js/events.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/main.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jScrollPane.js"></script>
-	<script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.mCustomScrollbar.min.js"></script>
-	<script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.mousewheel.js"></script>
+    <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.mCustomScrollbar.min.js"></script>
+    <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.mousewheel.js"></script>
+    <script type="text/javascript">
+      $(function() {
+
+        function setEqualHeight(columns){
+         var tallestcolumn = 0;
+         columns.each(function()
+               {
+                 currentHeight = $(this).height();
+                 if(currentHeight > tallestcolumn)
+                 {
+                   tallestcolumn  = currentHeight;
+                 }
+               }
+       );
+       
+       columns.height(tallestcolumn);
+       
+      }
+
+      $(".block .calendar-calendar .month-view table tr").each(function(){
+        setEqualHeight($(this).find("div.inner"));
+      });
+      
+      });
+      </script>
+
 </head>
 
 <body class="not-front">
-    <?php include_once 'facebook.tpl.php'; ?>    
+
+    
+    
     <div id="wrapper">
     
-    	<header id="header">
-    		
-    		<div class="container">
-    		
-    			<div id="logo">
-    				<a href="/">
-    					<img src="/profiles/drupal_commons/themes/commons_origins/images/logo.png" alt=""/>
-    				</a>
-    			</div>
-    			
+      <header id="header">
+        
+        <div class="container">
+        
+          <div id="logo">
+            <a href="/">
+              <img src="/profiles/drupal_commons/themes/commons_origins/images/logo.png" alt=""/>
+            </a>
+          </div>
+          
                 <?php
                     include_once 'menu.tpl.php';
                 ?>
                 
-    			<!-- Форма поиска -->
-    				<div id="search-form">
-    					<form action="" method="post">
-    						<input type="text" value="Search for events, friends..." class="search_input" onfocus="javascript: if(this.value == 'Search for events, friends...') this.value = '';" onblur="javascript: if(this.value == '') { this.value = 'Search for events, friends...';}" />
-    					</form>
-    				</div>
-    			<!-- Форма поиска -->
-    		</div>
-    	</header><!-- #header-->
-    	
-    	<section id="spacer"></section>
-    	
-    	
-    	<div class="clear-fix"></div>
+          <!-- Форма поиска -->
+            <div id="search-form">
+              <form action="" method="post">
+                <input type="text" value="Search for events, friends..." class="search_input" onfocus="javascript: if(this.value == 'Search for events, friends...') this.value = '';" onblur="javascript: if(this.value == '') { this.value = 'Search for events, friends...';}" />
+              </form>
+            </div>
+          <!-- Форма поиска -->
+        </div>
+      </header><!-- #header-->
+      
+      <section id="spacer"></section>
+      
+      
+      <div class="clear-fix"></div>
     
-    	<section id="middle">
+      <section id="middle">
     
-    		<div id="container">
-    			<div id="content">
+        <div id="container">
+          <div id="content">
                     <?php print $messages; ?>
-    				<?php print $content; ?>
-    			</div><!-- #content-->
-    		</div><!-- #container-->
+            <?php print $content; ?>
+          </div><!-- #content-->
+        </div><!-- #container-->
         <aside id="sideRight">
           <?php print $right_aside; ?>  
         </aside>  
-    	</section><!-- #middle-->
+      </section><!-- #middle-->
     
     </div><!-- #wrapper -->
     
@@ -91,5 +119,4 @@
     
     <?php print $closure; ?>
     <?php print $create_event_form; ?>
-    <?php echo $scripts_modified; ?>
 </html>
