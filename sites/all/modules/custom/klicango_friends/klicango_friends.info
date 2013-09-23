@@ -1,0 +1,4 @@
+name = Klicango Friends
+description = Friends functionality.
+package = Custom
+core = 6.x

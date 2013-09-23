@@ -1,0 +1,67 @@
+<?php
+
+/**
+ * Implementation of hook_schema().
+ */
+function klicango_friends_schema() {
+  $schema['friends_invitations'] = array(
+    'description' => t('Stores friend requests.'),
+    'fields' => array(
+      'id'     => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => t('Primary key autoincrement.'),
+      ),
+      'sender_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => t('Id of the invitation to join as friend sender.'),
+      ),
+      'user_id' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => t('Id of the invitation reciever user. Can be null if facebook user invited.'),
+      ),
+      'status' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => t('Status of the invitation (1 - new, 2 - pending, 3 - accepted, 4 - declined).'),
+      ),
+      'facebook_id' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => t('Id of the invitation reciever user (facebook). Can be null if regulat klicango user invited.'),
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  
+  $schema['friends'] = array(
+    'description' => t('Stores friend relationships.'),
+    'fields' => array(
+      'uid'     => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => t('User id.'),
+      ),
+      'fid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => t('Friend user id.'),
+      ),
+    ),
+  );
+  
+  return $schema;
+}
+
+function klicango_friends_update_6001() {
+    drupal_install_schema('klicango_friends');
+    
+    $return[] = array('success' => TRUE, 'query' => 'Klicango friends schema installed');
+    return $return;
+}
+
+function klicango_friends_uninstall() {
+  drupal_uninstall_schema('klicango_friends');
+}
