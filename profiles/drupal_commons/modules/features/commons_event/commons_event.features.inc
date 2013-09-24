@@ -18,6 +18,36 @@ function commons_event_ctools_plugin_api() {
  */
 function commons_event_imagecache_default_presets() {
   $items = array(
+    'calendar_image' => array(
+      'presetname' => 'calendar_image',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '120',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
+    'event_calendar_image' => array(
+      'presetname' => 'event_calendar_image',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '120',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
     'event_image' => array(
       'presetname' => 'event_image',
       'actions' => array(

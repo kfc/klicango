@@ -525,8 +525,8 @@ function template_preprocess_calendar_week(&$vars) {
 function template_preprocess_calendar_datebox(&$vars) {
   $date = $vars['date'];
   $view = $vars['view'];
-  
-  $vars['day'] = intval(substr($date, 8, 2));
+                                    
+  $vars['day'] = intval(substr($date, 8, 2));   
   $force_view_url = !empty($view->date_info->block) ? TRUE : FALSE;
   $vars['url'] = date_real_url($view, NULL, $date, $force_view_url);
   $vars['link'] = !empty($view->date_info->display_types['day']) ? l($vars['day'], $vars['url']) : $vars['day'];

@@ -28,6 +28,34 @@ function commons_event_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'node_comment_is_content_event';
+  $strongarm->value = 1;
+  $export['node_comment_is_content_event'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'node_comment_plural_event';
+  $strongarm->value = 'comments';
+  $export['node_comment_plural_event'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'node_comment_type_event';
+  $strongarm->value = 'comment';
+  $export['node_comment_type_event'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'node_comment_view_event';
+  $strongarm->value = 'nodecomments';
+  $export['node_comment_view_event'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'node_options_event';
   $strongarm->value = array(
     0 => 'status',

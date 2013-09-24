@@ -1,5 +1,11 @@
 <?php
 
+define('EVENT_STATUS_UNDEFINED', '');
+define('EVENT_STATUS_NEW', 1);
+define('EVENT_STATUS_PENDING', 2);
+define('EVENT_STATUS_ACCEPTED', 3);
+define('EVENT_STATUS_DECLNED', 4);
+
 function events_menu(){
   $items = array(
     'create_event_if_valid' => array(
@@ -23,6 +29,18 @@ function events_menu(){
     'event_post_comment' => array(
       'type' => MENU_CALLBACK,
       'page callback' => 'event_post_comment',
+      'access callback' => 'user_is_logged_in'
+    ),
+    
+    'add_event_for_user' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'add_event_for_user',
+      'access callback' => 'user_is_logged_in'
+    ),
+    
+    'remove_event_for_user' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'remove_event_for_user',
       'access callback' => 'user_is_logged_in'
     ),
     
@@ -281,5 +299,70 @@ function event_post_comment(){
     drupal_goto('node/'.$_POST['comment_target_nid']);
   }
   
+}
+
+
+function events_get_user_events_with_status($user_id = null, $status = EVENT_STATUS_ACCEPTED){
+  $events = array();
+  if(empty($user)){
+    global $user;
+    $user_id = $user->uid;
+  }
+  $res = db_query('SELECT * from {events_users} where user_id = %d AND status = %d',$user->uid, $status);
+  while ($r = db_fetch_array($res)) {
+    $events[] = $r['event_id'];
+  }
+  return $events;
+}
+
+function events_get_event_status_for_user($event_id = null, $user_id = null){
+  $status = '';
+  if(!empty($event_id) && !empty($user_id)){
+    $res = db_query('SELECT status from {events_users} where user_id = %d AND event_id = %d',$user_id, $event_id); 
+    $status = db_fetch_array($res);
+    $status = $status['status'];
+  }
+  return $status;
+}
+
+function events_event_is_available_to_add($node){
+  global $user;
+  return (user_is_logged_in() && in_array('individual', $user->roles) && $user->uid != $node->uid && events_get_event_status_for_user($node->nid, $user->uid) != EVENT_STATUS_ACCEPTED);
+}
+
+function add_event_for_user(){
+  $res = false;
+  if(isset($_POST) && isset($_POST['event_id'])){
+    global $user;
+    $event_id = (int)$_POST['event_id'];
+    $event_node = node_load($event_id);
+    if(events_event_is_available_to_add($event_node)){
+      $data = array('event_id' => $event_id, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => EVENT_STATUS_ACCEPTED);
+      if(events_get_event_status_for_user($event_id, $user->uid) != EVENT_STATUS_UNDEFINED)
+        $res = drupal_write_record('events_users', $data, array('event_id', 'user_id'));  
+      else
+        $res = drupal_write_record('events_users', $data);    
+    }
+  }
+  $output = array('success' => $res);
+ 
+    
+  echo json_encode($output);
+  exit;
+}
+
+function remove_event_for_user(){
+  $res = false;
+  if(isset($_POST) && isset($_POST['event_id'])){
+    global $user;
+    $event_id = (int)$_POST['event_id'];
+    //$event_node = node_load($event_id);
+    $data = array('event_id' => $event_id, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => EVENT_STATUS_DECLNED);
+    $res = drupal_write_record('events_users', $data, array('event_id', 'user_id'));  
+  }
+  $output = array('success' => $res, 'ee' => $data);
+    
+  echo json_encode($output);
+  exit;
 }
 

@@ -161,6 +161,11 @@ function customization_block($op = 'list', $delta = 0, $edit = array()) {
         $blocks[2] = array(
             'info' => t('Homepage carousel'),
         );
+        $blocks[3] = array(
+          'info' => t('User Account Info')
+        );
+        
+        
         return $blocks;
     } else if ($op == 'view') {
         switch ($delta) {
@@ -185,6 +190,15 @@ function customization_block($op = 'list', $delta = 0, $edit = array()) {
               'content' => customization_carousel_contents(),
             );
             break;
+          
+          case 3:
+            $block = array(
+              'subject' => '<none>',
+              'content' => 'content'
+            );
+          
+            break;  
+            
         }
         return $block;
     }
@@ -214,18 +228,48 @@ function customization_get_activity_stream() {
 }
 
 function customization_views_query_alter(&$view, &$query) {
+  global $user;
   if($view->name == 'content_event_calendar' && ($view->current_display == 'calendar_1' || $view->current_display == 'calendar_period_2' || $view->current_display == 'calendar_period_3') ){
-    array_pop($query->where[0]['clauses']);   
-    array_pop($query->where[0]['args']);
-    $query->where[0]['clauses'][] = $query->where['date']['clauses'][0];
-    //$query->where[0]['args'][] = $query->where['date']['args'][0];
-    unset($query->where['date']);   
-    $query->where[] = array(
-      'clauses'=>array('notifications.uid = %d'),
-      'args'=>array($view->args[2]),
-      'type' =>'AND'
-    ); 
-    $query->group_operator = 'OR';
+    
+    $_user_id = 0;
+    if(arg(0) == 'user')
+      $_user_id = arg(1);
+      
+    if($_user_id > 0)  {
+      if($user-> uid != $_user_id)
+        $_user = user_load($_user_id);
+      else 
+        $_user = $user;  
+      if(($_user->uid != $user->uid) && in_array('individual',$_user->roles)){
+        
+      }
+      else{
+        array_pop($query->where[0]['clauses']);   
+        array_pop($query->where[0]['args']);
+        $query->where[0]['clauses'][] = $query->where['date']['clauses'][0];
+        //$query->where[0]['args'][] = $query->where['date']['args'][0];
+        unset($query->where['date']); 
+        $query->where[0]['clauses'][] = 'node.uid = %d';
+        $query->where[0]['args'][] = $_user->uid;
+        
+        
+        //$query->where 
+        if(in_array('individual',$_user->roles)){
+          $user_accepted_events = events_get_user_events_with_status($_user->uid, EVENT_STATUS_ACCEPTED); // GET ACCEPTED EVENTS
+          if(!empty($user_accepted_events)){          
+            $query->where[] = array(
+              'clauses'=>array('node.nid IN ( '.implode(',',$user_accepted_events).' )'),
+              'args'=>array($view->args[2]),
+              'type' =>'AND'
+            ); 
+          }
+          $query->group_operator = 'OR';  
+      }
+    }
+    
+    
+    }
+    //dpm($query);
   }
    
 }
@@ -575,4 +619,18 @@ function customization_graph_query($id, $access_token = NULL, $parameters = arra
   }
 
   return $data;
+}
+
+function customization_user($type, &$edit, &$account){
+  switch ($type) {
+    case 'load':
+      //$account->advanced_profile = advanced_profile_load($account->uid);
+      break;
+    case 'view':
+      $account->advanced_profile = advanced_profile_load($account->uid);
+      unset($account->content['summary']);
+      break;
+    default:
+      break;
+  }  
 }

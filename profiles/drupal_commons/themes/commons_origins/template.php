@@ -158,6 +158,7 @@ function commons_origins_preprocess_date_navigation(&$vars) {
   // Add nofollow for next/prev links.
   $vars['prev_options']['attributes'] += array('rel' => 'nofollow');
   $vars['next_options']['attributes'] += array('rel' => 'nofollow');
+  $vars['next_options']['text'] = '123';
 
   
   $vars['next_options']['date'] = date_format($next_date, 'F Y');

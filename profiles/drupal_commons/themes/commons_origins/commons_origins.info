@@ -6,7 +6,7 @@ base theme = commons_roots
 core = 6.x
 engine = phptemplate
 
-stylesheets[all][] = css/commons_origins-style.css
+;stylesheets[all][] = css/commons_origins-style.css
 stylesheets[all][] = styles/custom.css
 scripts[] = js/commons_origins.js
 scripts[] = js/events.js
@@ -41,14 +41,14 @@ features[] = primary_links
 features[] = secondary_links
 
 ; Default theme settings
-settings[theme_grid] = grid16-960
-settings[theme_grid_options][] = grid16-960
-settings[theme_grid_options][] = grid16-fluid
-settings[fluid_grid_width] = fluid-90
-settings[theme_font_size] = font-size-12
-settings[sidebar_layout] = sidebars-split
-settings[sidebar_first_width] = 4
-settings[sidebar_last_width] = 5
+;settings[theme_grid] = grid16-960
+;settings[theme_grid_options][] = grid16-960
+;settings[theme_grid_options][] = grid16-fluid
+;settings[fluid_grid_width] = fluid-90
+;settings[theme_font_size] = font-size-12
+;settings[sidebar_layout] = sidebars-split
+;settings[sidebar_first_width] = 4
+;settings[sidebar_last_width] = 5
 
 ; Information added by drupal.org packaging script on 2013-01-18
 version = "6.x-2.12"

@@ -1,14 +1,14 @@
 <?php 
 global $user;
 $location_info = user_load($node->uid);   
-$advanced_info = advanced_profile_load($location_info->uid);
+$advanced_info = advanced_profile_load($location_info->uid);         
 ?>
 <?php if(!empty($advanced_info[0]['photo']) || !empty($advanced_info['photo'])):?>
 <div class="public-event-top-banner">
   <?php echo theme_imagecache('event_image',(!empty($advanced_info['photo']) ? $advanced_info['photo'] : $advanced_info[0]['photo']));?>
 </div>
 <?php endif;?>
-<?php if($node->uid == $user->uid):?>
+<?php if( false && $node->uid == $user->uid):?>
   <div class="public-event-modify-link">
     <a id="modify-event-link" href="">Modify this event</a>
   </div>
@@ -76,7 +76,13 @@ $advanced_info = advanced_profile_load($location_info->uid);
   </div>
 </div>
 
-<div class="going-status-button"><a href="">Add to my calendar</a></div>
+<?php if(events_event_is_available_to_add($node)):?>
+  <div class="going-status-button" id="event-action-button"><a class="add-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t('Add to my calendar')?></a></div>
+
+<?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
+  <div class="going-status-button" id="event-action-button"><a class="remove-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t("I'm going")?></a></div>
+<?php endif;?>
+
 
 <div class="event-people-block">
   <div class="going-block">
