@@ -382,3 +382,27 @@ function remove_event_for_user(){
   exit;
 }
 
+function events_views_pre_render(&$view) {
+  if($view->name == 'homepage_public_events' && $view->current_display == 'block_2'){
+    $items_to_display = 9;
+    if($view->result > $items_to_display){
+      $new_result = array();
+      $result_keys = array_keys($view->result);
+      shuffle($result_keys);
+      for($i=0; $i < $items_to_display && $ш < count($result_keys); $i++){
+        $new_result[$i] = clone($view->result[array_pop($result_keys)]);
+      }
+      usort($new_result,'events_sort_event_ads');
+      $view->result = $new_result;
+    } 
+  }
+}
+
+function events_sort_event_ads($a, $b)
+{
+    if (!isset($a->node_data_field_date_field_date_value) || !isset($b->node_data_field_date_field_date_value) ||  $a->node_data_field_date_field_date_value == $b->node_data_field_date_field_date_value) {
+        return 0;
+    }
+    return ($a->node_data_field_date_field_date_value < $b->node_data_field_date_field_date_value) ? -1 : 1;
+}
+

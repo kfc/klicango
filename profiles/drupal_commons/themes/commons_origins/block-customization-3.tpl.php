@@ -6,8 +6,8 @@ $advanced_profile = advanced_profile_load($user_id);
 <?php if($user->uid == $user_id && in_array('individual', $user->roles)):?>
   <div id="private-account-info">
     <div class="account-info-thumb"><img src="/<?php echo $user->picture?>" height="59"></div>
-    <div class="account-info-name"><?php if(isset($user->profile_name)) echo $user->profile_name?> <?php if(isset($user->profile_last_name)) echo $user->profile_last_name?></div>
-    <div class="account-info-city"><?php if(isset($user->profile_location)) echo $user->profile_location?></div>
+    <div class="account-info-name"><?php if(isset($user->first_name)) echo $user->first_name?> <?php if(isset($user->surname)) echo $user->surname?></div>
+    <div class="account-info-city"><?php if(isset($user->city)) echo $user->city?> <?php if(isset($user->country)) echo ', '.$user->country?></div>
   </div>
 <?php elseif(in_array('professional',$viewed_user->roles)):?>
   <div class="location-calendar-top-banner">

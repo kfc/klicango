@@ -47,7 +47,7 @@
   if(arg(0) == 'user'){
     $userid = arg(1);
   }?>
-<div class="hover-wrapper">
+<div class="<?php echo (!empty($fields['node_vid']['data']) ? 'hover-wrapper' : 'no-pic-wrapper')?>">
   <div class="view-field view-data-node-title node-title">
     <?php print $fields['node_title']['data']; ?>
   </div>

@@ -122,12 +122,18 @@ function calendar_build_week(&$curday, $view, $items, $check_month = FALSE) {
         'items' => array(),
         );
     }
-    else {            
+    else {       
+      $has_photo = false;
+      if(!empty($items[$curday_date])){
+        $_items = $items[$curday_date];
+        $first_event = array_pop(array_pop($_items));
+        $has_photo = !empty($first_event->node_vid);
+      }
       $content = calendar_build_day($curday, $view, $items);      
       $class .= ($curday_date == $today ? ' today' : '') .
         ($curday_date < $today ? ' past' : '') .
         ($curday_date > $today ? ' future' : '') .
-        (empty($items[$curday_date]) ? ' has-no-events' : (count($items[$curday_date]) > 1 ? ' has-more-events' : ' has-events'));
+        (empty($items[$curday_date]) ? ' has-no-events' : ($has_photo == false ? ' has-event-no-pic' : (count($items[$curday_date]) > 1 ? ' has-more-events' : ' has-events')));
     }
     
     $rows[$week][] = array(
