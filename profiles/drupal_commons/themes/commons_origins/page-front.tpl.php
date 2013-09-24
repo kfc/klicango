@@ -28,9 +28,12 @@
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.carouFredSel-6.2.1-packed.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.infieldlabel.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.formstyler.new.js"></script>
+    <script src="/misc/drupal.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/events.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/main.js"></script>
-    
+    <script src="/profiles/drupal_commons/themes/commons_origins/js/jScrollPane.js"></script>
+	<script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.mousewheel.js"></script>
 </head>
 
 <body class="front">
@@ -86,4 +89,5 @@
     ?>
     
     <?php print $create_event_form; ?>
+    <?php echo $scripts_modified; ?>
 </html>

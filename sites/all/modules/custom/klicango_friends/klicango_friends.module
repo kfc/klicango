@@ -1,2 +1,157 @@
 <?php
 
+function klicango_friends_menu(){
+  $items = array();
+  
+  $items['friends/load'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_load_facebook_friends',
+    'access callback' => 'user_is_logged_in',
+  );
+    
+  $items['friends/invite'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_invite_facebook_friends',
+    'access callback' => 'user_is_logged_in',
+  );
+    
+  return $items;  
+}
+
+function klicango_friends_load_facebook_friends() {
+    if (!empty($_SESSION['access_token'])) {
+        
+    /*$parameters = array(
+        'app_id' => variable_get('fboauth_id', ''),
+        'to' => '14603461,697357230',
+        'link' => 'http://klic.zenko.by/',
+        'message' => 'Hello, world!',
+        'redirect_uri' => 'http://klicango.loc/'
+     );
+     $url = 'http://www.facebook.com/dialog/apprequests?'.http_build_query($parameters);
+
+     echo '<script type="text/javascript">window.open('.json_encode(str_replace('&amp;', '&',$url)).');</script>';*/
+        $limit = (isset($_GET['limit'])) ? $_GET['limit'] : 10;
+        $offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
+        $access_token = $_SESSION['access_token'];
+        $result = klicango_friends_graph_query('/me/friends?limit=' . $limit . '&offset=' . $offset, $access_token);
+        $html = '';
+        foreach ($result->data as $value) {
+            $html .= '<div class="person-item">';
+            $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="https://graph.facebook.com/' . $value->id . '/picture"/></a></div>';
+            $html .= '<div class="person-name"><a href="javascript: void(0);">'.$value->name.'</a></div>';
+            $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $value->id . ')">' . t('Invite friend') . '</a>';
+            $html .= '</div>';
+            $data = array('facebook_id' => $value->id, 'name' => $value->name);
+            drupal_write_record('friends_facebook_invited', $data);
+        }
+        echo $html;
+        exit;
+    }
+}
+
+function klicango_friends_facebook_token() {
+    $app_id = isset($app_id) ? $app_id : variable_get('fboauth_id', '');
+    $app_secret = isset($app_secret) ? $app_secret : variable_get('fboauth_secret', '');
+    
+    // Note that the "code" provided by Facebook is a hash based on the client_id,
+    // client_secret, and redirect_url. All of these things must be IDENTICAL to
+    // the same values that were passed to Facebook in the approval request. See
+    // the fboauth_link_properties function.
+    $query = array(
+        'client_id' => $app_id,
+        'client_secret' => $app_secret,
+        'grant_type' => 'client_credentials',
+    );
+    $token_url = url('https://graph.facebook.com/oauth/access_token', array('absolute' => TRUE, 'query' => $query));
+    $authentication_result = drupal_http_request($token_url);
+    
+    if ($authentication_result->code != 200) {
+        $error = !empty($authentication_result->error) ? $authentication_result->error : t('(no error returned)');
+        $data = !empty($authentication_result->data) ? print_r($authentication_result->data, TRUE) : t('(no data returned)');
+        watchdog('fboauth', 'Facebook OAuth could not acquire an access token from Facebook. We queried the following URL: <code><pre>@url</pre></code>. Facebook\'s servers returned an error @error: <code><pre>@return</pre></code>', array('@url' => $token_url, '@error' => $error, '@return' => $data));
+    }
+    else {
+        // The result from Facebook comes back in a query-string-like format,
+        // key1=value1&key2=value2. Parse into an array.
+        $authentication_strings = explode('&', $authentication_result->data);
+        $authentication_values = array();
+        foreach ($authentication_strings as $authentication_string) {
+          list($authentication_key, $authentication_value) = explode('=', $authentication_string);
+          $authentication_values[$authentication_key] = $authentication_value;
+        }
+    }
+    
+    return isset($authentication_values['access_token']) ? $authentication_values['access_token'] : NULL;
+}
+
+function klicango_friends_graph_query($id, $access_token = NULL, $parameters = array(), $method = 'GET') {
+  if (isset($access_token)) {
+    $parameters['access_token'] = $access_token;
+  }
+
+  if ($method == 'GET' || $method == 'DELETE') {
+    $graph_url = url('https://graph.facebook.com/' . $id, array('absolute' => TRUE, 'query' => $parameters));
+    $graph_result = drupal_http_request($graph_url, array(), $method);
+  }
+  elseif ($method == 'POST') {
+    $graph_url = 'https://graph.facebook.com/' . $id;
+    $post_data = http_build_query($parameters, '', '&');
+    $graph_result = drupal_http_request($graph_url, array(), $method, $post_data);
+  }
+  else {
+    drupal_set_message(t('Invalid request type "@type" for Facebook graphy query. Must be either @get, @post, or @delete.', array('@type' => $method, '@get' => 'GET', '@post' => 'POST', '@delete' => 'DELETE')), 'error');
+  }
+
+  // If the response contains a redirect (such as to an image), return the
+  // redirect as the data. i.e. https://graph.facebook.com/19292868552/picture.
+  if (isset($graph_result->redirect_url)) {
+    $data = array(
+      'data' => $graph_result->data,
+      'redirect_code' => $graph_result->redirect_code,
+      'redirect_url' => $graph_result->redirect_url,
+    );
+  }
+  else {
+    $data = json_decode($graph_result->data);
+  }
+
+  return $data;
+}
+
+function klicango_friends_preprocess_page(&$variables) {
+    if (!empty($_GET['invite']) && !empty($_GET['event_id'])) {
+        /*$parameters = array(
+            'app_id' => variable_get('fboauth_id', ''),
+            'to' => $_GET['invite'],
+            'link' => 'http://klic.zenko.by/',
+            'message' => t('Dear friend! Please join me on Klicango to always stay in touch and share with me the best parties and places.'),
+            'redirect_uri' => 'http://klicango.loc/'
+         );
+         $url = 'http://www.facebook.com/dialog/apprequests?'.http_build_query($parameters);*/
+         //drupal_add_js('$(document).ready(function(){window.open('.json_encode(str_replace('&amp;', '&',$url)).');});', 'inline');
+         drupal_add_js('$(document).ready(function(){
+            initRequest("' . $_GET['invite'] . '", ' . $_GET['event_id'] . ');
+         });', 'inline');         
+    }
+}
+
+function klicango_friends_invite_facebook_friends() {
+    if(!empty($_GET['to']) && !empty($_GET['event_id'])) {
+        global $user;
+        $rows = 0;
+        $recipients = $_GET['to'];
+        $object = new stdClass();
+        $object->sender_id = $user->uid;
+        $object->event_id = $_GET['event_id'];
+        $object->status = 1;
+        foreach ($recipients as $facebook_id) {
+            $object->facebook_id = $facebook_id;
+            $result = drupal_write_record('events_users', $object);
+            if ($result) {
+                $rows++;
+            }
+        }
+        drupal_json(array('success' => true, 'rows' => $rows));
+    }
+}

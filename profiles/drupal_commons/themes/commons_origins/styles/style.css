@@ -572,7 +572,8 @@ div.going-status-button{
 	clear: both;
 	display: inline-block;
 }
-div.going-status-button a{
+div.going-status-button a,
+a.invite-friend{
 	float: right;
 	background: #35332f;
 	height: 30px;
@@ -714,7 +715,8 @@ div.public-event-coupon div.public-event-col.first-column .profile-info .profile
 .event-people-block .invite-friend{
 	padding-top: 20px;
 }
-.event-people-block .invite-friend a{
+.event-people-block .invite-friend a,
+span.already-invited{
 	font: bold 12px/30px Arial;
 	color: #96c12b;
 	background: #FFF;
@@ -730,6 +732,14 @@ div.public-event-coupon div.public-event-col.first-column .profile-info .profile
     -ms-border-radius: 5px; /* IE8 */
     -icab-border-radius: 5px; /* Icab */
     border-radius: 5px; /* CSS3 */
+}
+a.invite-friend{color: #96c12b !important;}
+span.already-invited{float: right;}
+a.invite-friend,
+span.already-invited{
+	width: 140px !important;
+	text-align: center;
+	padding: 0 !important;
 }
 .event-people-block .going-block > a,
 .event-people-block .invited-block > a{
@@ -1186,3 +1196,86 @@ div.form-file-upload .uploaded-item{width: 145px; margin-top: 4px; clear: both;}
 div.form-file-upload .uploaded-item img{max-width: 145px;}
 body .ui-widget-content .form-item.profile-links.profile-pro .uploaded-item{width: 58px; position: absolute; left: -2px; top: 0;}
 body .ui-widget-content .form-item.profile-links.profile-pro{position: relative; min-height: 65px;}
+.jScrollPaneContainer {
+position: relative;
+overflow: hidden;
+z-index: 1;
+}
+#invite-form div.person-item{
+	width: 100%;
+	height: 77px;
+	display: inline-block;
+	clear: both;
+	margin-bottom: 10px;
+}
+#invite-form div.person-item .person-thumbnail{
+	float: left;
+	margin-right: 20px;
+}
+#invite-form div.person-item  .person-name{
+	float: left;
+	padding-top: 22px;
+}
+#invite-form div.person-item  .person-name a{
+	font: bold 12px Arial;
+	color: #2b2a2a;
+	text-decoration: none;
+	
+}
+#invite-form div.person-item  .person-name a:hover{color: #96c12b;}
+span.already-invited,
+a.invite-friend{
+	margin-top: 24px;
+}
+.jScrollPaneContainer{
+	background: #ebeaea;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+#invite-form .form-item.form-title input[type="text"],
+#invite-form .form-item.form-details input[type="text"],
+#invite-form .form-item.form-where input[type="text"]{
+	width: 360px;
+	margin-right: 0;
+}
+.form-item.search-for-friends input[type="text"]{
+	width: 445px;
+}
+.scroll-pane {
+width: 445px;
+height: 255px;
+overflow: auto;
+}
+
+.mCustomScrollBox>.mCSB_scrollTools {
+width: 9px;
+height: 100%;
+top: 0;
+right: 0;
+z-index: 2000;
+}
+.mCSB_scrollTools .mCSB_draggerContainer {
+position: absolute;
+top: 0;
+left: 0;
+bottom: 0;
+right: 0;
+height: auto;
+width: 7px;
+border: 1px solid #afafaf;
+}
+.mCSB_scrollTools .mCSB_dragger {
+cursor: pointer;
+width: 100%;
+background: #676668;
+}
+.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
+height: 70px;
+}
+.mCSB_container {
+width: auto;
+margin-right: 30px;
+}
+#invite-form .form-submit{
+	padding-top: 20px;
+}

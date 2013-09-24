@@ -221,8 +221,14 @@ function create_event_if_valid(){
       }
       
       node_save($event);
+      $query = '';
+      if (!empty($_POST['invite'])) {
+        $invite_str = implode(',', $_POST['invite']);
+        $query = 'invite=' . $invite_str . '&event_id=' . $event->nid;
+      }
+      
       if($event->nid > 0)
-        drupal_goto('node/'.$event->nid);
+        drupal_goto('node/'.$event->nid, $query);
       else drupal_goto('<front>');  
       //die();
     }

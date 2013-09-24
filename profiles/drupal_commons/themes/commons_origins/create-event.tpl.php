@@ -42,10 +42,16 @@ if($node->type == 'event' && $node->uid == $user->uid){
     <input type="text" name="phone" placeholder="<?php echo ('phone');?>" />
   </div>
   
- 
   <div class="form-item profile-links">
     <input type="file" id="field-image-upload" name="files[photo]" class="form-file profile-upload" />
+    <a href="" id="add-friends">Invite friends</a>
   </div>
+  
+    <div class="form-item search-for-friends">
+    	<input type="text" name="field-search-for-friends"/>
+    </div>
+    <div class="scroll-pane">
+    </div>
   
   <div class="form-submit">   
     <input type="submit" value="<?php echo t('Create')?>"/>
