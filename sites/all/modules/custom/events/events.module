@@ -333,7 +333,17 @@ function events_get_event_status_for_user($event_id = null, $user_id = null){
 
 function events_event_is_available_to_add($node){
   global $user;
-  return (user_is_logged_in() && in_array('individual', $user->roles) && $user->uid != $node->uid && events_get_event_status_for_user($node->nid, $user->uid) != EVENT_STATUS_ACCEPTED);
+  if(!isset($node->uid)){
+    if(isset($node->users_uid)){
+      $node->uid = $node->users_uid;
+    }
+    else{
+      $_node = node_load($node->nid);
+      $node->uid = $_node->uid;
+    }
+  }
+    
+  return (user_is_logged_in() && in_array('individual', $user->roles) && ($user->uid != $node->uid) && events_get_event_status_for_user($node->nid, $user->uid) != EVENT_STATUS_ACCEPTED);
 }
 
 function add_event_for_user(){
