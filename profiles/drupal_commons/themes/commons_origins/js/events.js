@@ -1,9 +1,12 @@
 $(function() {   
-    $("#create-event-form" ).dialog({
+  $("#create-event-form" ).dialog({
     autoOpen: false,
     height: 442,
     width: 484,
-    modal: true
+    modal: true,
+    close: function() {
+     $(".scroll-pane").hide();
+      }
   });
  
   $("#create-event-link")
