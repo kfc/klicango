@@ -384,15 +384,16 @@ function remove_event_for_user(){
 
 function events_views_pre_render(&$view) {
   if($view->name == 'homepage_public_events' && $view->current_display == 'block_2'){
-    $items_to_display = 9;
+    $items_to_display = 2;
     if($view->result > $items_to_display){
       $new_result = array();
       $result_keys = array_keys($view->result);
-      shuffle($result_keys);
-      for($i=0; $i < $items_to_display && $ш < count($result_keys); $i++){
-        $new_result[$i] = clone($view->result[array_pop($result_keys)]);
+      $random_keys = array_rand($result_keys, $items_to_display);
+      asort($random_keys);
+      for($i=0; $i < $items_to_display && $i < count($random_keys); $i++){
+        $new_result[$i] = clone($view->result[$random_keys[$i]]);
       }
-      usort($new_result,'events_sort_event_ads');
+      //usort($new_result,'events_sort_event_ads');
       $view->result = $new_result;
     } 
   }
