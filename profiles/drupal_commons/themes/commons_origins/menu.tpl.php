@@ -15,19 +15,18 @@
             <?php else : ?>
                 <li>
     				<a href="/user">Calendar</a>
-    				<span class="counter">2</span>
     			</li>
     			<li>
-    				<a href="">Friends</a>
-    				<span class="counter">12</span>
+    				<a href="/friends">Friends</a>
+                    <?php echo (!empty($menu_stats['friends_pending']) && $menu_stats['friends_pending']) ? '<span class="counter">' . $menu_stats['friends_pending'] . '</span>' : ''; ?>    				
     			</li>
     			<li>
-    				<a href="">Public events</a>
-    				<span class="counter">10</span>
+    				<a href="/public">Public events</a>
+    				<?php echo (!empty($menu_stats['public_pending']) && $menu_stats['public_pending']) ? '<span class="counter">' . $menu_stats['public_pending'] . '</span>' : ''; ?>
     			</li>
                 <li>
-    				<a href="">Private events</a>
-    				<span class="counter">10</span>
+    				<a href="/private">Private events</a>
+    				<?php echo (!empty($menu_stats['private_pending']) && $menu_stats['private_pending']) ? '<span class="counter">' . $menu_stats['private_pending'] . '</span>' : ''; ?>
     			</li>
     			<li class="create_event">
     				<a id="create-event-link" href=""><?php echo t('+ Create event');?></a>

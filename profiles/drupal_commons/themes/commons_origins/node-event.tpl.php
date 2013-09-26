@@ -103,7 +103,9 @@ $advanced_info = advanced_profile_load($location_info->uid);
       <div class="person-name">Karl Kreutzweld</div>
     </div>
   </div>
-  <div class="invite-friend"><a href="">Invite friends</a></div>
+  <?php if ($node->field_event_type[0]['value'] == 'public' || $node->uid == $user->uid) :?>
+    <div class="invite-friend" id="invite-friend-link"><a href="javascript: void(0);">Invite friends</a></div>
+  <?php endif; ?>
 </div>
 
 <div class="event-comment-box">
@@ -117,3 +119,4 @@ $advanced_info = advanced_profile_load($location_info->uid);
   </div>
 </div>
 
+<?php echo $invite_friends_form; ?>

@@ -38,20 +38,26 @@ if($node->type == 'event' && $node->uid == $user->uid){
   
   <div class="form-item">
     <label><?php echo t('Contact')?></label>
-    <input type="text" name="email" placeholder="<?php echo ('email');?>" />
-    <input type="text" name="phone" placeholder="<?php echo ('phone');?>" />
+    <input type="text" name="email" placeholder="<?php echo t('email');?>" />
+    <input type="text" name="phone" placeholder="<?php echo t('phone');?>" />
   </div>
   
   <div class="form-item profile-links">
     <input type="file" id="field-image-upload" name="files[photo]" class="form-file profile-upload" />
     <a href="" id="add-friends">Invite friends</a>
   </div>
-  
+    <?php
+        global $user; 
+        if(in_array('individual', $user->roles, 'true')) {
+    ?>
     <div class="form-item search-for-friends">
-    	<input type="text" name="field-search-for-friends"/>
+    	<input type="text" name="field-search-for-friends" id="search-friends" placeholder="<?php echo t('Type at least 2 symbols to start search');?>"/>
     </div>
     <div class="scroll-pane">
     </div>
+    <?php
+        }
+    ?>
   
   <div class="form-submit">   
     <input type="submit" value="<?php echo t('Create')?>"/>

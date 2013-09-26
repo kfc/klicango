@@ -14,40 +14,56 @@ function klicango_friends_menu(){
     'page callback' => 'klicango_friends_invite_facebook_friends',
     'access callback' => 'user_is_logged_in',
   );
+  
+  $items['friends/find'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_find',
+    'access callback' => 'user_is_logged_in',
+  );
     
   return $items;  
 }
 
 function klicango_friends_load_facebook_friends() {
-    if (!empty($_SESSION['access_token'])) {
-        
-    /*$parameters = array(
-        'app_id' => variable_get('fboauth_id', ''),
-        'to' => '14603461,697357230',
-        'link' => 'http://klic.zenko.by/',
-        'message' => 'Hello, world!',
-        'redirect_uri' => 'http://klicango.loc/'
-     );
-     $url = 'http://www.facebook.com/dialog/apprequests?'.http_build_query($parameters);
+    
+    $limit = (isset($_GET['limit'])) ? $_GET['limit'] : 10;
+    $offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
+    
+    $friends = klicango_friends_get_all_friends();
+    
+    $html = '';
 
-     echo '<script type="text/javascript">window.open('.json_encode(str_replace('&amp;', '&',$url)).');</script>';*/
-        $limit = (isset($_GET['limit'])) ? $_GET['limit'] : 10;
-        $offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
-        $access_token = $_SESSION['access_token'];
-        $result = klicango_friends_graph_query('/me/friends?limit=' . $limit . '&offset=' . $offset, $access_token);
-        $html = '';
-        foreach ($result->data as $value) {
+    if(!empty($friends['local']) && $offset == 0) {
+        foreach($friends['local'] as $id => $match) {
+            $result = db_query('SELECT picture FROM users WHERE uid = %d', $id);
+            $picture = db_result($result);
+            
             $html .= '<div class="person-item">';
-            $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="https://graph.facebook.com/' . $value->id . '/picture"/></a></div>';
-            $html .= '<div class="person-name"><a href="javascript: void(0);">'.$value->name.'</a></div>';
-            $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $value->id . ')">' . t('Invite friend') . '</a>';
+            $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="/' . $picture . '"/></a></div>';
+            $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a></div>';
+            $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 1)">' . t('Invite friend') . '</a>';
             $html .= '</div>';
-            $data = array('facebook_id' => $value->id, 'name' => $value->name);
-            drupal_write_record('friends_facebook_invited', $data);
         }
-        echo $html;
-        exit;
     }
+    
+    $matches = array_slice($friends['facebook'], $offset, $limit, true);
+    foreach($matches as $id => $match) {
+        $html .= '<div class="person-item">';
+        $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="https://graph.facebook.com/' . $id . '/picture"/></a></div>';
+        $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a><span class="fb-user">' . t('Friend on facebook') . '</span></div>';
+        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ')">' . t('Invite friend') . '</a>';
+        $html .= '</div>';
+    }
+    
+    $new_offset = $offset + $limit;
+    if (!empty($_GET['invite'])) {
+        $html .= '<div class="show-more-friends"><a class="show_more" href="javascript: void(0);" onclick="loadInviteFriends(' . $new_offset . ', ' . $limit . ')">' . t('Show more friends') . '</a></div>';
+    } else {
+        $html .= '<div class="show-more-friends"><a class="show_more" href="javascript: void(0);" onclick="loadFriends(' . $new_offset . ', ' . $limit . ')">' . t('Show more friends') . '</a></div>';    
+    }
+    
+    echo $html;
+    exit;
 }
 
 function klicango_friends_facebook_token() {
@@ -121,19 +137,12 @@ function klicango_friends_graph_query($id, $access_token = NULL, $parameters = a
 
 function klicango_friends_preprocess_page(&$variables) {
     if (!empty($_GET['invite']) && !empty($_GET['event_id'])) {
-        /*$parameters = array(
-            'app_id' => variable_get('fboauth_id', ''),
-            'to' => $_GET['invite'],
-            'link' => 'http://klic.zenko.by/',
-            'message' => t('Dear friend! Please join me on Klicango to always stay in touch and share with me the best parties and places.'),
-            'redirect_uri' => 'http://klicango.loc/'
-         );
-         $url = 'http://www.facebook.com/dialog/apprequests?'.http_build_query($parameters);*/
-         //drupal_add_js('$(document).ready(function(){window.open('.json_encode(str_replace('&amp;', '&',$url)).');});', 'inline');
          drupal_add_js('$(document).ready(function(){
             initRequest("' . $_GET['invite'] . '", ' . $_GET['event_id'] . ');
          });', 'inline');         
     }
+    
+    $variables['menu_stats']['friends_pending'] = klicango_friends_get_pending();
 }
 
 function klicango_friends_invite_facebook_friends() {
@@ -147,6 +156,11 @@ function klicango_friends_invite_facebook_friends() {
         $object->status = 1;
         foreach ($recipients as $facebook_id) {
             $object->facebook_id = $facebook_id;
+            $uid = db_query('SELECT uid FROM fboauth_users WHERE fbid = "%s"', $facebook_id);
+            if ($user_id = db_result($uid)) {
+                $object->user_id = $user_id;
+            }
+            
             $result = drupal_write_record('events_users', $object);
             if ($result) {
                 $rows++;
@@ -154,4 +168,109 @@ function klicango_friends_invite_facebook_friends() {
         }
         drupal_json(array('success' => true, 'rows' => $rows));
     }
+}
+
+function klicango_friends_get_pending() {
+    global $user;
+    
+    $result = db_query('SELECT COUNT(*) AS num FROM friends_invitations WHERE status=1 AND user_id = %d', $user->uid);
+    $count = db_result($result);
+    
+    return $count;
+}
+
+function klicango_friends_find() {
+    $friends = klicango_friends_get_all_friends();
+    $html = '';
+    $matches = array_filter($friends['local'], 'array_substring_search');
+    foreach($matches as $id => $match) {
+        $result = db_query('SELECT picture FROM users WHERE uid = %d', $id);
+        $picture = db_result($result);
+        
+        $html .= '<div class="person-item">';
+        $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="/' . $picture . '"/></a></div>';
+        $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a></div>';
+        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ')">' . t('Invite friend') . '</a>';
+        $html .= '</div>';
+    }
+    
+    $matches = array_filter($friends['facebook'], 'array_substring_search');
+    foreach($matches as $id => $match) {
+        $html .= '<div class="person-item">';
+        $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="https://graph.facebook.com/' . $id . '/picture"/></a></div>';
+        $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a><span class="fb-user">' . t('Friend on facebook') . '</span></div>';
+        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ')">' . t('Invite friend') . '</a>';
+        $html .= '</div>';
+    }
+    
+    if (!$html) {
+        $html = '<div class="show-more-friends">' . t('Friends not found. Try another search request.') . '</div>';
+    }
+    
+    echo $html;
+    exit;
+}
+
+
+function array_substring_search($haystack) {
+    $needle = $_GET['search'];
+    return(stripos($haystack, $needle) !== false); // or stripos() if you want case-insensitive searching.
+}
+
+
+
+function klicango_friends_get_all_friends() {
+    global $user;
+    $friends = array();
+    $facebook_friends = array();
+    $result = db_query('SELECT uid AS id FROM friends WHERE fid = %d UNION SELECT fid AS id FROM friends WHERE uid = %d', $user->uid, $user->uid);
+    while ($row = db_fetch_array($result)) {
+        if (!isset($friends[$row['id']])) {
+            $user = user_load(array('uid' => $row['id']));
+            $friends[$row['id']] = $user->first_name . ' ' . $user->surname;
+        }
+    }
+
+    $facebook_friends = cache_get('facebook_friends_' . $user->uid);   
+    if (empty($facebook_friends) || !is_array($facebook_friends)) {
+        if (!empty($_SESSION['access_token'])) {
+            $facebook_friends = array();
+            $offset = 0; 
+            $limit = 100;
+            do {
+                $result = klicango_friends_graph_query('/me/friends?offset=' . $offset . '&limit=' . $limit, $_SESSION['access_token']);  
+                $offset += $limit; 
+                foreach($result->data as $value) {
+                    $facebook_friends[$value->id] = $value->name;
+                }
+            } while (!empty($result->data));
+            if (is_array($facebook_friends) && !empty($facebook_friends)) {
+                cache_set('facebook_friends_' . $user->uid, $facebook_friends, 'cache', time() + 24*60*60);
+            }
+        }        
+    } else {
+        $facebook_friends = $facebook_friends->data;
+    }
+    
+    return array('local' => $friends, 'facebook' => $facebook_friends);        
+}
+
+
+function klicango_friends_preprocess_node(&$variables) {
+    if($variables['type'] == 'event' && ($variables['uid'] == $user->uid || $variables['field_event_type'][0]['value'] == 'public')) {
+        $html = theme('klicango_invite_friends', $variables['nid']);
+        $variables['invite_friends_form'] = $html;
+    }
+}
+
+function klicango_friends_theme() {
+    return array(
+      'klicango_invite_friends' => array(
+        'template' => 'invite-friends',
+        'arguments' => array(
+        		'event_id' => NULL,
+        	),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),
+    );
 }

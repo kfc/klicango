@@ -60,35 +60,74 @@ $(function() {
 	$( "#create-event-form #add-friends")
 		  .click(function(e) {
 			e.preventDefault();
-            loadFriends();
+            $("#search-friends").show();
+            loadFriends(0, 10);
 			//$(".scroll-pane").slideDown("normal");
 	});
+    
+    $('#create-event-form #search-friends').keyup(function () {
+        if(this.value.length > 1) {
+           $('.search-for-friends').addClass('loading');
+           $.ajax({
+               type: 'GET',
+               dataType: 'html',
+               url: '/friends/find',
+               data: {"search": this.value},
+               success : function (data, textStatus, jqXHR) {                    
+                    $('.mCSB_container').html('');
+                    $('.mCSB_container').append(data);                
+                    
+                    $(".scroll-pane").hide();
+               }, 
+               complete : function (jqXHR, textStatus) {  
+                    $(".scroll-pane").show();
+        			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 675, 'top' : 50});
+        			$(".ui-dialog-content.ui-widget-content").css({"height" : 600});
+        			$(".scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
+        			$('.search-for-friends').removeClass('loading');
+                    //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top  
+               }, 
+            }); 
+        }
+    });
 });
 
-function loadFriends() {
-    $.ajax({
-       type: 'GET',
-       dataType: 'html',
-       url: '/friends/load',
-       data: {offset: 0, limit: 10},
-       success : function (data, textStatus, jqXHR) {   
-            $('.scroll-pane').append(data);
-            $("div.scroll-pane").mCustomScrollbar({
-                scrollButtons:{
-                	enable:true
-                }
-            });
-            
-            $(".scroll-pane").hide();
-       }, 
-       complete : function (jqXHR, textStatus) {  
-            $(".scroll-pane").show();
-			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 675, 'top' : 50});
-			$(".ui-dialog-content.ui-widget-content").css({"height" : 600});
-			$(".scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
-			$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top  
-       }, 
-    });   
+function loadFriends(offset, limit) {
+    if (offset == 0 && $("#create-event-form div.scroll-pane.mCustomScrollbar").length) {
+        $("#create-event-form .scroll-pane").show();
+        $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 675, 'top' : 50});
+        $(".ui-dialog-content.ui-widget-content").css({"height" : 600});    			
+    } else {
+        $.ajax({
+           type: 'GET',
+           dataType: 'html',
+           url: '/friends/load',
+           data: {"offset": offset, "limit": limit},
+           success : function (data, textStatus, jqXHR) {
+                $('#create-event-form .show_more').remove();
+                
+                if ($("#create-event-form div.scroll-pane.mCustomScrollbar").length) {
+                    $('#create-event-form .mCSB_container').append(data);
+                } else {
+                    $('#create-event-form .scroll-pane').append(data);
+                    $("#create-event-form div.scroll-pane").mCustomScrollbar({
+                        scrollButtons:{
+                        	enable:true
+                        }
+                    });    
+                }                
+                
+                $("#create-event-form .scroll-pane").hide();
+           }, 
+           complete : function (jqXHR, textStatus) {  
+                $("#create-event-form .scroll-pane").show();
+    			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 675, 'top' : 50});
+    			$(".ui-dialog-content.ui-widget-content").css({"height" : 600});
+    			$("#create-event-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
+    			//$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top  
+           }, 
+        }); 
+    } 
 }
 
 function validateRemote(id, data) {
@@ -182,13 +221,16 @@ function showDialog(dialog_id) {
 }
 
 function inviteFriend(object, id) {
-    if($('#form_create_event #invite_' + id).length) {
-        $('#invite_' + id).remove();
+    var form_id = $(object).closest('form').attr('id');
+    
+    if($('#' + form_id + ' #invite_' + id).length) {
+        $('#' + form_id + ' #invite_' + id).remove();
         $(object).removeClass('already-invited');
         $(object).addClass('invite-friend');
         $(object).text('Invite friend');
     } else {
-        $('#form_create_event').append('<input type="hidden" name="invite[]" id="invite_' + id + '" value="' + id + '">');
+        
+        $('#' + form_id).append('<input type="hidden" name="invite[]" id="invite_' + id + '" value="' + id + '">');
         $(object).removeClass('invite-friend');
         $(object).addClass('already-invited');
         $(object).text('Friend invited');

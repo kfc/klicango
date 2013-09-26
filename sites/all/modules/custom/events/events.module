@@ -4,7 +4,7 @@ define('EVENT_STATUS_UNDEFINED', '');
 define('EVENT_STATUS_NEW', 1);
 define('EVENT_STATUS_PENDING', 2);
 define('EVENT_STATUS_ACCEPTED', 3);
-define('EVENT_STATUS_DECLNED', 4);
+define('EVENT_STATUS_DECLINED', 4);
 
 function events_menu(){
   $items = array(
@@ -373,7 +373,7 @@ function remove_event_for_user(){
     global $user;
     $event_id = (int)$_POST['event_id'];
     //$event_node = node_load($event_id);
-    $data = array('event_id' => $event_id, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => EVENT_STATUS_DECLNED);
+    $data = array('event_id' => $event_id, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => EVENT_STATUS_DECLINED);
     $res = drupal_write_record('events_users', $data, array('event_id', 'user_id'));  
   }
   $output = array('success' => $res, 'ee' => $data);
@@ -382,3 +382,19 @@ function remove_event_for_user(){
   exit;
 }
 
+function events_preprocess_page(&$variables) {
+    $variables['menu_stats']['public_pending'] = events_get_count(EVENT_STATUS_NEW, true);
+    $variables['menu_stats']['private_pending'] = events_get_count(EVENT_STATUS_NEW, false);
+}
+
+function events_get_count($status, $is_public = true) {
+    if ($is_public) {
+        $type = 'public';
+    } else {
+        $type = 'private';
+    }
+    $result = db_query('SELECT COUNT(*) AS num FROM events_users AS eu LEFT JOIN content_type_event ON eu.event_id = ev.nid WHERE ev.field_event_type_value = "%s" AND eu.status = %d', $type, $status);
+    $count = db_result($result);
+    
+    return $count;
+}

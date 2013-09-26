@@ -6,9 +6,26 @@ $(function() {
     modal: true,
     close: function() {
      $(".scroll-pane").hide();
+     $("#search-friends").hide();
       }
   });
- 
+  
+  $("#invite-friends-form" ).dialog({
+    autoOpen: false,
+    width: 484,
+    modal: true,
+    close: function() {
+     $(".scroll-pane").hide();
+     $("#search-friends").hide();
+      }
+  });
+  
+  $("#invite-friend-link")
+    .click(function(e) {
+    e.preventDefault();
+    loadInviteFriends(0, 10);
+  });
+  
   $("#create-event-link")
     .click(function(e) {
     e.preventDefault();
@@ -100,6 +117,31 @@ $(function() {
     });
  });
  
+    $('#invite-friends-form #search-friends').keyup(function () {
+        if(this.value.length > 1) {
+           $('#invite-friends-form .search-for-friends').addClass('loading');
+           $.ajax({
+               type: 'GET',
+               dataType: 'html',
+               url: '/friends/find',
+               data: {"search": this.value},
+               success : function (data, textStatus, jqXHR) {                    
+                    $('#invite-friends-form .mCSB_container').html('');
+                    $('#invite-friends-form .mCSB_container').append(data);                
+                    
+                    $(".scroll-pane").hide();
+               }, 
+               complete : function (jqXHR, textStatus) {  
+                    $("#invite-friends-form .scroll-pane").show();
+        			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
+                    $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
+        			$("#invite-friends-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
+        			$('#invite-friends-form .search-for-friends').removeClass('loading');
+                    //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top  
+               }, 
+            }); 
+        }
+    });
  
  $(".hover-wrapper a.add-event-from-calendar").on('click',function(e){
   e.preventDefault();
@@ -145,3 +187,54 @@ $(".block .calendar-calendar .month-view table tr").each(function(){
  
   
  });
+ 
+ function loadInviteFriends(offset, limit) {
+    if (offset == 0 && $("#invite-friends-form div.scroll-pane.mCustomScrollbar").length) {
+        $("#invite-friends-form .scroll-pane").show();
+        $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
+        $(".ui-dialog-content.ui-widget-content").css({"height" : 495}); 
+        $( "#invite-friends-form" ).dialog( "open" );   			
+    } else {
+        $.ajax({
+           type: 'GET',
+           dataType: 'html',
+           url: '/friends/load',
+           data: {"offset": offset, "limit": limit, "invite" : "true"},
+           success : function (data, textStatus, jqXHR) {
+                $('#invite-friends-form .show_more').remove();
+                
+                if ($("#invite-friends-form div.scroll-pane.mCustomScrollbar").length) {
+                    $('#invite-friends-form .mCSB_container').append(data);
+                } else {
+                    $('#invite-friends-form .scroll-pane').append(data);
+                    $("#invite-friends-form div.scroll-pane").mCustomScrollbar({
+                        scrollButtons:{
+                        	enable:true
+                        }
+                    });    
+                }                
+                
+                $("#invite-friends-form .scroll-pane").hide();
+           }, 
+           complete : function (jqXHR, textStatus) {  
+    			if (offset == 0) {
+                    $( "#invite-friends-form" ).dialog( "open" );
+                }  
+                $("#invite-friends-form .scroll-pane").show();
+    			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
+    			$(".ui-dialog-content.ui-widget-content").css({"height" : 495});
+    			$("#invite-friends-form .scroll-pane").mCustomScrollbar("update");
+           }, 
+        }); 
+    } 
+    $("#invite-friends-form #search-friends").show();
+}
+
+function preprocessRequest(event_id) {
+    $( "#invite-friends-form" ).dialog("close");
+    var ids = '';
+    $("#invite-friends-form input[name='invite[]']").each(function(){
+        ids += this.value + ',';
+    });
+    initRequest(ids, event_id);
+}
