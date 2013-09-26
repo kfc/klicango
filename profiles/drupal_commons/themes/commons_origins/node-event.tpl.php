@@ -70,7 +70,7 @@ $advanced_info = advanced_profile_load($location_info->uid);
   </div>
   <div class="third-column public-event-col">
     <div class="public-event-title"><?php echo $title?></div>
-    <div class="public-event-description"><?php echo $node->field_event_details[0]['safe']?></div>
+    <div class="public-event-description"><?php echo nl2br($node->field_event_details[0]['safe'])?></div>
     <div class="public-event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']?></div>
   </div>
   </div>

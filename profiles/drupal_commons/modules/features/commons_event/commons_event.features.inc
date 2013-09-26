@@ -33,6 +33,20 @@ function commons_event_imagecache_default_presets() {
         ),
       ),
     ),
+    'event_ad_image' => array(
+      'presetname' => 'event_ad_image',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '196',
+            'height' => '179',
+          ),
+        ),
+      ),
+    ),
     'event_calendar_image' => array(
       'presetname' => 'event_calendar_image',
       'actions' => array(
