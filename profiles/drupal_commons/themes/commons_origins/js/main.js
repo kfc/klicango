@@ -274,3 +274,11 @@ function initRequest(ids, event_id) {
         }, 1000);
     }
 }
+
+function setActiveEvent(event_id) {
+    if($('#top-event-list #active_event').length) {
+       $('#top-event-list #active_event').val(event_id); 
+    } else {
+        $('#top-event-list').append('<input id="active_event" type="hidden" name="active_event" value="' + event_id + '">');
+    }
+}

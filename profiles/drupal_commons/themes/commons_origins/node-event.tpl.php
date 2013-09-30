@@ -1,19 +1,34 @@
-<?php 
+<?php
     if ($teaser) {
+        $sender = user_load($node->event_data['sender_id']);
+        profile_load_profile($sender);
 ?>   
         <tr>
 			<td class="col-1">
 				<img src="<?php echo imagecache_create_url('events_overview_thumbnail', $node->field_content_images[0]['filepath']); ?>" alt="" />
 			</td>
 			<td class="col-2">
-				<?php echo l($node->name, 'user/' . $node->uid, array('attributes' => array('class' => 'location-name'))) ?> invites you to <?php echo l($node->title, 'node/' . $node->nid, array('attributes' => array('class' => 'event-title'))) ?> <div class="event-date"><?php echo strip_tags($node->field_date[0]['view']); ?></div>
+				<?php
+                    if (events_event_is_available_to_add($node)) { 
+                        echo l(($sender->first_name ? $sender->first_name : $sender->name), 'user/' . $sender->uid, array('attributes' => array('class' => 'location-name'))) ?> invites you to <?php echo l($node->title, 'node/' . $node->nid, array('attributes' => array('class' => 'event-title')));
+                    } else {
+                        $place = user_load($node->uid);
+                        profile_load_profile($place);
+                        echo l($node->title, 'node/' . $node->nid, array('attributes' => array('class' => 'event-title'))) . ' at ' . l(($place->first_name ? $place->first_name : $place->name), 'user/' . $place->uid, array('attributes' => array('class' => 'location-name')));
+                    }
+                ?> 
+                <div class="event-date"><?php echo strip_tags($node->field_date[0]['view']); ?></div>
 				<div class="event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']; ?></div>
-				<div class="going-friends"><a href=""> 3 friends are going</a></div>
+				<div class="going-friends"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" onclick="friendsEvent(<?php echo $node->nid; ?>)"> <?php echo $node->friends_going; ?> friends are going</a></div>
 			</td>
 			<td class="col-3">
-				<div class="add-to-calendar"><a href="">Add to my calendar</a></div>
-				<div class="clear-fix"></div>
-				<div class="decline"><a href="">Decline</a></div>
+                <?php if (events_event_is_available_to_add($node)) { ?>
+    				<div class="add-to-calendar"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" onclick="acceptEvent(<?php echo $node->nid; ?>)">Add to my calendar</a></div>
+    				<div class="clear-fix"></div>
+    				<div class="decline"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" onclick="declineEvent(<?php echo $node->nid; ?>)">Decline</a></div>
+                <?php } else { ?>
+                    <div id="invite-friend-link" class="invite-friend"><a href="javascript: void(0);" onclick="setActiveEvent(<?php echo $node->nid; ?>);">Invite friends</a></div>      
+                <?php } ?>
 			</td>
 		</tr>
 <?php  

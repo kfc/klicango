@@ -352,3 +352,20 @@ body .ui-widget-content .form-submit input[type="button"]{
     -icab-border-radius: 3px; /* Icab */
     border-radius: 3px; /* CSS3 */
 }
+#top-event-list .invite-friend a{
+	font: bold 12px/30px Arial;
+	color: #96c12b;
+	background: #FFF;
+	display: inline-block;
+	height: 30px;
+	text-decoration: none;
+	padding: 0 30px;
+	border: 1px solid #90908e;
+	-moz-border-radius: 5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari, Google Chrome */
+    -khtml-border-radius: 5px; /* KHTML */
+    -o-border-radius: 5px; /* Opera */
+    -ms-border-radius: 5px; /* IE8 */
+    -icab-border-radius: 5px; /* Icab */
+    border-radius: 5px; /* CSS3 */
+}

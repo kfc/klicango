@@ -49,6 +49,11 @@ function events_menu(){
       'page callback' => 'events_public_page',
       'access callback' => 'user_is_logged_in'
     ),
+    'private' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_private_page',
+      'access callback' => 'user_is_logged_in'
+    ),
     
   );
   return $items;
@@ -91,6 +96,11 @@ function events_theme() {
       ),
       'events_invited_list' => array(
         'template' => 'events-invited-list',
+        'arguments' => array('events' => NULL, 'public' => NULL),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),
+      'events_accepted_list' => array(
+        'template' => 'events-accepted-list',
         'arguments' => array('events' => NULL, 'public' => NULL),
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
@@ -417,11 +427,11 @@ function events_get_events($status, $is_public = true) {
     } else {
         $type = 'private';
     }
-    $result = db_query('SELECT eu.event_id FROM events_users AS eu LEFT JOIN content_type_event AS ev ON eu.event_id = ev.nid WHERE ev.field_event_type_value = "%s" AND eu.status = %d AND eu.user_id = %d', $type, $status, $user->uid);
+    $result = db_query('SELECT eu.* FROM events_users AS eu LEFT JOIN content_type_event AS ev ON eu.event_id = ev.nid WHERE ev.field_event_type_value = "%s" AND eu.status = %d AND eu.user_id = %d', $type, $status, $user->uid);
     
     $ids = array();
     while($event = db_fetch_array($result)) {
-        $ids[] = $event['event_id'];    
+        $ids[] = $event;    
     }
     
     return $ids;
@@ -457,12 +467,75 @@ function events_public_page() {
     
     $ids = events_get_events(EVENT_STATUS_NEW, true);
     if (!empty($ids)) {
-        foreach ($ids as $nid) {
-            $events[] = node_view(node_load($nid), true);
+        foreach ($ids as $event) {
+            $node = node_load($event['event_id']);
+            $node->event_data = $event;
+            $node->friends_going = events_get_friends_going($event['event_id'], $event['user_id']);
+            $events[] = node_view($node, true);
         }
     }
     
     $html .= theme('events_invited_list', $events, true);
     
+    $events = array();
+    $ids = events_get_events(EVENT_STATUS_ACCEPTED, true);
+    if (!empty($ids)) {
+        foreach ($ids as $event) {
+            $node = node_load($event['event_id']);
+            $node->event_data = $event;
+            $node->friends_going = events_get_friends_going($event['event_id'], $event['user_id']);
+            $events[] = node_view($node, true);
+        }
+    }
+    
+    $html .= theme('events_accepted_list', $events, true);
+    
+    $html .= theme('klicango_invite_friends', "$('#active_event').val()");
+    
     return $html;
+}
+
+function events_private_page() {
+    $html = '';
+    $events = array();
+    
+    $ids = events_get_events(EVENT_STATUS_NEW, false);
+    if (!empty($ids)) {
+        foreach ($ids as $event) {
+            $node = node_load($event['event_id']);
+            $node->event_data = $event;
+            $node->friends_going = events_get_friends_going($event['event_id'], $event['user_id']);
+            $events[] = node_view($node, true);
+        }
+    }
+    
+    $html .= theme('events_invited_list', $events, false);
+    
+    $events = array();
+    $ids = events_get_events(EVENT_STATUS_ACCEPTED, false);
+    if (!empty($ids)) {
+        foreach ($ids as $event) {
+            $node = node_load($event['event_id']);
+            $node->event_data = $event;
+            $node->friends_going = events_get_friends_going($event['event_id'], $event['user_id']);
+            $events[] = node_view($node, true);
+        }
+    }
+    
+    $html .= theme('events_accepted_list', $events, false);
+    
+    $html .= theme('klicango_invite_friends', "$('#active_event').val()");
+    
+    return $html;
+}
+
+function events_get_friends_going($event_id, $user_id) {
+    $result = db_query('SELECT COUNT(*) FROM events_users 
+                        WHERE event_id = %d AND user_id IN (
+                            SELECT uid AS id FROM friends 
+                            WHERE fid = %d UNION SELECT fid AS id FROM friends WHERE uid = %d
+                        )', $event_id, $user_id, $user_id);
+    $count = db_result($result);
+    
+    return $count;
 }
