@@ -472,6 +472,47 @@ body .ui-widget-content .form-submit input[type="submit"]{
     -icab-border-radius: 3px; /* Icab */
     border-radius: 3px; /* CSS3 */
 }
+div.clear-fix{
+	width: 100%;
+	clear: both;
+}
+#public-event-list div.add-to-calendar,
+#public-event-list div.decline,
+#top-event-list div.add-to-calendar{
+	float: right;
+}
+#public-event-list{margin-bottom: 55px;}
+#public-event-list table, #top-event-list table{width: 100%;}
+#public-event-list div.add-to-calendar{margin-bottom: 9px; }
+#public-event-list div.add-to-calendar a,
+#public-event-list div.decline a,
+#top-event-list div.add-to-calendar a{
+	background: #35332f;
+	font: bold 12px/30px Arial;
+	color: #96c12b;display: block;
+	border: none;
+	outline: none;
+	cursor: pointer;
+
+	width: 139px;
+	height: 30px;
+	border: 1px solid #949391;
+	-moz-border-radius: 3px; /* Firefox */
+    -webkit-border-radius: 3px; /* Safari, Google Chrome */
+    -khtml-border-radius: 3px; /* KHTML */
+    -o-border-radius: 3px; /* Opera */
+    -ms-border-radius: 3px; /* IE8 */
+    -icab-border-radius: 3px; /* Icab */
+    border-radius: 3px; /* CSS3 */
+    text-decoration: none;
+    text-align: center;
+}
+#top-event-list h2{
+	font: 24px/24px Arial;
+	color: #808285;
+	margin-bottom: 25px;
+}
+#public-event-list div.decline a{font-weight: normal !important;}
 body .ui-widget-content .form-submit label{
 	font: 10px/10px Arial;
 	color: #858586;
@@ -732,6 +773,28 @@ span.already-invited{
     -ms-border-radius: 5px; /* IE8 */
     -icab-border-radius: 5px; /* Icab */
     border-radius: 5px; /* CSS3 */
+}
+#top-event-list h2 a{
+	float: right;
+	font: bold 12px/30px Arial;
+	color: #35332f;
+	background: #FFF;
+	display: inline-block;
+	height: 30px;
+	text-decoration: none;
+	padding: 0 30px;
+	border: 1px solid #90908e;
+	-moz-border-radius: 5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari, Google Chrome */
+    -khtml-border-radius: 5px; /* KHTML */
+    -o-border-radius: 5px; /* Opera */
+    -ms-border-radius: 5px; /* IE8 */
+    -icab-border-radius: 5px; /* Icab */
+    border-radius: 5px; /* CSS3 */
+    width: 80px;
+    padding: 0 30px;
+    position: relative;
+    margin: -8px 48px 0 0;
 }
 a.invite-friend{color: #96c12b !important;}
 span.already-invited{float: right;}
@@ -1300,3 +1363,33 @@ div.search-for-friends.loading input[type="text"]{
 	padding-right: 25px;
 	width: 435px;
 }
+#public-event-list table tr td.col-1,
+#top-event-list table tr td.col-1{
+	width: 160px;
+}
+#public-event-list table tr td.col-3 a{margin-right: 33px;}
+#top-event-list table tr td.col-3 a{margin-right: 49px;}
+#public-event-list table tr.last td{
+	padding-bottom: 0;
+}
+#public-event-list table tr td,
+#top-event-list table tr td{padding-bottom: 18px;}
+#public-event-list table tr td.col-2 a,
+#top-event-list table tr td.col-2 a{text-decoration: none;}
+#public-event-list table tr td.col-2 a:hover,
+#top-event-list table tr td.col-2 a:hover{
+	text-decoration: underline;
+}
+#public-event-list table tr td.col-2,
+#top-event-list table tr td.col-2{
+	font: 14px/16px 'Arial';
+	color: #6d6e71;
+	padding-left: 27px;
+	vertical-align: middle;
+}
+#public-event-list table tr td.col-2 a.event-title{font-weight: bold; color: #f34921;}
+div.event-gratuity{
+	font-weight: bold;
+	color: #000000;
+}
+#public-event-list{background:#fdfefe; padding: 25px 15px;}

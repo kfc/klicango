@@ -44,6 +44,12 @@ function events_menu(){
       'access callback' => 'user_is_logged_in'
     ),
     
+    'public' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_public_page',
+      'access callback' => 'user_is_logged_in'
+    ),
+    
   );
   return $items;
   
@@ -83,7 +89,11 @@ function events_theme() {
         'arguments' => array('content' => NULL, 'photos_count' => NULL),
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
-      
+      'events_invited_list' => array(
+        'template' => 'events-invited-list',
+        'arguments' => array('events' => NULL, 'public' => NULL),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),
       'event_post_box' => array(
         'template' =>'event-post-box',
         'path' => drupal_get_path('theme',variable_get('theme_default','')),
@@ -388,15 +398,33 @@ function events_preprocess_page(&$variables) {
 }
 
 function events_get_count($status, $is_public = true) {
+    global $user;
     if ($is_public) {
         $type = 'public';
     } else {
         $type = 'private';
     }
-    $result = db_query('SELECT COUNT(*) AS num FROM events_users AS eu LEFT JOIN content_type_event ON eu.event_id = ev.nid WHERE ev.field_event_type_value = "%s" AND eu.status = %d', $type, $status);
+    $result = db_query('SELECT COUNT(*) AS num FROM events_users AS eu LEFT JOIN content_type_event AS ev ON eu.event_id = ev.nid WHERE ev.field_event_type_value = "%s" AND eu.status = %d AND eu.user_id = %d', $type, $status, $user->uid);
     $count = db_result($result);
     
     return $count;
+}
+
+function events_get_events($status, $is_public = true) {
+    global $user;
+    if ($is_public) {
+        $type = 'public';
+    } else {
+        $type = 'private';
+    }
+    $result = db_query('SELECT eu.event_id FROM events_users AS eu LEFT JOIN content_type_event AS ev ON eu.event_id = ev.nid WHERE ev.field_event_type_value = "%s" AND eu.status = %d AND eu.user_id = %d', $type, $status, $user->uid);
+    
+    $ids = array();
+    while($event = db_fetch_array($result)) {
+        $ids[] = $event['event_id'];    
+    }
+    
+    return $ids;
 }
 function events_views_pre_render(&$view) {
   if($view->name == 'homepage_public_events' && $view->current_display == 'block_2'){
@@ -421,4 +449,20 @@ function events_sort_event_ads($a, $b)
         return 0;
     }
     return ($a->node_data_field_date_field_date_value < $b->node_data_field_date_field_date_value) ? -1 : 1;
+}
+
+function events_public_page() {
+    $html = '';
+    $events = array();
+    
+    $ids = events_get_events(EVENT_STATUS_NEW, true);
+    if (!empty($ids)) {
+        foreach ($ids as $nid) {
+            $events[] = node_view(node_load($nid), true);
+        }
+    }
+    
+    $html .= theme('events_invited_list', $events, true);
+    
+    return $html;
 }

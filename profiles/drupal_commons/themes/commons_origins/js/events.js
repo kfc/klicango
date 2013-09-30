@@ -119,25 +119,31 @@ $(function() {
  
     $('#invite-friends-form #search-friends').keyup(function () {
         if(this.value.length > 1) {
+           last_search = this.value;
+           var current_search = this.value;
            $('#invite-friends-form .search-for-friends').addClass('loading');
            $.ajax({
                type: 'GET',
                dataType: 'html',
                url: '/friends/find',
                data: {"search": this.value},
-               success : function (data, textStatus, jqXHR) {                    
-                    $('#invite-friends-form .mCSB_container').html('');
-                    $('#invite-friends-form .mCSB_container').append(data);                
+               success : function (data, textStatus, jqXHR) { 
+                    if(last_search == current_search) {
+                        $('#invite-friends-form .mCSB_container').html('');
+                        $('#invite-friends-form .mCSB_container').append(data);                
                     
-                    $(".scroll-pane").hide();
+                        $(".scroll-pane").hide();
+                    }
                }, 
-               complete : function (jqXHR, textStatus) {  
-                    $("#invite-friends-form .scroll-pane").show();
-        			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
-                    $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
-        			$("#invite-friends-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
-        			$('#invite-friends-form .search-for-friends').removeClass('loading');
-                    //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top  
+               complete : function (jqXHR, textStatus) {
+                    if(last_search == current_search) {
+                        $("#invite-friends-form .scroll-pane").show();
+            			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
+                        $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
+            			$("#invite-friends-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
+            			$('#invite-friends-form .search-for-friends').removeClass('loading');
+                        //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top
+                    }  
                }, 
             }); 
         }

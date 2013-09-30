@@ -44,7 +44,7 @@
     ?>  
     
     <div id="auth-block">
-		<div class="accaunt-thumbnail"><a href=""><img src="/<?php echo $user->picture; ?>" style="height: 30px; width: 30px;" /></a></div>
+		<div class="accaunt-thumbnail"><a href=""><img src="<?php echo imagecache_create_url('profile_picture_small', $user->picture); ?>" /></a></div>
 		<div class="accaunt-name">
 			<a href=""><?php echo $user->first_name; ?></a>
 			<div id="accaunt-menu">

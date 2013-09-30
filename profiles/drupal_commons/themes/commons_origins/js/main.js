@@ -1,3 +1,5 @@
+var last_search;
+
 $(function() {
     $( ".popup" )
       .click(function(e) {
@@ -67,25 +69,31 @@ $(function() {
     
     $('#create-event-form #search-friends').keyup(function () {
         if(this.value.length > 1) {
+           last_search = this.value;
+           var current_search = this.value;
            $('.search-for-friends').addClass('loading');
            $.ajax({
                type: 'GET',
                dataType: 'html',
                url: '/friends/find',
                data: {"search": this.value},
-               success : function (data, textStatus, jqXHR) {                    
-                    $('.mCSB_container').html('');
-                    $('.mCSB_container').append(data);                
-                    
-                    $(".scroll-pane").hide();
+               success : function (data, textStatus, jqXHR) {
+                    if(last_search == current_search) {
+                        $('.mCSB_container').html('');
+                        $('.mCSB_container').append(data);                
+                        
+                        $(".scroll-pane").hide();
+                    }                    
                }, 
-               complete : function (jqXHR, textStatus) {  
-                    $(".scroll-pane").show();
-        			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 675, 'top' : 50});
-        			$(".ui-dialog-content.ui-widget-content").css({"height" : 600});
-        			$(".scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
-        			$('.search-for-friends').removeClass('loading');
-                    //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top  
+               complete : function (jqXHR, textStatus) {
+                    if(last_search == current_search) {
+                        $(".scroll-pane").show();
+            			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 675, 'top' : 50});
+            			$(".ui-dialog-content.ui-widget-content").css({"height" : 600});
+            			$(".scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
+            			$('.search-for-friends').removeClass('loading');
+                        //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top
+                    }  
                }, 
             }); 
         }
