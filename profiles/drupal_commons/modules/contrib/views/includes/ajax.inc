@@ -56,6 +56,7 @@ function views_ajax() {
           // Get the title after the preview call, to let it set
           // up both the view's current display and arguments
           $object->title = $view->get_title();
+          
         }
         else {
           foreach ($errors as $error) {
@@ -70,7 +71,6 @@ function views_ajax() {
     }
     $messages = theme('status_messages');
     $object->messages = $messages ? '<div class="views-messages">' . $messages . '</div>' : '';
-
     views_ajax_render($object);
   }
 }
@@ -85,7 +85,7 @@ function views_ajax() {
  * that 'display', at least, will be displayed in some kind of ajax
  * spot or popup.
  */
-function views_ajax_render($output = NULL, $title = NULL, $url = NULL, $js = NULL) {
+function views_ajax_render($output = NULL, $title = NULL, $url = NULL, $js = NULL) {  
   if (empty($output)) {
     $output->display = t('Server reports invalid input error.');
     $output->title = t('Error');
@@ -95,12 +95,11 @@ function views_ajax_render($output = NULL, $title = NULL, $url = NULL, $js = NUL
     $temp->display = $output;
     $temp->title = $title;
     $temp->url = $url;
-    $output = $temp;
-  }
+    $output = $temp;  
+  }        
   if (!empty($js)) {
     $output->js = $js;
   }
-
   drupal_json($output);
   exit;
 }

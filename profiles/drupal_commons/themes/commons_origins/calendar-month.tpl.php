@@ -36,3 +36,4 @@
   </tbody>
 </table>
 </div></div>
+<div id="show-events-wrapper" class="scroll-pane" style="display: none;"></div>

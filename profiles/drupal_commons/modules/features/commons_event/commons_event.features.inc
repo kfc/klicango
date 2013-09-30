@@ -24,11 +24,10 @@ function commons_event_imagecache_default_presets() {
         '0' => array(
           'weight' => '0',
           'module' => 'imagecache',
-          'action' => 'imagecache_scale',
+          'action' => 'imagecache_scale_and_crop',
           'data' => array(
             'width' => '120',
-            'height' => '',
-            'upscale' => 0,
+            'height' => '86',
           ),
         ),
       ),
@@ -84,6 +83,20 @@ function commons_event_imagecache_default_presets() {
             'height' => '350',
             'xoffset' => 'center',
             'yoffset' => 'center',
+          ),
+        ),
+      ),
+    ),
+    'event_latest_photo' => array(
+      'presetname' => 'event_latest_photo',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '81',
+            'height' => '74',
           ),
         ),
       ),

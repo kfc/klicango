@@ -29,7 +29,7 @@ Drupal.behaviors.viewsTabs = function (context) {
  * to do.
  */
 Drupal.behaviors.viewsHoverlinks = function() {
-  if ($.browser.msie) {
+  if (navigator.userAgent.match(/msie /i))  {
     // If IE, attach a hover event so we can see our admin links.
     $("div.view:not(.views-hover-processed)").addClass('views-hover-processed').hover(
       function() {

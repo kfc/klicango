@@ -21,7 +21,7 @@ Drupal.behaviors.fusionEqualheights = function (context) {
 Drupal.behaviors.fusionIE6fixes = function (context) {
   // IE6 & less-specific functions
   // Add hover class to primary menu li elements on hover
-  if ($.browser.msie && ($.browser.version < 7)) {
+  if (navigator.userAgent.match(/msie/i)){
     $('form input.form-submit').hover(function() {
       $(this).addClass('hover');
       }, function() {

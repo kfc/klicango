@@ -10,11 +10,20 @@
       }
     }
   }
+  
   $comment_status = (events_get_event_status_for_user($node->comment_target_nid, $node->uid) == EVENT_STATUS_ACCEPTED ? t('is going') : t('posted a new comment'));
   if($photos_num > 0){
     $comment_status = t('added').' '.$photos_num.' '.($photos_num > 1 ? t('photos') : t('photo'));
   }
-                  
+  if(!(arg(1) == 'node' && arg(2) == $node->comment_target_nid)){
+    $target_node = node_load($node->comment_target_nid);
+    $comment_status .= ' '.t('in').' '.l($target_node->title,'node/'.$node->comment_target_nid);
+  }
+  if(!empty($user_info->first_name) && !empty($user_info->first_name))
+    $name = l($user_info->first_name.' '.$user_info->surname,'user/'.$user_info->uid);  
+  if($node->title == '<EventCreated>'){
+    $comment_status = 'created new event '.l($target_node->title,'node/'.$node->comment_target_nid);  
+  }  
 ?>
 
 
