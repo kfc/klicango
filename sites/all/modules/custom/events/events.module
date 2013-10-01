@@ -521,8 +521,12 @@ function events_views_pre_render(&$view) {
     if($view->result > $items_to_display){
       $new_result = array();
       $result_keys = array_keys($view->result);
-      $random_keys = array_rand($result_keys, $items_to_display);
-      asort($random_keys);
+      shuffle($result_keys);
+      if($items_to_display < count($result_keys))
+        $random_keys = array_slice($result_keys, 0, $items_to_display);
+      else
+        $random_keys = $result_keys; 
+      sort($random_keys);
       for($i=0; $i < $items_to_display && $i < count($random_keys); $i++){
         $new_result[$i] = clone($view->result[$random_keys[$i]]);
       }
