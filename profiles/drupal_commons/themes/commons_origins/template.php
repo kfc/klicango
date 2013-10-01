@@ -63,10 +63,18 @@ function commons_origins_preprocess_page(&$variables) {
       }
     }
   }  
+  $js = drupal_add_js();
+  unset($js['core']);
+  unset($js['module']);
+  unset($js['theme']);
+
+  $vars['scripts'] = drupal_get_js('header', $js);
   
-  $scripts_modified = drupal_add_js();  
+  $scripts_modified = drupal_add_js(); 
+  
   $scripts_modified = array('inline' => $scripts_modified['inline']);
   
+
   $variables['scripts_modified' ] = drupal_get_js('inline' , $scripts_modified);
 }
 

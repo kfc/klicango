@@ -40,10 +40,20 @@ $(function() {
   });
   
   
+  $("#show-events-wrapper" ).dialog({
+      autoOpen: false,
+      width: 800,
+      height: 400,
+      modal: true,
+      close: function() {
+       $(".scroll-pane").hide();
+      }
+  });
+  
+  
   $("#form_create_event input[type='submit']").click(function(e){  
     e.preventDefault();
     var form = $("#form_create_event");
-    console.log( $(form).serialize());
     var is_submitted = false;
     $.ajax({
       type: "POST",
@@ -187,12 +197,32 @@ $(function() {
  
 }
 
-$(".block .calendar-calendar .month-view table tr").each(function(){
-  setEqualHeight($(this).find("div.inner"));
-});
+  $(".block .calendar-calendar .month-view table tr").each(function(){
+    setEqualHeight($(this).find("div.inner"));
+  });
  
+  $("a.show-events-link").on('click',function(e){
+    e.preventDefault();
+    var date = $(this).attr('href').substring(18); // crop date part of an URL /show_events?date={date} 
+
+    $( "#show-events-wrapper" ).dialog( "open" );
+    
+    $.ajax({
+           type: 'GET',
+           dataType: 'html',
+           url: $(this).attr('href'),
+           success : function (data) {
+            $( "#show-events-wrapper" ).html(data);  
+           }
+    });
+        
+    return false;
+  });
   
- });
+  
+  
+  
+});
  
  function loadInviteFriends(offset, limit) {
     if (offset == 0 && $("#invite-friends-form div.scroll-pane.mCustomScrollbar").length) {

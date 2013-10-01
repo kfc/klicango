@@ -50,6 +50,13 @@ function events_menu(){
       'access callback' => 'user_is_logged_in'
     ),
     
+    'show_events/%' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'show_events',
+      'page arguments' => array(1),
+      'access callback' => 'user_is_logged_in'
+    ),
+    
   );
   return $items;
   
@@ -62,15 +69,39 @@ function events_block($op = 'list', $delta = 0, $edit = array()) {
             'info' => t('Event Photos Right'),
             'weight' => 0,
         );
+        
+        $blocks[1] = array(
+            'title' => t('Events Activity Stream'),
+            'info' => t('Events Activity Stream'),
+            'weight' => 0,
+        );
+        
+        $blocks[2] = array(
+            'title' => t('Latest Events Photos'),
+            'info' => t('Latest Events Photos'),
+        );
+        
         return $blocks;
     } else if ($op == 'view') {
         switch ($delta) {
           case 0:
-            // Your module will need to define this function to render the block.
             $block = array(
               'content' => events_get_events_photos(),
             );
             break; 
+            
+          case 1:
+            $block = array(
+              'content' => events_get_user_activity_stream(),
+            );
+            break;
+          
+           case 2:
+            $block = array(
+              'content' => events_get_latest_events_photos(),
+            );
+            break;     
+            
         }
         return $block;
     }
@@ -97,7 +128,12 @@ function events_theme() {
       'event_post_box' => array(
         'template' =>'event-post-box',
         'path' => drupal_get_path('theme',variable_get('theme_default','')),
+      ),
       
+      'latest_events_photos' => array(
+        'template' =>'latest-events-photos',
+        'path' => drupal_get_path('theme',variable_get('theme_default','')),
+        'arguments' => array('photos' => NULL, 'photos_count' => NULL)
       )
       
       
@@ -120,8 +156,18 @@ function events_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
         $view->set_arguments($args);
         $node->comments_form = theme('event_post_box');
         $node->comments_view = $view->render('nodecomment_comments_1');
+        $node->current_user_status = events_get_event_status_for_user($node->nid, $user->uid);
+        
       }
-      
+      if($node->type == 'comment'){
+        global $user;
+        if($node->uid != $user->uid){
+          $node->user_info = user_load($node->uid);
+        }
+        else{
+          $node->user_info = $user;
+        }
+      }
       break;  
   }
 }
@@ -231,6 +277,23 @@ function create_event_if_valid(){
       }
       
       node_save($event);
+      
+      // Create specal comment 'Event created'
+      global $user;   
+      $comment = new stdClass();
+      $comment->type = 'comment';
+      $comment->title = '<EventCreated>';
+      $comment->uid = $user->uid;
+      $comment->name = $user->name;
+      $comment->status = 1;
+      $comment->body = trim($_POST['comment_body']);
+      node_save($comment);
+
+      if($comment->nid > 0){
+        $comment->comment_target_nid = $event->nid; 
+         nodecomment_save($comment);
+      }      
+      
       $query = '';
       if (!empty($_POST['invite'])) {
         $invite_str = implode(',', $_POST['invite']);
@@ -323,7 +386,7 @@ function events_get_user_events_with_status($user_id = null, $status = EVENT_STA
   if(empty($user)){
     global $user;
     $user_id = $user->uid;
-  }
+  }  
   $res = db_query('SELECT * from {events_users} where user_id = %d AND status = %d',$user->uid, $status);
   while ($r = db_fetch_array($res)) {
     $events[] = $r['event_id'];
@@ -331,8 +394,24 @@ function events_get_user_events_with_status($user_id = null, $status = EVENT_STA
   return $events;
 }
 
+function events_get_events_created_by_user($user_id = null, $load_full_node = false){
+  $events = array();
+  if(empty($user_id)){
+    global $user;
+    $user_id = $user->uid;
+  }  
+  $res = db_query('SELECT * from {node} where uid = %d AND type=\'event\' AND status = 1',$user_id);
+  while ($r = db_fetch_array($res)) {
+    if($load_full_node)
+      $events[$r['nid']] = $r['nid'];
+    else
+      $events[] = $r['nid'];
+  }
+  return $events;
+}
+
 function events_get_event_status_for_user($event_id = null, $user_id = null){
-  $status = '';
+  $status = '';       
   if(!empty($event_id) && !empty($user_id)){
     $res = db_query('SELECT status from {events_users} where user_id = %d AND event_id = %d',$user_id, $event_id); 
     $status = db_fetch_array($res);
@@ -428,7 +507,7 @@ function events_get_events($status, $is_public = true) {
 }
 function events_views_pre_render(&$view) {
   if($view->name == 'homepage_public_events' && $view->current_display == 'block_2'){
-    $items_to_display = 2;
+    $items_to_display = 9;
     if($view->result > $items_to_display){
       $new_result = array();
       $result_keys = array_keys($view->result);
@@ -451,11 +530,12 @@ function events_sort_event_ads($a, $b)
     return ($a->node_data_field_date_field_date_value < $b->node_data_field_date_field_date_value) ? -1 : 1;
 }
 
+
 function events_public_page() {
     $html = '';
     $events = array();
     
-    $ids = events_get_events(EVENT_STATUS_NEW, true);
+    $ids = events_get_events(EVENT_STATUS_ACCEPTED, true);
     if (!empty($ids)) {
         foreach ($ids as $nid) {
             $events[] = node_view(node_load($nid), true);
@@ -465,4 +545,131 @@ function events_public_page() {
     $html .= theme('events_invited_list', $events, true);
     
     return $html;
+}
+
+function events_get_user_activity_stream(){
+  global $user;
+  $view = views_get_view('nodecomments');
+  $view->set_display('block_1');
+  $view->set_use_pager(true);
+  $view->set_use_ajax(false);
+  $view->set_items_per_page(8);
+  if(arg(0) == 'user' && arg(1) > 0){
+    $user_id = arg(1);  
+  }
+  else{
+    $user_id = $user->uid; 
+  }
+
+  $events = array_merge(events_get_events_created_by_user($user_id), events_get_user_events_with_status($user_id));
+
+  $args = array();
+  if(!empty($events))
+    $args = array(implode('+',$events));
+  $view->set_arguments($args);
+  
+ /* $view->pre_execute($args);
+  // Preview the view.
+  $output = $view->display_handler->preview();
+
+  $view->post_execute();
+  return $output;
+   */
+  
+  return $view->render('block_1');
+}
+
+
+function events_get_latest_events_photos(){
+  global $user;
+  $events_to_show = 4;
+  $photos_to_show = 4;
+  
+  if(arg(0) == 'user' && arg(1) > 0){   
+    $user_id = arg(1);  
+    $_user = user_load($user_id);
+  }
+  else{
+    $user_id = $user->uid; 
+    $_user = $user;
+  }
+    
+  $photos_res = db_query('select ph.field_comment_photo_fid, nc.nid, f.*,n.title as node_title, evt.field_date_value as event_date,evt_image_file.filepath as event_image
+                          FROM `content_field_comment_photo` ph 
+                          INNER JOIN node_comments nc on nc.cid = ph.nid
+                          INNER JOIN node n on n.nid = nc.nid 
+                          INNER JOIN files f on f.fid = ph.field_comment_photo_fid 
+                          INNER JOIN content_type_event evt on evt.nid = n.nid 
+                          LEFT JOIN content_field_content_images evt_image on evt_image.nid = n.nid 
+                          LEFT JOIN files evt_image_file on evt_image_file.fid = evt_image.field_content_images_fid 
+                          WHERE nc.nid in (SELECT nid from node where uid = %d AND type = \'event\' and status = 1) 
+                          AND field_comment_photo_fid IS NOT NULL
+                          GROUP BY nc.nid, ph.field_comment_photo_fid
+                          ORDER BY evt.field_date_value DESC
+                          ', $user_id);
+  
+  //$events = events_get_events_created_by_user($user_id);
+  //if(count($events) > 0){
+   // $photos_res = db_query('select * from `content_field_comment_photo` WHERE nid in (57) and field_comment_photo_fid IS NOT NULL',implode(', ',$events));
+    while ($r = db_fetch_array($photos_res)) {
+      $photos[$r['nid']]['photos'][$r['field_comment_photo_fid']] = $r;
+      $photos[$r['nid']]['node_title'] = $r['node_title'];
+      $photos[$r['nid']]['event_date'] = $r['event_date'];
+      $photos[$r['nid']]['event_image'] = $r['event_image'];
+    }
+    $photos = array_slice($photos,0,$events_to_show, true);
+
+    return theme('latest_events_photos', $photos, $photos_to_show);
+}
+
+function show_events($date){
+  global $user;
+  if(arg(0) == 'user' && arg(1) > 0){
+    $user_id = arg(1);  
+  }
+  else{
+    $user_id = $user->uid; 
+  }
+
+  $event_nids = get_user_events_for_date($user_id, $date);
+  $events = array();
+  foreach($event_nids as $_nid)
+    $events[] = node_view(node_load($_nid), true);
+    
+  echo theme('events_invited_list', $events, true);
+  exit;
+}
+
+function get_user_events_for_date($user_id = null, $date = null, $load_full_node = false){
+  $events = array();
+  if(!empty($date)){
+    //First get events that are created by user for this date
+    if(empty($user_id)){
+      global $user;
+      $user_id = $user->uid;
+    }  
+    
+    $res = db_query("SELECT e.nid from {content_type_event} e
+                      INNER JOIN {node} n on n.nid = e.nid
+                      where uid = %d AND n.status = 1 AND DATE_FORMAT(field_date_value,'%%Y-%%m-%%d') = '%s'",$user_id, $date);
+    while ($r = db_fetch_array($res)) {
+      if($load_full_node)
+        $events[$r['nid']] = node_load($r['nid']);
+      else
+        $events[] = $r['nid'];
+    } 
+     
+    // Also, select events that are user subscribed to
+    $res = db_query("SELECT event_id from {events_users} eu
+                      INNER JOIN {content_type_event} e on eu.event_id = e.nid
+                      where user_id = %d AND DATE_FORMAT(field_date_value,'%%Y-%%m-%%d') = '%s'",$user_id, $date);
+    while ($r = db_fetch_array($res)) {
+      if($load_full_node)
+        $events[$r['event_id']] = node_load($r['event_id']);
+      else
+        $events[] = $r['event_id'];
+    }
+    
+  }
+  return $events;
 }

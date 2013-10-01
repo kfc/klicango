@@ -18,18 +18,23 @@
   <?php //print $ie6_styles; ?>
   <![endif]-->
   <?php print $local_styles; ?>
-  <?php //print $scripts; ?>
+ 
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/style.css" type="text/css" media="screen, projection" />
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/custom.css" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <!--[if lte IE 6]><link rel="stylesheet" href="styles/style_ie.css" type="text/css" media="screen, projection" /><![endif]-->
-    
-    
+    <?php //echo $scripts?> 
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="/misc/drupal.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="/profiles/drupal_commons/themes/fusion/fusion_core/js/superfish.js"></script>
+    <script src="/profiles/drupal_commons/themes/fusion/fusion_core/js/supposition.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.carouFredSel-6.2.1-packed.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.formstyler.new.js"></script>
-    <script src="/misc/drupal.js"></script>
+        
+    <script type="text/javascript" src="/profiles/drupal_commons/modules/contrib/views/js/base.js"></script>
+    <script type="text/javascript" src="/profiles/drupal_commons/modules/contrib/views/js/ajax.js"></script>
+    <script type="text/javascript" src="/profiles/drupal_commons/modules/contrib/views/js/ajax_view.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/events.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/main.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jScrollPane.js"></script>
@@ -104,6 +109,8 @@
           <div id="content">
                     <?php print $messages; ?>
             <?php print $content; ?>
+            <?php print $content_bottom_left; ?>
+            <?php print $content_bottom_right; ?>
           </div><!-- #content-->
         </div><!-- #container-->
         <aside id="sideRight">
@@ -119,4 +126,5 @@
     
     <?php print $closure; ?>
     <?php print $create_event_form; ?>
+    <?php echo $scripts_modified; ?>
 </html>
