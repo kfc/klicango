@@ -37,7 +37,16 @@ function events_menu(){
       'page callback' => 'add_event_for_user',
       'access callback' => 'user_is_logged_in'
     ),
-    
+    'invitation/decline' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'event_decline_event_invitation',
+      'access callback' => 'user_is_logged_in'
+    ),
+    'invitation/accept' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'event_accept_event_invitation',
+      'access callback' => 'user_is_logged_in'
+    ),
     'remove_event_for_user' => array(
       'type' => MENU_CALLBACK,
       'page callback' => 'remove_event_for_user',
@@ -749,4 +758,26 @@ function get_user_events_for_date($user_id = null, $date = null, $load_full_node
     
   }
   return $events;
+}
+
+function event_decline_event_invitation() {
+    global $user;
+    $event_id = $_GET['event_id'];
+    db_query('UPDATE events_users SET status = %d WHERE event_id = %d AND user_id = %d', EVENT_STATUS_DECLINED, $event_id, $user->uid);
+    drupal_json(array('status' => 'success'));
+    exit;
+}
+
+function event_accept_event_invitation() {
+    global $user;
+    $event_id = $_GET['event_id'];
+    $status = $_GET['status'];
+    if ($status == 'new') {
+        $event_status = EVENT_STATUS_NEW;
+    } else {
+        $event_status = EVENT_STATUS_ACCEPTED;
+    }
+    db_query('UPDATE events_users SET status = %d WHERE event_id = %d AND user_id = %d', $event_status, $event_id, $user->uid);
+    drupal_json(array('status' => 'success'));
+    exit;
 }

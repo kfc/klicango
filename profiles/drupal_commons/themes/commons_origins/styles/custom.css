@@ -369,3 +369,21 @@ body .ui-widget-content .form-submit input[type="button"]{
     -icab-border-radius: 5px; /* Icab */
     border-radius: 5px; /* CSS3 */
 }
+a.already-accepted.add-event-link{
+	font: bold 12px/30px Arial !important;
+    width: 139px !important;
+    margin-top: 0px;
+	color: #96c12b !important;
+	background: #FFF !important;
+	display: inline-block;
+	height: 30px;
+	text-decoration: none;
+	border: 1px solid #90908e !important;
+	-moz-border-radius: 5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari, Google Chrome */
+    -khtml-border-radius: 5px; /* KHTML */
+    -o-border-radius: 5px; /* Opera */
+    -ms-border-radius: 5px; /* IE8 */
+    -icab-border-radius: 5px; /* Icab */
+    border-radius: 5px; /* CSS3 */
+}

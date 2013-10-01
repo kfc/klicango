@@ -274,3 +274,47 @@ function preprocessRequest(event_id) {
     });
     initRequest(ids, event_id);
 }
+
+function declineEvent(event_id) {
+    $.ajax({
+       type: 'GET',
+       dataType: 'json',
+       url: '/invitation/decline',
+       data: {"event_id": event_id},
+       success : function (data, textStatus, jqXHR) {
+            if (data.status == 'success') {
+                $('#event_' + event_id).closest('tr').hide('slow');
+                if ($('#event_' + event_id).closest('table').find('tr').length == 1) {
+                    $('#public-event-list').remove();
+                    $('#content').prepend('<div style="margin-bottom: 10px;"></div>');
+                } else {
+                    $('#event_' + event_id).closest('tr').remove();    
+                }
+            }
+       },  
+    });
+}
+
+function acceptEvent(event_id) {
+    var status;
+    $('.add-event-link#event_' + event_id).toggleClass('already-accepted');
+    if($('.add-event-link#event_' + event_id).hasClass('already-accepted')) {
+       $('.add-event-link#event_' + event_id).text('I am going'); 
+       status = 'accepted';
+    } else {
+        $('.add-event-link#event_' + event_id).text('Add to my calendar');
+        status = 'new';
+    }
+    
+    $.ajax({
+       type: 'GET',
+       dataType: 'json',
+       url: '/invitation/accept',
+       data: {"event_id": event_id, "status": status},
+       success : function (data, textStatus, jqXHR) {
+            if (data.status == 'success') {
+                //to do
+            }
+       },  
+    });
+}
