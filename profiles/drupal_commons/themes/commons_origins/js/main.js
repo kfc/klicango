@@ -147,7 +147,7 @@ function validateRemote(id, data) {
     $.ajax({
         type: 'POST',
         dataType: 'json',
-        url: 'dialog/validate',
+        url: '/dialog/validate',
         data: datastring + '&id=' + id,
         success : function (data, textStatus, jqXHR) {
             parseResults(id, data);
