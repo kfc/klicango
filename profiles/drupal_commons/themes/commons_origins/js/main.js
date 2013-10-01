@@ -1,4 +1,8 @@
 var last_search;
+// redirect from Facebook canvas
+if (top.location!= self.location) {
+    top.location = self.location
+}
 
 $(function() {
     $( ".popup" )
