@@ -20,7 +20,7 @@
               <?php echo theme_imagecache('event_latest_photo',$_photo_data['filepath'])?></a>
             <?php endforeach;?>
           </div>
-        
+        </div>
         <?php endforeach;?>
       </div>
   </div>
