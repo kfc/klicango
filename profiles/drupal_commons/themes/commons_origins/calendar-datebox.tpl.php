@@ -17,9 +17,12 @@
  */
  $date_parts = explode('-',$date);
  $day_of_week =  date('D', mktime(0,0,0,$date_parts['1'],$date_parts['2'],$date_parts['0']));
- $link
+ $active_user_uid = $user->uid;
+ if(arg(0) == 'user' && arg(1) > 0){
+  $active_user_uid = arg(1);
+ }
 ?>                       
 <div class="<?php print $granularity ?> <?php print $class; ?>"> <?php print $selected ? l(strtolower($day_of_week).' '.$day, 'show_events_for_date',array('query'=>array('date'=>$date))) : strtolower($day_of_week).' '.$day; ?> </div>
 <?php if(count($items[$date]) > 1):?>
-  <div class="more-events"><a rel="lightbox" class="show-events-link" href="/show_events/<?php echo $date;?>"><?php echo '+'.(count($items[$date])-1).' '.t('event(s)');?></a></div>    
+  <div class="more-events"><a rel="lightbox" class="show-events-link" href="/show_events/<?php echo $active_user_uid?>/<?php echo $date;?>"><?php echo '+'.(count($items[$date])-1).' '.t('event(s)');?></a></div>    
 <?php endif;?>

@@ -64,10 +64,10 @@ function events_menu(){
       'access callback' => 'user_is_logged_in'
     ),
     
-    'show_events/%' => array(
+    'show_events/%/%' => array(
       'type' => MENU_CALLBACK,
       'page callback' => 'show_events',
-      'page arguments' => array(1),
+      'page arguments' => array(1,2),
       'access callback' => 'user_is_logged_in'
     ),
     
@@ -708,14 +708,14 @@ function events_get_latest_events_photos(){
     return theme('latest_events_photos', $photos, $photos_to_show);
 }
 
-function show_events($date){
+function show_events($user_id,$date){
   global $user;
-  if(arg(0) == 'user' && arg(1) > 0){
+ /* if(arg(0) == 'user' && arg(1) > 0){
     $user_id = arg(1);  
   }
   else{
     $user_id = $user->uid; 
-  }
+  } */
 
   $event_nids = get_user_events_for_date($user_id, $date);
   $events = array();
@@ -734,7 +734,7 @@ function get_user_events_for_date($user_id = null, $date = null, $load_full_node
       global $user;
       $user_id = $user->uid;
     }  
-    
+
     $res = db_query("SELECT e.nid from {content_type_event} e
                       INNER JOIN {node} n on n.nid = e.nid
                       where uid = %d AND n.status = 1 AND DATE_FORMAT(field_date_value,'%%Y-%%m-%%d') = '%s'",$user_id, $date);
