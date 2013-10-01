@@ -23,7 +23,7 @@
 			</td>
 			<td class="col-3">
                 <?php if (events_event_is_available_to_add($node)) { ?>
-    				<div class="add-to-calendar"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" onclick="acceptEvent(<?php echo $node->nid; ?>)">Add to my calendar</a></div>
+    				<div class="add-to-calendar"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" class="add-event-link" onclick="acceptEvent(<?php echo $node->nid; ?>)">Add to my calendar</a></div>
     				<div class="clear-fix"></div>
     				<div class="decline"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" onclick="declineEvent(<?php echo $node->nid; ?>)">Decline</a></div>
                 <?php } else { ?>

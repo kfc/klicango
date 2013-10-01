@@ -50,6 +50,20 @@ function feature_imagecache_imagecache_default_presets() {
         ),
       ),
     ),
+    'events_overview_thumbnail' => array(
+      'presetname' => 'events_overview_thumbnail',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '161',
+            'height' => '144',
+          ),
+        ),
+      ),
+    ),
     'homepage_carousel' => array(
       'presetname' => 'homepage_carousel',
       'actions' => array(
@@ -60,6 +74,20 @@ function feature_imagecache_imagecache_default_presets() {
           'data' => array(
             'width' => '1280',
             'height' => '417',
+          ),
+        ),
+      ),
+    ),
+    'profile_picture_small' => array(
+      'presetname' => 'profile_picture_small',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '30',
+            'height' => '30',
           ),
         ),
       ),

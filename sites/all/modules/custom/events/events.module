@@ -549,7 +549,7 @@ function events_public_page() {
     $html = '';
     $events = array();
     
-    $ids = events_get_events(EVENT_STATUS_ACCEPTED, true);
+    $ids = events_get_events(EVENT_STATUS_NEW, true);
     if (!empty($ids)) {
         foreach ($ids as $event) {
             $node = node_load($event['event_id']);
