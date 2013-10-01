@@ -257,6 +257,7 @@ function klicango_friends_get_all_friends() {
 
 
 function klicango_friends_preprocess_node(&$variables) {
+    global $user;
     if($variables['type'] == 'event' && ($variables['uid'] == $user->uid || $variables['field_event_type'][0]['value'] == 'public')) {
         $html = theme('klicango_invite_friends', $variables['nid']);
         $variables['invite_friends_form'] = $html;
