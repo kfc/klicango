@@ -412,11 +412,12 @@ function events_get_user_events_with_status($user_id = null, $status = EVENT_STA
     global $user;
     $user_id = $user->uid;
   }  
-  
-  $res = db_query('SELECT * from {events_users} where user_id = %d AND status = %d',$user->uid, $status);
+    
+  $res = db_query('SELECT * from {events_users} where user_id = %d AND status = %d',$user_id, $status);
   while ($r = db_fetch_array($res)) {
-    $events[] = $r['event_id'];
+    $events[$r['event_id']] = $r['event_id'];
   }
+
   return $events;
 }
 
