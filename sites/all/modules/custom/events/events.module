@@ -176,6 +176,7 @@ function events_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
         $node->comments_form = theme('event_post_box');
         $node->comments_view = $view->render('nodecomment_comments_1');
         $node->current_user_status = events_get_event_status_for_user($node->nid, $user->uid);
+        $node->people_going = events_get_event_attenders($node->nid);
         
       }
       if($node->type == 'comment'){
@@ -756,7 +757,7 @@ function get_user_events_for_date($user_id = null, $date = null, $load_full_node
         $events[] = $r['event_id'];
     }
     
-  }
+  }    
   return $events;
 }
 
@@ -780,4 +781,43 @@ function event_accept_event_invitation() {
     db_query('UPDATE events_users SET status = %d WHERE event_id = %d AND user_id = %d', $event_status, $event_id, $user->uid);
     drupal_json(array('status' => 'success'));
     exit;
+}
+
+function events_get_event_attenders($nid){
+  $f = db_query('SELECT f.name FROM {profile_fields} f');
+  while ($field = db_fetch_array($f)) {
+    $profile_fields[$field['name']] = $field['fid'];
+  }
+  $res = db_query("SELECT eu.*, u.picture, u.name, fbu.name as fb_name 
+                    from events_users eu
+                   LEFT JOIN users u on u.uid = eu.user_id
+                   LEFT JOIN friends_facebook_invited fbu on fbu.facebook_id = eu.facebook_id
+                   WHERE event_id = %d",$nid);
+  $people = array();
+
+  while ($row = db_fetch_array($res)) {    
+    $person = $row;
+    
+    if(!empty($row['user_id'])){  
+      //Load profile for user. MUST BE REFACTORED
+      $result = db_query('SELECT f.name, f.type, v.value FROM {profile_fields} f INNER JOIN {profile_values} v ON f.fid = v.fid WHERE uid = %d', $row['user_id']);
+        while ($field = db_fetch_object($result)) {
+          $person[$field->name] = _profile_field_serialize($field->type) ? unserialize($field->value) : $field->value;
+        }
+     $person['photo'] = theme_imagecache('user_picture_meta', $row['picture']);
+     $person['full_name'] = ((isset($person['first_name']) && isset($person['surname'])) ? $person['first_name'].' '.$person['surname'] : $person['name']);
+     
+    } elseif(!empty($row['facebook_id'])){ 
+      $person['full_name'] = $row['fb_name'];  
+      $person['photo'] = '<img src="https://graph.facebook.com/'.$row['facebook_id'].'/picture" />';
+    }   
+    
+    if($row['status'] == EVENT_STATUS_ACCEPTED){
+      $people['going'][$row['user_id']] = $person;  
+    } elseif($row['status'] != EVENT_STATUS_DECLINED){
+      $people['invited'][] = $person;  
+      
+    }
+  }
+  return $people;
 }

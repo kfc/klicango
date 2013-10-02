@@ -37,7 +37,11 @@
         $location_info = user_load($node->uid);   
         $advanced_info = advanced_profile_load($location_info->uid);         
         ?>
-        <?php if(!empty($advanced_info[0]['photo']) || !empty($advanced_info['photo'])):?>
+        <?php if(!empty($node->field_content_images)):?>
+            <div class="public-event-top-banner">
+              <?php echo theme_imagecache('event_image', $node->field_content_images[0]['filepath']);?>
+            </div>
+        <?php elseif(!empty($advanced_info[0]['photo']) || !empty($advanced_info['photo'])):?>
         <div class="public-event-top-banner">
           <?php echo theme_imagecache('event_image',(!empty($advanced_info['photo']) ? $advanced_info['photo'] : $advanced_info[0]['photo']));?>
         </div>
@@ -117,31 +121,33 @@
           <div class="going-status-button" id="event-action-button"><a class="remove-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t("I'm going")?></a></div>
         <?php endif;?>
         
-        
+        <?php if(!empty($people_going)):?>
         <div class="event-people-block">
-          <div class="going-block">
-            <a href="">Going (8)</a>
-            <div class="person-row">
-              <div class="person-thumbnail"><img src="/profiles/drupal_commons/themes/commons_origins/images/thumb1.jpg" alt="" /></div>
-              <div class="person-name">Meaghan Perkins</div>
+          <?php if(!empty($people_going['going'])):?>
+            <div class="going-block">
+              <a href=""><?php echo t('Going')?> (<?php echo count($people_going['going'])?>)</a>
+              <?php foreach($people_going['going'] as $_person):?>
+                <div class="person-row">
+                  <div class="person-thumbnail"><?php echo $_person['photo']?></div>
+                  <div class="person-name"><?php echo $_person['full_name']?></div>  
+                </div>
+              <?php endforeach;?>  
             </div>
-            <div class="person-row">
-              <div class="person-thumbnail"><img src="/profiles/drupal_commons/themes/commons_origins/images/thumb2.jpg" alt="" /></div>
-              <div class="person-name">Max Lamenace</div>
+          <?php endif;?>
+          <?php if(!empty($people_going['invited'])):?>
+            <div class="invited-block">
+              <a href=""><?php echo t('Invited')?> (<?php echo count($people_going['invited'])?>)</a>
+              <?php foreach($people_going['invited'] as $_person):?>
+                <div class="person-row">
+                  <div class="person-thumbnail"><?php echo $_person['photo']?></div>
+                  <div class="person-name"><?php echo $_person['full_name']?></div>  
+                </div>
+              <?php endforeach;?>  
             </div>
-          </div>
-          <div class="invited-block">
-            <a href="">Invited (18)</a>
-            <div class="person-row">
-              <div class="person-thumbnail"><img src="/profiles/drupal_commons/themes/commons_origins/images/thumb3.jpg" alt="" /></div>
-              <div class="person-name">Karl Kreutzweld</div>
-            </div>
-          </div>
-          <?php if ($node->field_event_type[0]['value'] == 'public' || $node->uid == $user->uid) :?>
-            <div class="invite-friend" id="invite-friend-link"><a href="javascript: void(0);">Invite friends</a></div>
-          <?php endif; ?>
+          <?php endif;?>
         </div>
-        
+        <?php endif;?>
+      
         <div class="event-comment-box">
           <?php if(user_is_logged_in()):?>
             <div class="post-box">
