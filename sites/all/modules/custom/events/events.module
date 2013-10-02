@@ -408,10 +408,11 @@ function event_post_comment(){
 
 function events_get_user_events_with_status($user_id = null, $status = EVENT_STATUS_ACCEPTED){
   $events = array();
-  if(empty($user)){
+  if(empty($user_id)){
     global $user;
     $user_id = $user->uid;
   }  
+  
   $res = db_query('SELECT * from {events_users} where user_id = %d AND status = %d',$user->uid, $status);
   while ($r = db_fetch_array($res)) {
     $events[] = $r['event_id'];
@@ -430,7 +431,7 @@ function events_get_events_created_by_user($user_id = null, $load_full_node = fa
     if($load_full_node)
       $events[$r['nid']] = $r['nid'];
     else
-      $events[] = $r['nid'];
+      $events[$r['nid']] = $r['nid'];
   }
   return $events;
 }
@@ -646,6 +647,7 @@ function events_get_user_activity_stream(){
   $view->set_use_pager(true);
   $view->set_use_ajax(false);
   $view->set_items_per_page(8);
+  
   if(arg(0) == 'user' && arg(1) > 0){
     $user_id = arg(1);  
   }
@@ -654,7 +656,6 @@ function events_get_user_activity_stream(){
   }
 
   $events = array_merge(events_get_events_created_by_user($user_id), events_get_user_events_with_status($user_id));
-
   $args = array();
   if(!empty($events))
     $args = array(implode('+',$events));
