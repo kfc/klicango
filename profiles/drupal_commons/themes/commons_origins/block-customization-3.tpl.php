@@ -3,11 +3,11 @@ $user_id = arg(1);
 $viewed_user = user_load($user_id);
 $advanced_profile = advanced_profile_load($user_id);
 ?>
-<?php if($user->uid == $user_id && in_array('individual', $user->roles)):?>
+<?php if(in_array('individual', $user->roles)):?>
   <div id="private-account-info">
-    <div class="account-info-thumb"><img src="/<?php echo $user->picture?>" height="59"></div>
-    <div class="account-info-name"><?php if(isset($user->first_name)) echo $user->first_name?> <?php if(isset($user->surname)) echo $user->surname?></div>
-    <div class="account-info-city"><?php if(isset($user->city)) echo $user->city?> <?php if(isset($user->country)) echo ', '.$user->country?></div>
+    <div class="account-info-thumb"><img src="/<?php echo $viewed_user->picture?>" height="59"></div>
+    <div class="account-info-name"><?php if(isset($viewed_user->first_name)) echo $viewed_user->first_name?> <?php if(isset($viewed_user->surname)) echo $viewed_user->surname?></div>
+    <div class="account-info-city"><?php if(isset($viewed_user->city)) echo $viewed_user->city?><?php if(isset($viewed_user->country)) echo ', '.$viewed_user->country?></div>
   </div>
 <?php elseif(in_array('professional',$viewed_user->roles)):?>
   <div class="location-calendar-top-banner">

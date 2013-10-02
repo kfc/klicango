@@ -120,9 +120,8 @@
         <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
           <div class="going-status-button" id="event-action-button"><a class="remove-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t("I'm going")?></a></div>
         <?php endif;?>
-        
-        <?php if(!empty($people_going)):?>
         <div class="event-people-block">
+        <?php if(!empty($people_going)):?>
           <?php if(!empty($people_going['going'])):?>
             <div class="going-block">
               <a href=""><?php echo t('Going')?> (<?php echo count($people_going['going'])?>)</a>
@@ -145,9 +144,12 @@
               <?php endforeach;?>  
             </div>
           <?php endif;?>
-        </div>
+        
         <?php endif;?>
-      
+        <?php if ($node->field_event_type[0]['value'] == 'public' || $node->uid == $user->uid) :?>
+            <div class="invite-friend" id="invite-friend-link"><a href="javascript: void(0);"><?php echo t('Invite Friends')?></a></div>
+          <?php endif; ?>
+        </div>
         <div class="event-comment-box">
           <?php if(user_is_logged_in()):?>
             <div class="post-box">

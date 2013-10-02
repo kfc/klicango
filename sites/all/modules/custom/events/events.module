@@ -298,6 +298,11 @@ function create_event_if_valid(){
       
       node_save($event);
       
+      if(!empty($event->nid)){
+        $data = array('event_id' => $event->nid, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => EVENT_STATUS_ACCEPTED);
+        $res = drupal_write_record('events_users', $data);
+      }
+      
       // Create specal comment 'Event created'
       global $user;   
       $comment = new stdClass();
@@ -743,7 +748,7 @@ function get_user_events_for_date($user_id = null, $date = null, $load_full_node
       if($load_full_node)
         $events[$r['nid']] = node_load($r['nid']);
       else
-        $events[] = $r['nid'];
+        $events[$r['nid']] = $r['nid'];
     } 
      
     // Also, select events that are user subscribed to
@@ -754,7 +759,7 @@ function get_user_events_for_date($user_id = null, $date = null, $load_full_node
       if($load_full_node)
         $events[$r['event_id']] = node_load($r['event_id']);
       else
-        $events[] = $r['event_id'];
+        $events[$r['event_id']] = $r['event_id'];
     }
     
   }    
@@ -793,31 +798,41 @@ function events_get_event_attenders($nid){
                    LEFT JOIN users u on u.uid = eu.user_id
                    LEFT JOIN friends_facebook_invited fbu on fbu.facebook_id = eu.facebook_id
                    WHERE event_id = %d",$nid);
-  $people = array();
+                   
+  $people = $persons = $profiles = array();
 
-  while ($row = db_fetch_array($res)) {    
-    $person = $row;
-    
-    if(!empty($row['user_id'])){  
-      //Load profile for user. MUST BE REFACTORED
-      $result = db_query('SELECT f.name, f.type, v.value FROM {profile_fields} f INNER JOIN {profile_values} v ON f.fid = v.fid WHERE uid = %d', $row['user_id']);
-        while ($field = db_fetch_object($result)) {
-          $person[$field->name] = _profile_field_serialize($field->type) ? unserialize($field->value) : $field->value;
-        }
-     $person['photo'] = theme_imagecache('user_picture_meta', $row['picture']);
-     $person['full_name'] = ((isset($person['first_name']) && isset($person['surname'])) ? $person['first_name'].' '.$person['surname'] : $person['name']);
+  while ($row = db_fetch_array($res)) {
+    $persons[] = $row;
+    if(!empty($row['user_id']))
+      $profiles[$row['user_id']] = array();    
+  }
+  
+  $result = db_query('SELECT f.name, f.type, v.value,uid FROM {profile_fields} f INNER JOIN {profile_values} v ON f.fid = v.fid WHERE uid in (%s)', implode(',',array_keys($profiles)));
+  while ($field = db_fetch_object($result)) {
+    $profiles[$field->uid][$field->name] = _profile_field_serialize($field->type) ? unserialize($field->value) : $field->value;
+  }
+  
+  foreach($persons as $person) {    
+    if(!empty($person['user_id'])){ 
+      if(isset($profiles[$person['user_id']]))
+        $person = array_merge($person, $profiles[$person['user_id']]);   
+     $person['photo'] = theme_imagecache('user_picture_meta', $person['picture']);
+     if(!empty($person['facebook_id']))
+      $person['full_name'] = $person['fb_name'];  
+     else
+      $person['full_name'] = ((isset($person['first_name']) && isset($person['surname'])) ? $person['first_name'].' '.$person['surname'] : $person['name']);
      
-    } elseif(!empty($row['facebook_id'])){ 
-      $person['full_name'] = $row['fb_name'];  
-      $person['photo'] = '<img src="https://graph.facebook.com/'.$row['facebook_id'].'/picture" />';
+    } elseif(!empty($person['facebook_id'])){ 
+      $person['full_name'] = $person['fb_name'];  
+      $person['photo'] = '<img src="https://graph.facebook.com/'.$person['facebook_id'].'/picture" />';
     }   
     
-    if($row['status'] == EVENT_STATUS_ACCEPTED){
-      $people['going'][$row['user_id']] = $person;  
-    } elseif($row['status'] != EVENT_STATUS_DECLINED){
+    if($person['status'] == EVENT_STATUS_ACCEPTED){
+      $people['going'][$person['user_id']] = $person;  
+    } elseif($person['status'] != EVENT_STATUS_DECLINED){
       $people['invited'][] = $person;  
       
     }
-  }
+  }    
   return $people;
 }
