@@ -20,6 +20,20 @@ function klicango_friends_menu(){
     'page callback' => 'klicango_friends_find',
     'access callback' => 'user_is_logged_in',
   );
+  
+   $items['follow/%'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_follow_place',
+    'page arguments' => array(1),
+    'access callback' => 'user_is_logged_in',
+  );
+  
+   $items['unfollow/%'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_unfollow_place',
+    'page arguments' => array(1),
+    'access callback' => 'user_is_logged_in',
+  );
     
   return $items;  
 }
@@ -277,4 +291,48 @@ function klicango_friends_theme() {
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
     );
+}
+
+function klicango_friends_are_friends($uid1, $uid2){
+  if(!empty($uid1) && !empty($uid2)){
+    $res = db_query("SELECT * FROM friends WHERE (uid = %d AND fid = %d) OR (uid = %d AND fid = %d)", $uid1,$uid2,$uid2,$uid1);
+    return ($res->num_rows > 0);
+  }
+  return false;
+}
+
+
+function klicango_friends_add_friend($fid){
+  global $user;
+  if(!empty($fid)){
+    $data = array('uid' => $user->uid, 'fid' => $fid );
+    $res = drupal_write_record('friends', $data);  
+  }
+  return ($res == SAVED_NEW);
+}
+
+function klicango_friends_remove_friend($fid){
+  global $user;
+  if(!empty($fid)){
+    $r = db_query('DELETE FROM {friends} WHERE (uid = %d AND fid = %d) OR (uid = %d AND fid = %d)', $user->uid, $fid, $fid, $user->uid);
+  }
+  return $r;
+}
+
+function klicango_follow_place($place_id){
+  $return = array('success' => false);
+  if(!empty($place_id)){
+    $return['success'] = klicango_friends_add_friend($place_id);
+  }
+  echo json_encode($return);
+  exit;  
+}
+
+function klicango_unfollow_place($place_id){
+  $return = array('success' => false);
+  if(!empty($place_id)){
+    $return['success'] = klicango_friends_remove_friend($place_id);
+  }
+  echo json_encode($return);
+  exit;
 }

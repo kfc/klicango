@@ -41,7 +41,6 @@
  $date = explode(' - ',strip_tags($fields['node_data_field_date_field_date_value']['data']));
  if(!empty($date) && isset($date[1]))
   $date = $date[1];
-  
 ?>
 <?php 
   if(arg(0) == 'user'){
@@ -61,7 +60,12 @@
 <div class="view-item view-item-<?php print $view->name ?>">
   <div class="<?php print $node->date_id; ?> calendar monthview">
     <div class="view-field view-data-node-vid node-vid">
-      <?php print $fields['node_vid']['data']; ?>      
+      <?php 
+        if(strtolower($fields['node_data_field_date_field_event_type_value']['data']) == 'public')
+          print $fields['node_vid']['data'];
+        else  
+          print $fields['users_picture']['data']; 
+        ?>      
     </div>  
   </div>    
 </div>

@@ -38,13 +38,42 @@ function customization_menu(){
     'file' => 'customization.admin.inc',
   );
   
+ $items['comment_delete/%'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'customization_comment_delete',
+    'page arguments' => array(1),
+    'access callback' => 'check_comment_delete',
+    'access arguments' => array(1),
+  );
+   
   return $items;
   
   
 }
-
 function customization_front() {
     return '';
+}
+
+function check_comment_delete($nid, $node = null){
+  global $user;
+  if(!empty($nid)){  
+    if(empty($node)){
+      $node = node_load($nid, null, true);
+    }
+    if(!isset($node->comment_target_node))
+      $node->comment_target_node = node_load($node->comment_target_nid);
+   
+    return ($node->type == 'comment' && (($user->uid == $node->uid) || $node->comment_target_node->uid == $user->uid));
+  }
+  else return false;
+}
+
+function customization_comment_delete($nid){
+  global $user;
+  if(!empty($nid)){
+    node_delete($nid);
+  } 
+  drupal_goto(); 
 }
 
 

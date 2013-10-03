@@ -183,6 +183,7 @@ function events_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
         global $user;
         if($node->uid != $user->uid){
           $node->user_info = user_load($node->uid);
+          $node->comment_target_node = node_load($node->comment_target_nid);
         }
         else{
           $node->user_info = $user;

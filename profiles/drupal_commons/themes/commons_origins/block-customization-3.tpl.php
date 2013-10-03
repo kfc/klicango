@@ -1,15 +1,16 @@
 <?php global $user;
 $user_id = arg(1);
 $viewed_user = user_load($user_id);
+profile_load_profile($viewed_user);
 $advanced_profile = advanced_profile_load($user_id);
 ?>
-<?php if(in_array('individual', $user->roles)):?>
+<?php if(in_array('individual', $viewed_user->roles)):?>
   <div id="private-account-info">
     <div class="account-info-thumb"><img src="/<?php echo $viewed_user->picture?>" height="59"></div>
     <div class="account-info-name"><?php if(isset($viewed_user->first_name)) echo $viewed_user->first_name?> <?php if(isset($viewed_user->surname)) echo $viewed_user->surname?></div>
     <div class="account-info-city"><?php if(isset($viewed_user->city)) echo $viewed_user->city?><?php if(isset($viewed_user->country)) echo ', '.$viewed_user->country?></div>
   </div>
-<?php elseif(in_array('professional',$viewed_user->roles)):?>
+<?php elseif(in_array('professional',$viewed_user->roles)): ?>
   <div class="location-calendar-top-banner">
     <?php echo theme_imagecache('event_image',(!empty($advanced_profile['photo']) ? $advanced_profile['photo'] : $advanced_profile[0]['photo']));?>
   </div>
@@ -17,14 +18,22 @@ $advanced_profile = advanced_profile_load($user_id);
       <div class="first-column public-event-col">
         <div class="profile-info">
           <div class="profile-thumbnail"><?php echo theme_imagecache('user_picture_meta', $viewed_user->picture);?></div>
-          <div class="profile-name"><?php echo $viewed_user->profile_name;?></div>
-          <div class="profile-city"><?php echo $viewed_user->profile_location;?></div>
+          <div class="profile-name"><?php echo $viewed_user->first_name;?></div>
+          <div class="profile-city"><?php echo $viewed_user->city;?></div>
         </div>
       </div>
       <div class="second-column public-event-col">
-        <div class="public-event-address">3, rue Barillerie <br> 06300 Nice</div>
-        <div class="public-event-contacts">tel: 04 18 41 02 79 <br> email: loungebar@gmail.com</div>
+        <div class="public-event-address"><?php echo $viewed_user->address?> <br> <?php echo $viewed_user->zip?> <?php echo $viewed_user->city?></div>
+        <div class="public-event-contacts">tel: <?php echo $viewed_user->phone?> <br> email: <?php echo l($viewed_user->mail, 'mailto:'.$viewed_user->mail)?></div>
       </div>
-      <!--<div class="i-like-this-place"><a href="">I like this place</a></div>-->
+      <?php if($user->uid != $viewed_user->uid):?>
+        <div class="public-actions">
+        <?php if(klicango_friends_are_friends($user->uid, $viewed_user->uid)):?>
+          <div class="i-like-this-place"><?php echo l(t('I like this place'),'unfollow/'.$viewed_user->uid,array('attributes'=>array('class'=>'follow-place-action','id'=>'follow-place-calendar')))?></div>
+        <?php else:?>
+          <div class="add-to-calendar"><?php echo l(t('Follow this place'),'follow/'.$viewed_user->uid, array('attributes'=>array('class'=>'follow-place-action','id'=>'unfollow-place-calendar')))?></div>
+        <?php endif;?>  
+      <?php endif;?> 
+      </div>  
     </div>
 <?php endif;?>

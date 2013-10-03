@@ -387,3 +387,35 @@ a.already-accepted.add-event-link{
     -icab-border-radius: 5px; /* Icab */
     border-radius: 5px; /* CSS3 */
 }
+
+.public-actions div.add-to-calendar{ float: right; }
+.public-actions div.add-to-calendar  a{
+  background: #35332f;
+  font: bold 12px/30px Arial;
+  color: #96c12b;
+  display: block;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  width: 139px;
+  height: 30px;
+  border: 1px solid #949391;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -icab-border-radius: 3px;
+  border-radius: 3px;
+  text-decoration: none;
+  text-align: center;
+}
+
+span.comment-delete-button{
+  float: right;  
+}
+span.comment-delete-button a{
+  font-size: 200%;  
+  text-decoration: none;
+  color:red;
+}
