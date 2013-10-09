@@ -30,12 +30,34 @@ $(function() {
     .click(function(e) {
     e.preventDefault();
     $('#create-event-form .profile-upload').styler({browseText: 'Add event photo'});
+    
+   
+    $("#create-event-form input[type='text']").each(function(){
+      $(this).val('');
+    });
+    $("#create-event-form textarea").each(function(){
+      $(this).val('');
+    });
+
+   // $( "#create-event-form" ).dialog( {title:'Create Event'} );
     $( "#create-event-form" ).dialog( "open" );
   });
   
   $("#modify-event-link")
     .click(function(e) {
     e.preventDefault();
+    $("#create-event-form input[type='text']").each(function(){
+      $(this).val(form_data.data[$(this).attr('name')]);
+    });
+    $("#create-event-form textarea").each(function(){
+      $(this).val(form_data.data[$(this).attr('name')]);
+    });
+    $("#create-event-form input[type='submit']").each(function(){
+      $(this).val('Save');
+    });
+    
+    $('#create-event-form .profile-upload').styler({browseText: 'Change event photo'});
+    $( "#create-event-form" ).dialog( {title:'Modify Event'} );
     $( "#create-event-form" ).dialog( "open" );
   });
   

@@ -71,6 +71,13 @@ function events_menu(){
       'access callback' => 'user_is_logged_in'
     ),
     
+     'get_event_form_data/%' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_get_event_form_data',
+      'page arguments' => array(1),
+      'access callback' => 'user_is_logged_in'
+    ),
+    
   );
   return $items;
   
@@ -271,12 +278,23 @@ function create_event_if_valid(){
     if(!$is_valid){
       
     } else{
+       $edit_mode = false;
+      global $user; 
       
-      global $user;   
-      $event = new stdClass();
-      $event->type = 'event';
-      $event->uid = $user->uid;
-      $event->status = 1;
+      if(isset($_POST['nid']) && !empty($_POST['nid']) && (int)$_POST['nid'] > 0){
+        $edit_mode = true;
+        $event = node_load($_POST['nid']);
+        if($event->uid == $user->uid){
+        }
+        else return false;
+        
+      }
+      else{
+        $event = new stdClass();
+        $event->type = 'event';
+        $event->uid = $user->uid;
+        $event->status = 1;
+      }
       $event->title = trim($_POST['title']);
       $event->field_event_details[0]['value']= trim($_POST['details']);
       $event->field_location[0]['value']= trim($_POST['location']);
@@ -298,38 +316,46 @@ function create_event_if_valid(){
       }
       
       node_save($event);
-      
-      if(!empty($event->nid)){
-        $data = array('event_id' => $event->nid, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => EVENT_STATUS_ACCEPTED);
-        $res = drupal_write_record('events_users', $data);
-      }
-      
-      // Create specal comment 'Event created'
-      global $user;   
-      $comment = new stdClass();
-      $comment->type = 'comment';
-      $comment->title = '<EventCreated>';
-      $comment->uid = $user->uid;
-      $comment->name = $user->name;
-      $comment->status = 1;
-      $comment->body = trim($_POST['comment_body']);
-      node_save($comment);
+      if(!$edit_mode){
+        if(!empty($event->nid)){
+          $data = array('event_id' => $event->nid, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => EVENT_STATUS_ACCEPTED);
+          $res = drupal_write_record('events_users', $data);
+        }
+        
+        // Create specal comment 'Event created'
+        global $user;   
+        $comment = new stdClass();
+        $comment->type = 'comment';
+        $comment->title = '<EventCreated>';
+        $comment->uid = $user->uid;
+        $comment->name = $user->name;
+        $comment->status = 1;
+        $comment->body = trim($_POST['comment_body']);
+        node_save($comment);
 
-      if($comment->nid > 0){
-        $comment->comment_target_nid = $event->nid; 
-         nodecomment_save($comment);
-      }      
-      
-      $query = '';
-      if (!empty($_POST['invite'])) {
-        $invite_str = implode(',', $_POST['invite']);
-        $query = 'invite=' . $invite_str . '&event_id=' . $event->nid;
+        if($comment->nid > 0){
+          $comment->comment_target_nid = $event->nid; 
+           nodecomment_save($comment);
+        }      
+        
+        $query = '';
+        if (!empty($_POST['invite'])) {
+          $invite_str = implode(',', $_POST['invite']);
+          $query = 'invite=' . $invite_str . '&event_id=' . $event->nid;
+        }
       }
       
+      // Send invitations to all followers of a place
+      if(!$edit_mode && in_array('professional', $user->roles)){
+         $followers = klicango_friends_all_friends($user->uid);
+         if(!empty($followers)){                                 
+           db_query("INSERT INTO events_users(user_id, event_id, sender_id,status) 
+                    SELECT DISTINCT(uid),".$event->nid.",".$user->uid.",1 from (SELECT uid FROM friends WHERE (fid = ".$user->uid.") UNION SELECT fid as uid FROM friends WHERE (uid = ".$user->uid.")) t ");
+         }
+      }
       if($event->nid > 0)
         drupal_goto('node/'.$event->nid, $query);
       else drupal_goto('<front>');  
-      //die();
     }
   }
   return '';
@@ -838,4 +864,25 @@ function events_get_event_attenders($nid){
     }
   }    
   return $people;
+}
+
+function events_get_event_form_data($node){
+  //$node = node_load($event_id);
+  $data = array();
+  $data['nid'] = $node->nid;
+  $data['title'] = $node->title;
+  $data['details'] = $node->field_event_details[0]['value'];
+  $data['location'] = $node->field_location[0]['value'];
+  
+  $date = strtotime($node->field_date[0]['value']);
+  
+  $data['date'] = date('d/m/Y',$date);
+  $data['time'] = date('H:i',$date);
+  $data['gratuity'] = $node->field_event_gratuity[0]['value'];
+  $data['email'] = $node->field_event_email[0]['value'];
+  $data['phone'] = $node->field_event_contact_phone[0]['value'];
+  
+  return json_encode(array('data'=>$data));
+  //exit;
+  
 }

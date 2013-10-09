@@ -6,14 +6,18 @@ $nid = arg(1);
 $node = node_load($nid);
 if($node->type == 'event' && $node->uid == $user->uid){
   $values = (array)$node;
+  $date = strtotime($node->field_date);
+  drupal_add_js("var form_data = ".events_get_event_form_data($node).";",'inline');
+  
 }
 ?>
 <div id="create-event-form" title="Create Event">
   <form action="/create_event_if_valid" method="post" id="form_create_event" enctype="multipart/form-data">
+  <input type="hidden" name="nid">
   <div id="create_event_form_errors"></div>
   <div class="form-item">
     <label><?php echo t('Title')?></label>
-    <input type="text" name="title" value="<?php echo (isset($values['title']) ? $values['title'] : '');?>" style="width: 294px;" placeholder="<?php echo t('such as birtday party')?>" />
+    <input type="text" name="title" style="width: 294px;" placeholder="<?php echo t('such as birtday party')?>" />
   </div>
   <div class="form-item">
     <label><?php echo t('Details')?></label>
@@ -21,12 +25,12 @@ if($node->type == 'event' && $node->uid == $user->uid){
   </div>
   <div class="form-item">
     <label><?php echo t('Where')?></label>
-    <input type="text" name="location" style="width: 294px;" placeholder="<?php echo t('such as 11, rue Bellevue, 83270 Saint-Cyr-sur-Mer')?>" />
+    <input type="text" name="location" style="width: 294px;"  placeholder="<?php echo t('such as 11, rue Bellevue, 83270 Saint-Cyr-sur-Mer')?>" />
   </div>
   <div class="form-item">
     <label><?php echo t('When')?></label>
     <input type="text" name="date" placeholder="<?php echo ('format: d/m/Y');?>" />
-    <input type="text" name="time" placeholder="<?php echo ('ex: 20:30');?>" />
+    <input type="text" name="time"  placeholder="<?php echo ('ex: 20:30');?>" />
   </div>
   <?php if(in_array('professional', $user->roles)):?>
     <div class="form-item">

@@ -46,9 +46,11 @@
           <?php echo theme_imagecache('event_image',(!empty($advanced_info['photo']) ? $advanced_info['photo'] : $advanced_info[0]['photo']));?>
         </div>
         <?php endif;?>
-        <?php if( false && $node->uid == $user->uid):?>
+        <?php if( $node->uid == $user->uid):
+          
+        ?>
           <div class="public-event-modify-link">
-            <a id="modify-event-link" href="">Modify this event</a>
+            <a id="modify-event-link" href="/get_event_form_data/<?php echo $node->nid?>">Modify this event</a>
           </div>
         <?php endif;?>
         

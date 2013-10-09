@@ -336,3 +336,14 @@ function klicango_unfollow_place($place_id){
   echo json_encode($return);
   exit;
 }
+
+function klicango_friends_all_friends($uid){  
+  $friends = array();
+  if(!empty($uid)){
+    $res = db_query("SELECT DISTINCT(uid) from (SELECT uid FROM friends WHERE (fid = %d) UNION SELECT fid as uid FROM friends WHERE (uid = %d)) t", $uid,$uid);
+    while($row = db_fetch_array($res)){
+      $friends[] = $row['uid'];
+    }
+  }
+  return $friends;
+}
