@@ -64,11 +64,7 @@
     				</div>
     			<!-- Форма поиска -->
     		</div>
-    	</header><!-- #header-->
-    	
-    	<section id="spacer"></section>
-    	
-    	
+    	</header><!-- #header-->    	
     	<div class="clear-fix"></div>
     
     	<section id="middle">

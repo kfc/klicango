@@ -26,7 +26,7 @@
 	<div class="form-item login-links">
 		<a id="forgot-pass" href="">Forgot your password?</a>
 	</div>
-	<div class="form-item form-type-checkbox form-item-field-suggestion-und">
+	<div class="form-item form-type-checkbox form-item-field-suggestion-und" onclick="$('.facebook-log-in').toggleClass('active');" >
 		<input type="checkbox" id="field-pro" name="field-pro" value="1" class="form-checkbox" />
 		<label class="option" for="field-pro">I’m a pro</label>
 	</div>

@@ -209,6 +209,6 @@ function commons_origins_fboauth_action__connect($action, $link) {
     $attributes = isset($link['attributes']) ? drupal_attributes($link['attributes']) : '';
     $title = isset($link['title']) ? check_plain($link['title']) : '';
     
-    return '<div class="form-item facebook-log-in"><a ' . $attributes . ' href="' . $url . '">' . t('Log with Facebook') . '</a></div>';
+    return '<div class="form-item facebook-log-in active"><a ' . $attributes . ' onclick="if(!$(\'.facebook-log-in\').hasClass(\'active\')) return false;" href="' . $url . '">' . t('Log with Facebook') . '</a></div>';
 
 }                 

@@ -118,7 +118,7 @@ body .login-form.ui-widget-content .form-item.facebook-log-in a{
 	float: right;
 	border: none;
 	outline: none;
-	cursor: pointer;
+	cursor: default;
 	width: 320px;
 	height: 30px;
 	border: 1px solid #aab0bf;
@@ -387,7 +387,51 @@ a.already-accepted.add-event-link{
     -icab-border-radius: 5px; /* Icab */
     border-radius: 5px; /* CSS3 */
 }
+a.already-accepted.add-user-link{
+	font: bold 12px/30px Arial !important;
+    width: 139px !important;
+    margin-top: 0px;
+	color: #96c12b !important;
+	background: #FFF !important;
+	display: inline-block;
+	height: 30px;
+	text-decoration: none;
+	border: 1px solid #90908e !important;
+	-moz-border-radius: 5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari, Google Chrome */
+    -khtml-border-radius: 5px; /* KHTML */
+    -o-border-radius: 5px; /* Opera */
+    -ms-border-radius: 5px; /* IE8 */
+    -icab-border-radius: 5px; /* Icab */
+    border-radius: 5px; /* CSS3 */
+}
+.public-event-contacts a {
+    color: #858586;
+    text-decoration: none;
+}
+.facebook-log-in a {
+    cursor: default;
+}
+.facebook-log-in.active a {
+    background: #3b5997 !important;
+    cursor: pointer !important;
+}
 
+#profile_info .first-column .profile-name {
+    padding-top: 0px !important;
+}
+#profile_info {
+    margin-bottom: -55px !important;
+}
+
+#profile_info .first-column.private {
+    width: 200px !important;
+}
+.location-calendar-top-banner ul li {
+    float: left;
+    width: 830px;
+    height: 350px;
+}
 .public-actions div.add-to-calendar{ float: right; }
 .public-actions div.add-to-calendar  a{
   background: #35332f;
@@ -418,4 +462,29 @@ span.comment-delete-button a{
   font-size: 200%;  
   text-decoration: none;
   color:red;
+}
+.event-contacts a {
+    text-decoration: none;
+    color: #858586;
+}
+
+#private-event-info-block .going-status-button a.remove-event-link{
+    width: 133px !important;
+    height: 34px !important;
+    display: block !important;
+    text-decoration: none !important;
+    background: url(../images/going-not-going.png) 0 0 no-repeat !important;
+    font-size: 12px !important;
+    line-height: 34px !important;
+    color: #2b2b2b !important;
+    padding-left: 10px !important; 
+    padding-right: 0px !important;
+    border: 0px;
+    float: none;
+}
+#private-event-info-block .going-status-button a.add-event-link{
+    float: none;
+    height: 30px !important;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }

@@ -98,10 +98,6 @@
           <!-- Форма поиска -->
         </div>
       </header><!-- #header-->
-      
-      <section id="spacer"></section>
-      
-      
       <div class="clear-fix"></div>
     
       <section id="middle">

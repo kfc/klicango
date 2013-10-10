@@ -29,12 +29,86 @@ img {
 input {
 	vertical-align: middle;
 }
+#photo-overlay{
+	background: url(../images/transparency.png) left top;
+}
 #wrapper {
 	width: 100%;
 	min-width: 1280px;
 	min-height: 100%;
 	height: auto !important;
 	height: 100%;
+}
+#photo-box{
+	z-index: 2200;
+	position: fixed;
+	left:0; top:0;
+	background: #FFF;
+	width: 1130px;
+}
+#photo-box #photo-wrapper{
+	float: left;
+	position: relative;
+}
+#photo-box #photo-wrapper a{
+	background: url(../images/photo-popup.png) 0 0 no-repeat;
+	width: 23px;
+	height: 40px;
+	text-decoration: none;
+	font-size: 0;
+	text-indent: -999px;
+	cursor: pointer;
+	display: block;
+	position: absolute;
+	top: 80px;
+}
+#photo-box #photo-wrapper a#prev-photo{
+	left: 20px;
+}
+#photo-box #photo-wrapper a#prev-photo:hover{
+	background-position: 0 -40px;
+}
+#photo-box #photo-wrapper a#next-photo:hover{
+	background-position: -23px -40px;
+}
+#photo-box #photo-wrapper a#next-photo{
+	right: 20px;
+	background-position: -23px 0;
+}
+#photo-box #comment-wrapper{
+	width: 280px;
+	float: right;
+	padding: 25px 25px 0;
+}
+#photo-box #comment-wrapper table{
+	margin-top: 30px;
+}
+#photo-box #comment-wrapper table tr td{
+	padding: 5px 5px 10px;
+	font-size: 12px;
+	color: #000000;
+}
+#photo-box #comment-wrapper table tr.row-last td{
+	vertical-align: top;
+}
+#photo-box #comment-wrapper table tr td.col-3{vertical-align: bottom; font-size: 10px; color: #a2a2a3;}
+#photo-box #photo-wrapper img{
+	max-width: 800px;
+	display: block;
+}
+#close-box{
+	position: absolute;
+	right: 20px;
+	top: 10px;
+}
+#close-box a{
+	display: block;
+	background: url(../images/close-btn.jpg) 0 0 no-repeat;
+	width: 16px;
+	height: 16px;
+	text-decoration: none;
+	font-size: 0;
+	text-indent: -999px;
 }
 
 
@@ -322,6 +396,40 @@ body .ui-widget-content input[type="password"],
 	margin-right: 12px;
 	float: left;
 }
+#photo-box #comment-wrapper input[type="text"]{
+	padding: 0 35px 0 5px;
+	width: 160px;
+	height: 29px;
+	font: 11px/25px Arial;
+	color: #858586;
+	border: 1px solid #a6a6a6;
+	-moz-border-radius: 3px; /* Firefox */
+    -webkit-border-radius: 3px; /* Safari, Google Chrome */
+    -khtml-border-radius: 3px; /* KHTML */
+    -o-border-radius: 3px; /* Opera */
+    -ms-border-radius: 3px; /* IE8 */
+    -icab-border-radius: 3px; /* Icab */
+    border-radius: 3px; /* CSS3 */
+	margin-right: 12px;
+	float: left;
+	background: #FFF url(../images/prof-photo.png) 171px center no-repeat;
+}
+#photo-box #comment-wrapper  #comment-table{
+	background: #f6f8f8;
+}
+#photo-box #comment-wrapper  #owner-block{
+	display: inline-block;
+	width: 100%;
+	clear: both;
+}
+#photo-box #comment-wrapper  #owner-block div.published{font-size: 12px; color: #96c12b; line-height: 12px; margin-bottom: 10px;}
+#photo-box #comment-wrapper  #owner-block .owner-name a{color: #2b2b2b; text-decoration: none; line-height: 12px;}
+#photo-box #comment-wrapper  #owner-block .owner-event a{color: #2b2b2b; font-weight: bold; text-decoration: none; line-height: 12px;}
+#photo-box #comment-wrapper  #owner-block div.owner-thumbnail{
+	float: left;
+	margin-right: 10px;
+	margin-left: 5px;
+}
 .jq-selectbox.jqselect div.jq-selectbox__select{
 	width: 140px !important;
 }
@@ -482,11 +590,23 @@ div.clear-fix{
 	float: right;
 }
 #public-event-list{margin-bottom: 55px;}
-#public-event-list table, #top-event-list table{width: 100%;}
+#public-event-list table, #top-event-list table, #new-friends-list table{width: 100%;}
+#profile-friends-list table{width: auto;}
+#new-friends-list table tr td.col-1{
+	width: 100px;
+}
+#new-friends-list table tr td.col-2{
+	padding-left: 10px;
+}
+#profile-friends-list table tr td.col-2{
+	width: 345px;
+}
 #public-event-list div.add-to-calendar{margin-bottom: 9px; }
 #public-event-list div.add-to-calendar a,
 #public-event-list div.decline a,
-#top-event-list div.add-to-calendar a{
+#top-event-list div.add-to-calendar a,
+#new-friends-list div.decline a,
+#new-friends-list div.accept a{
 	background: #35332f;
 	font: bold 12px/30px Arial;
 	color: #96c12b;display: block;
@@ -507,7 +627,8 @@ div.clear-fix{
     text-decoration: none;
     text-align: center;
 }
-#top-event-list h2{
+#top-event-list h2,
+#profile-friends-list h2{
 	font: 24px/24px Arial;
 	color: #808285;
 	margin-bottom: 25px;
@@ -614,7 +735,8 @@ div.going-status-button{
 	display: inline-block;
 }
 div.going-status-button a,
-a.invite-friend{
+a.invite-friend,
+div.follow-this-place a{
 	float: right;
 	background: #35332f;
 	height: 30px;
@@ -638,6 +760,10 @@ div.event-people-block{
 div .event-comment-box{
 	width: 620px;
 	float: right;
+}
+.block-calendar{
+	position: relative;
+	margin-top: -45px;
 }
 div.public-event-coupon div.public-event-col.third-column .public-event-gratuity{
 	font: bold 14px Arial;
@@ -774,7 +900,8 @@ span.already-invited{
     -icab-border-radius: 5px; /* Icab */
     border-radius: 5px; /* CSS3 */
 }
-#top-event-list h2 a{
+#top-event-list h2 a,
+#profile-friends-list h2 a.find-friend-link{
 	float: right;
 	font: bold 12px/30px Arial;
 	color: #35332f;
@@ -1032,6 +1159,7 @@ div.calendar-calendar{
 	font: 11px/25px Arial;
 	color: #858586;
 }
+
 #login-form .form-item.login-links a#forgot-pass{
 	font: 11px Arial;
 	color: #96c12b;
@@ -1224,16 +1352,67 @@ div#private-account-info{
 	display: inline-block;
 	margin-bottom: 12px;
 }
-div#private-account-info .account-info-thumb{float: left; margin-right: 12px;}
-div#private-account-info div.account-info-name a{font: 12px Arial; color: #393938; text-decoration: none;}
-div#private-account-info div.account-info-city{font: bold 12px Arial; color: #393938;}
+div#private-account-info .account-info-thumb,
+div#private-event-profile-info .account-info-thumb{float: left; margin-right: 12px;}
+div#private-account-info div.account-info-name a,
+div#private-event-profile-info div.account-info-name a{font: 12px Arial; color: #393938; text-decoration: none;}
+div#private-account-info div.account-info-city,
+div#private-event-profile-info div.account-info-city{font: bold 12px Arial; color: #393938;}
+div#private-event-profile-info .event-date{
+	width: 100%;
+	clear: both;
+	font-size: 14px;
+	color: #95c02a;
+	padding-top: 20px;
+}
+div#private-event-profile-info .event-time{
+	font-size: 14px;
+	color: #95c02a;
+	margin-bottom: 15px;
+}
+div#private-event-profile-info .event-adress{font-size: 11px; color: #2b2b2b;}
+div#private-event-profile-info .event-contacts{font-size: 11px; color: #858586;}
+#private-event-info-block .event-title{margin-bottom: 15px;}
+#private-event-info-block .event-description{font-size: 14px; color: #2b2b2b; margin-bottom: 20px;}
+#private-event-info-block .going-not-going a{
+width: 133px;
+height: 34px;
+display: block;
+text-decoration: none;
+background: url(../images/going-not-going.png) 0 0 no-repeat;
+font-size: 12px;
+line-height: 34px;
+color: #2b2b2b;
+padding-left: 10px;
+}
+#private-event-info-block .event-title a{
+	font-size: 18px;
+	font-weight: bold;
+	color: #010101;
+	text-decoration: none;
+}
+div#private-event-profile-info{
+	width: 180px;
+	float: left;
+}
+#private-event-info-block{
+	float: right;
+	width: 620px;
+}
+#private-event-description{
+	width: 100%;
+	clear: both;
+	display: inline-block;
+	padding-bottom: 35px;
+}
 div.fixed-slide-text{position: absolute; left: 175px; top: 65px; z-index: 900;font: 24px Arial; color: #FFF; text-shadow: 0px 1px 5px rgba(0,0,0,0.75);}
 div.fixed-slide-text h2{font: 30px Arial; color: #d6d3d3; margin-bottom: 20px; text-shadow: 0px 1px 5px rgba(0,0,0,0.75);}
 #profile_info .first-column,
 #profile_info .second-column{float: left;}
 #profile_info{width: 100%; clear: both; display: inline-block;}
 #profile_info .first-column .profile-thumbnail{float: left; margin-right: 8px;}
-div.i-like-this-place{float: right;}
+div.i-like-this-place,
+div.follow-this-place{float: right;}
 div.i-like-this-place a{background: url(../images/ilike.png) 0 0 no-repeat;text-decoration: none; width: 132px;
 height: 34px; font: 12px/34px Arial;color: #2b2b2b; display: block; padding-left: 11px;}
 #field-more-image-upload-styler .jq-file__browse{background: url(../images/add-more-photos.png) 0 center no-repeat;margin-right: 25px;
@@ -1377,7 +1556,10 @@ div.search-for-friends.loading input[type="text"]{
 #public-event-list table tr td.col-2 a,
 #top-event-list table tr td.col-2 a{text-decoration: none;}
 #public-event-list table tr td.col-2 a:hover,
-#top-event-list table tr td.col-2 a:hover{
+#top-event-list table tr td.col-2 a:hover,
+#new-friends-list tr td.col-2 a.person-name:hover,
+#profile-friends-list table tr td.col-2 a:hover,
+#profile-friends-list table tr td.col-4 a:hover{
 	text-decoration: underline;
 }
 #public-event-list table tr td.col-2,
@@ -1392,4 +1574,43 @@ div.event-gratuity{
 	font-weight: bold;
 	color: #000000;
 }
-#public-event-list{background:#fdfefe; padding: 25px 15px;}
+#public-event-list, #new-friends-list{background:#fdfefe; padding: 25px 15px;}
+
+#new-friends-list div.decline, #new-friends-list div.accept {
+	float: right;
+}
+#new-friends-list div.decline{margin-left: 38px; margin-right: 36px;}
+#new-friends-list div.decline a{
+	font-weight: normal;
+}
+#new-friends-list tr td.col-2{
+	font: 14px Arial;
+	color: #2b2a2a;
+}
+#new-friends-list{margin-bottom: 35px;}
+#new-friends-list tr td{padding-bottom: 5px;}
+#new-friends-list tr.last td{padding-bottom: 0px;}
+#new-friends-list tr td.col-2 a.person-name{
+	font: bold 14px Arial;
+	color: #f34921;
+	text-decoration: none;
+}
+#profile-friends-list table tr td{vertical-align: middle;}
+#profile-friends-list table tr td a{
+	display: inline-block;
+}
+#profile-friends-list h2 a{ font: 14px Arial; color: #808285; text-decoration: none; margin-left: 3px;}
+#profile-friends-list table tr td{
+	padding-bottom: 20px;
+}
+#profile-friends-list table tr td.col-1,
+#profile-friends-list table tr td.col-3{width: 100px;}
+#profile-friends-list table tr td.col-2,
+#profile-friends-list table tr td.col-4{padding-left: 10px;}
+#profile-friends-list table tr td.col-2 a,
+#profile-friends-list table tr td.col-4 a{font: bold 12px Arial; color: #2b2a2a; text-decoration: none;}
+#profile-friends-list  div.col-friends{
+	font: 12px Arial;
+	color: #8c8c8d;
+}
+#profile-friends-list{padding-left: 5px;}

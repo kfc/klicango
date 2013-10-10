@@ -139,7 +139,7 @@ $(function() {
           else{
             $(".going-status-button a").addClass('add-event-link');
             $(".going-status-button a").removeClass('remove-event-link');  
-            $(".going-status-button a").html(Drupal.t("Add to calendar"));  
+            $(".going-status-button a").html(Drupal.t("Add to my calendar"));  
           }
         }
         else{ 

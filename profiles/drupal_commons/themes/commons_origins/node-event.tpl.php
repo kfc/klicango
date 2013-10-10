@@ -53,75 +53,140 @@
             <a id="modify-event-link" href="/get_event_form_data/<?php echo $node->nid?>">Modify this event</a>
           </div>
         <?php endif;?>
-        
-        <div class="public-event-coupon">
-          <div class="event-coupon">
-          <div class="first-column public-event-col">
-            <div class="profile-info">
-              <div class="profile-thumbnail"><?php echo theme_imagecache('user_picture_meta', $location_info->picture);?></div>
-              <div class="profile-name"><?php echo $location_info->name;?></div>
-              <div class="profile-city"><?php echo $location_info->profile_location;?></div>
+        <?php if ($node->field_event_type[0]['value'] == 'public') : ?>
+            <div class="public-event-coupon">
+              <div class="event-coupon">
+              <div class="first-column public-event-col">
+                <div class="profile-info">
+                  <div class="profile-thumbnail"><a href="/user/<?php echo $node->uid; ?>"><?php echo theme_imagecache('user_picture_meta', $location_info->picture);?></a></div>
+                  <div class="profile-name"><?php echo $location_info->first_name;?></div>
+                  <div class="profile-city"><?php echo $location_info->profile_location;?></div>
+                </div>
+                <div class="powered-by"><img src="/profiles/drupal_commons/themes/commons_origins/images/powered-by.png" alt="" /></div>
+              </div>
+              <div class="second-column public-event-col">
+                <div class="public-event-date-time">
+                  <?php
+                    $output_date = $start_date = $end_date = ''; 
+                    if(!empty($node->field_date)){
+                      $start_date = strtotime($node->field_date[0]['value']);
+                      $end_date = strtotime($node->field_date[0]['value2']);  
+                    }
+                    if(!empty($start_date) && !empty($end_date) && date('m/d/Y', $start_date) != date('m/d/Y', $end_date)){
+                      $output_date = '<div>'.date('l, F j H:i', $start_date).' - </div>';
+                      $output_date .= '<div>'.date('l, F j H:i', $end_date).'</div>';
+                    }
+                    elseif(!empty($start_date) && !empty($end_date) && $start_date == $end_date){
+                      $output_date = '<div>'.date('l, F j', $start_date).'</div>';  
+                      $output_date .= '<div>'.date('H:i', $start_date).'</div>';  
+                    }
+                    elseif(!empty($start_date) && !empty($end_date) && date('m/d/Y', $start_date) == date('m/d/Y', $end_date)){
+                      $output_date = '<div>'.date('l, F j', $start_date).'</div>';
+                      $output_date .= '<div>'.date('H:i', $start_date).' - '.date('H:i', $end_date).'</div>';  
+                    }
+                    elseif(!empty($start_date) && !empty($end_date) && $start_date == $end_date){
+                      $output_date = '<div>'.date('l, F j H:i', $start_date).'</div>';
+                    }
+                    elseif(!empty($start_date) && empty($end_date)){
+                      $output_date = '<div>'.date('l, F j H:i', $start_date).'</div>';
+                    }
+                    echo $output_date;  
+                  ?>
+                
+                </div>
+                <?php if(!empty($node->field_location)): ?>
+                  <div class="public-event-address"><?php echo $node->field_location[0]['safe']?><br/></div>
+                <?php endif;?>
+                <div class="public-event-contacts">
+                  <?php if(!empty($node->field_event_contact_phone)): ?>
+                    <?php echo t('tel:').' '.$node->field_event_contact_phone[0]['safe']?>
+                  <?php endif;?>
+                  <br>
+                  <?php if(!empty($node->field_event_email)): ?>
+                    <?php echo t('email:').' <a href="mailto:'.$node->field_event_email[0]['safe'].'">'.$node->field_event_email[0]['safe'].'</a>'?>
+                  <?php endif;?>
+                  
+                </div>
+              </div>
+              <div class="third-column public-event-col">
+                <div class="public-event-title"><?php echo $title?></div>
+                <div class="public-event-description"><?php echo nl2br($node->field_event_details[0]['safe'])?></div>
+                <div class="public-event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']?></div>
+              </div>
+              </div>
             </div>
-            <div class="powered-by"><img src="/profiles/drupal_commons/themes/commons_origins/images/powered-by.png" alt="" /></div>
-          </div>
-          <div class="second-column public-event-col">
-            <div class="public-event-date-time">
-              <?php
-                $output_date = $start_date = $end_date = ''; 
-                if(!empty($node->field_date)){
-                  $start_date = strtotime($node->field_date[0]['value']);
-                  $end_date = strtotime($node->field_date[0]['value2']);  
-                }
-                if(!empty($start_date) && !empty($end_date) && date('m/d/Y', $start_date) != date('m/d/Y', $end_date)){
-                  $output_date = '<div>'.date('l, F j H:i', $start_date).' - </div>';
-                  $output_date .= '<div>'.date('l, F j H:i', $end_date).'</div>';
-                }
-                elseif(!empty($start_date) && !empty($end_date) && $start_date == $end_date){
-                  $output_date = '<div>'.date('l, F j', $start_date).'</div>';  
-                  $output_date .= '<div>'.date('H:i', $start_date).'</div>';  
-                }
-                elseif(!empty($start_date) && !empty($end_date) && date('m/d/Y', $start_date) == date('m/d/Y', $end_date)){
-                  $output_date = '<div>'.date('l, F j', $start_date).'</div>';
-                  $output_date .= '<div>'.date('H:i', $start_date).' - '.date('H:i', $end_date).'</div>';  
-                }
-                elseif(!empty($start_date) && !empty($end_date) && $start_date == $end_date){
-                  $output_date = '<div>'.date('l, F j H:i', $start_date).'</div>';
-                }
-                elseif(!empty($start_date) && empty($end_date)){
-                  $output_date = '<div>'.date('l, F j H:i', $start_date).'</div>';
-                }
-                echo $output_date;  
-              ?>
             
-            </div>
-            <?php if(!empty($node->field_location)): ?>
-              <div class="public-event-address"><?php echo $node->field_location[0]['safe']?><br/></div>
+            <?php if(events_event_is_available_to_add($node)):?>
+              <div class="going-status-button" id="event-action-button"><a class="add-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t('Add to my calendar')?></a></div>
+            
+            <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
+              <div class="going-status-button" id="event-action-button"><a class="remove-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t("I'm going")?></a></div>
             <?php endif;?>
-            <div class="public-event-contacts">
-              <?php if(!empty($node->field_event_contact_phone)): ?>
-                <?php echo t('tel:').' '.$node->field_event_contact_phone[0]['safe']?>
-              <?php endif;?>
-              <br>
-              <?php if(!empty($node->field_event_email)): ?>
-                <?php echo t('email:').' <a href="mailto:'.$node->field_event_email[0]['safe'].'">'.$node->field_event_email[0]['safe'].'</a>'?>
-              <?php endif;?>
-              
-            </div>
-          </div>
-          <div class="third-column public-event-col">
-            <div class="public-event-title"><?php echo $title?></div>
-            <div class="public-event-description"><?php echo nl2br($node->field_event_details[0]['safe'])?></div>
-            <div class="public-event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']?></div>
-          </div>
-          </div>
-        </div>
+        <?php else : ?>
+            <div id="private-event-description">
+        		<div id="private-event-profile-info">
+        			<div class="account-info-thumb"><a href="/user/<?php echo $node->uid; ?>"><?php echo theme_imagecache('user_picture_meta', $location_info->picture);?></a></div>
+        			<div class="account-info-name"><?php echo $location_info->first_name;?> <?php echo $location_info->surname;?></div>
+        			<div class="account-info-city"><?php echo $location_info->city;?></div>
+                    
+                    <?php
+                    $output_date = $start_date = $end_date = ''; 
+                    if(!empty($node->field_date)){
+                      $start_date = strtotime($node->field_date[0]['value']);
+                      $end_date = strtotime($node->field_date[0]['value2']);  
+                    }
+                    if(!empty($start_date) && !empty($end_date) && date('m/d/Y', $start_date) != date('m/d/Y', $end_date)){
+                      $output_date = '<div class="event-date">'.date('l, F j H:i', $start_date).' - </div>';
+                      $output_date .= '<div class="event-time">'.date('l, F j H:i', $end_date).'</div>';
+                    }
+                    elseif(!empty($start_date) && !empty($end_date) && $start_date == $end_date){
+                      $output_date = '<div class="event-date">'.date('l, F j', $start_date).'</div>';  
+                      $output_date .= '<div class="event-time">'.date('H:i', $start_date).'</div>';  
+                    }
+                    elseif(!empty($start_date) && !empty($end_date) && date('m/d/Y', $start_date) == date('m/d/Y', $end_date)){
+                      $output_date = '<div class="event-date">'.date('l, F j', $start_date).'</div>';
+                      $output_date .= '<div class="event-time">'.date('H:i', $start_date).' - '.date('H:i', $end_date).'</div>';  
+                    }
+                    elseif(!empty($start_date) && !empty($end_date) && $start_date == $end_date){
+                      $output_date = '<div class="event-date">'.date('l, F j H:i', $start_date).'</div>';
+                    }
+                    elseif(!empty($start_date) && empty($end_date)){
+                      $output_date = '<div class="event-date">'.date('l, F j H:i', $start_date).'</div>';
+                    }
+                    echo $output_date;  
+                  ?>
+        			<?php if(!empty($node->field_location)): ?>
+                      <div class="event-address"><?php echo $node->field_location[0]['safe']?><br/></div>
+                    <?php endif;?>
+        			<div class="event-contacts">
+                      <?php if(!empty($node->field_event_contact_phone)): ?>
+                        <?php echo t('tel:').' '.$node->field_event_contact_phone[0]['safe']?>
+                      <?php endif;?>
+                      <br>
+                      <?php if(!empty($node->field_event_email)): ?>
+                        <?php echo t('email:').' <a href="mailto:'.$node->field_event_email[0]['safe'].'">'.$node->field_event_email[0]['safe'].'</a>'?>
+                      <?php endif;?>
+                      
+                    </div>
+        		</div>
+        		<div id="private-event-info-block">
+        			<div class="event-title"><a href="javascript: void(0);" style="cursor: default;"><?php echo $title?></a></div>
+        			<div class="event-description"><?php echo nl2br($node->field_event_details[0]['safe'])?></div>
+        			<?php if(events_event_is_available_to_add($node)):?>
+                      <div class="going-status-button" id="event-action-button">
+                        <a class="add-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t('Add to my calendar')?></a>
+                      </div>
+                    
+                    <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
+                      <div class="going-status-button" id="event-action-button">
+                        <a class="remove-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t("I'm going")?></a>
+                      </div>
+                    <?php endif;?>
+        		</div>
+        	</div>
+            <div class="clear-fix"></div>
+        <?php endif; ?>
         
-        <?php if(events_event_is_available_to_add($node)):?>
-          <div class="going-status-button" id="event-action-button"><a class="add-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t('Add to my calendar')?></a></div>
-        
-        <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
-          <div class="going-status-button" id="event-action-button"><a class="remove-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t("I'm going")?></a></div>
-        <?php endif;?>
         <div class="event-people-block">
         <?php if(!empty($people_going)):?>
           <?php if(!empty($people_going['going'])):?>

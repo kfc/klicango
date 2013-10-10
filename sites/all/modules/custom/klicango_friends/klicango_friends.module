@@ -20,6 +20,16 @@ function klicango_friends_menu(){
     'page callback' => 'klicango_friends_find',
     'access callback' => 'user_is_logged_in',
   );
+  $items['friend/accept'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_friend_accept',
+    'access callback' => 'user_is_logged_in',
+  );
+  $items['friend/decline'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_friend_decline',
+    'access callback' => 'user_is_logged_in',
+  );
   
    $items['follow/%'] = array(
     'type' => MENU_CALLBACK,
@@ -34,7 +44,25 @@ function klicango_friends_menu(){
     'page arguments' => array(1),
     'access callback' => 'user_is_logged_in',
   );
-    
+  
+  $items['addfriend/%'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_add_invitation',
+    'page arguments' => array(1),
+    'access callback' => 'user_is_logged_in',
+  );
+  
+  $items['removefriend/%'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_remove_invitation',
+    'page arguments' => array(1),
+    'access callback' => 'user_is_logged_in',
+  );
+  $items['friends'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_page',
+    'access callback' => 'user_is_logged_in',
+  );  
   return $items;  
 }
 
@@ -290,6 +318,16 @@ function klicango_friends_theme() {
         	),
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
+      'klicango_friends_invitations' => array(
+        'template' => 'klicango-friends-invitations',
+        'arguments' => array('users' => NULL),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),  
+      'klicango_friends_friends' => array(
+        'template' => 'klicango-friends-friends',
+        'arguments' => array('users' => NULL),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),  
     );
 }
 
@@ -346,4 +384,113 @@ function klicango_friends_all_friends($uid){
     }
   }
   return $friends;
+}
+
+function klicango_friends_add_invitation($fid) {
+    global $user;
+    $return = array('success' => false);
+    $data = array('sender_id' => $user->uid, 'user_id' => $fid, 'status' => 1);
+    $return['success'] = drupal_write_record('friends_invitations', $data);
+    echo json_encode($return);
+    exit; 
+}
+
+function klicango_friends_remove_invitation($fid) {
+    global $user;
+    $return = array('success' => false);
+    if(!empty($fid)){
+        $result1 = klicango_friends_remove_friend($fid);
+        $result2 = db_query('DELETE FROM friends_invitations WHERE (sender_id = %d AND user_id = %d) OR (sender_id = %d AND user_id = %d)', $user->uid, $fid, $fid, $user->uid);
+        $return['success'] = ($result1 && $result2);
+    }
+    echo json_encode($return);
+    exit;    
+}
+
+function klicango_friends_invitation_sent($uid1, $uid2) {
+    if(!empty($uid1) && !empty($uid2)){
+        $res = db_query("SELECT * FROM friends_invitations WHERE (sender_id = %d AND user_id = %d) OR (sender_id = %d AND user_id = %d)", $uid1,$uid2,$uid2,$uid1);
+        return ($res->num_rows > 0);
+    }
+    return false; 
+}
+
+function klicango_friends_page() {
+    $html = '';
+    
+    $users = array();
+    $ids = klicango_friends_get_friends('invitations_received');
+    if (!empty($ids)) {
+        foreach ($ids as $friend) {
+            $user = user_load($friend);
+            profile_load_profile($user);
+            $users[] = $user;
+        }
+    }
+    
+    $html .= theme('klicango_friends_invitations', $users);
+    
+    $users = array();
+    $ids = klicango_friends_get_friends('friends');
+    if (!empty($ids)) {
+        foreach ($ids as $friend) {
+            $user = user_load($friend);
+            profile_load_profile($user);
+            $friends_count = db_query('SELECT user_id AS uid FROM friends_invitations WHERE sender_id = %d AND status = 3
+                                UNION SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3', $friend, $friend);
+            $user->friends_count = $friends_count->num_rows;
+            $users[] = $user;
+        }
+    }
+    
+    $html .= theme('klicango_friends_friends', $users, false);
+    
+    return $html;
+}
+
+function klicango_friends_get_friends($type) {
+    global $user;
+    $users = array();
+    switch($type) {
+        case 'invitations_received' : 
+            $result = db_query('SELECT sender_id FROM friends_invitations WHERE user_id = %d AND status = 1', $user->uid);
+            while ($row = db_fetch_array($result)) {
+                $users[] = $row['sender_id'];
+            }
+            break; 
+        case 'friends' : 
+            $result = db_query('SELECT user_id AS uid FROM friends_invitations WHERE sender_id = %d AND status = 3
+                                UNION SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3', $user->uid, $user->uid);
+            while ($row = db_fetch_array($result)) {
+                $users[] = $row['uid'];
+            }
+            break; 
+    }
+    return $users;
+}
+
+function klicango_friends_friend_accept() {
+    global $user;
+    $sender_id = $_GET['sender_id'];
+    $status = $_GET['status'];
+    if ($status == 'new') {
+        $inv_status = 1;
+        db_query('DELETE FROM friends WHERE uid = %d AND fid = %d', $sender_id, $user->uid);
+    } else {
+        $data = array('uid' => $sender_id, 'fid' => $user->uid);
+        drupal_write_record('friends', $data);
+        $inv_status = 3;
+    }
+    $result = db_query('UPDATE friends_invitations SET status = %d WHERE sender_id = %d AND user_id = %d', $inv_status, $sender_id, $user->uid);
+    drupal_json(array('status' => $result));
+    exit;
+}
+
+function klicango_friends_friend_decline() {
+    global $user;
+    $sender_id = $_GET['sender_id'];
+    $result = db_query('UPDATE friends_invitations SET status = 4 WHERE sender_id = %d AND user_id = %d', $sender_id, $user->uid);
+    db_query('DELETE FROM friends WHERE uid = %d AND fid = %d', $sender_id, $user->uid);
+    drupal_json(array('status' => $result));
+    exit;
 }
