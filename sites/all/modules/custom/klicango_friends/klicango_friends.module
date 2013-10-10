@@ -81,7 +81,7 @@ function klicango_friends_load_facebook_friends() {
             $picture = db_result($result);
             
             $html .= '<div class="person-item">';
-            $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="/' . $picture . '"/></a></div>';
+            $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="' . imagecache_create_url('facebook_image_size', $picture) . '"/></a></div>';
             $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a></div>';
             $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 1)">' . t('Invite friend') . '</a>';
             $html .= '</div>';
@@ -230,7 +230,7 @@ function klicango_friends_find() {
         $picture = db_result($result);
         
         $html .= '<div class="person-item">';
-        $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="/' . $picture . '"/></a></div>';
+        $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="' . imagecache_create_url('facebook_image_size', $picture) . '"></a></div>';
         $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a></div>';
         $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ')">' . t('Invite friend') . '</a>';
         $html .= '</div>';
@@ -268,8 +268,10 @@ function klicango_friends_get_all_friends() {
     $result = db_query('SELECT uid AS id FROM friends WHERE fid = %d UNION SELECT fid AS id FROM friends WHERE uid = %d', $user->uid, $user->uid);
     while ($row = db_fetch_array($result)) {
         if (!isset($friends[$row['id']])) {
-            $user = user_load(array('uid' => $row['id']));
-            $friends[$row['id']] = $user->first_name . ' ' . $user->surname;
+            $other_user = user_load(array('uid' => $row['id']));
+            if (in_array('individual', $other_user->roles, true)) {
+                $friends[$row['id']] = $other_user->first_name . ' ' . $other_user->surname;
+            }
         }
     }
 

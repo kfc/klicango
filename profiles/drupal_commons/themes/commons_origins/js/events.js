@@ -26,6 +26,12 @@ $(function() {
     loadInviteFriends(0, 10);
   });
   
+  $(".col-3 .invite-friend")
+    .click(function(e) {
+    e.preventDefault();
+    loadInviteFriends(0, 10);
+  });
+  
   $("#create-event-link")
     .click(function(e) {
     e.preventDefault();

@@ -1,5 +1,7 @@
 <?php
+
     if ($teaser) {
+        global $user;
         $sender = user_load($node->event_data['sender_id']);
         profile_load_profile($sender);
 ?>   
@@ -27,7 +29,9 @@
     				<div class="clear-fix"></div>
     				<div class="decline"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" onclick="declineEvent(<?php echo $node->nid; ?>)">Decline</a></div>
                 <?php } else { ?>
-                    <div id="invite-friend-link" class="invite-friend"><a href="javascript: void(0);" onclick="setActiveEvent(<?php echo $node->nid; ?>);">Invite friends</a></div>      
+                    <?php if ($node->field_event_type[0]['value'] == 'public' || $node->uid == $user->uid) : ?>
+                        <div id="invite-friend-link" class="invite-friend"><a href="javascript: void(0);" onclick="setActiveEvent(<?php echo $node->nid; ?>);">Invite friends</a></div>
+                    <?php endif; ?>      
                 <?php } ?>
 			</td>
 		</tr>
