@@ -232,7 +232,7 @@ function showDialog(dialog_id) {
     }
 }
 
-function inviteFriend(object, id) {
+function inviteFriend(object, id, local) {
     var form_id = $(object).closest('form').attr('id');
     
     if($('#' + form_id + ' #invite_' + id).length) {
@@ -242,7 +242,13 @@ function inviteFriend(object, id) {
         $(object).text('Invite friend');
     } else {
         
-        $('#' + form_id).append('<input type="hidden" name="invite[]" id="invite_' + id + '" value="' + id + '">');
+        if (local == 1) {
+            title = 'local';
+        } else {
+            title = 'facebook';
+        }
+        
+        $('#' + form_id).append('<input type="hidden" title="' + title + '" name="invite[]" id="invite_' + id + '" value="' + id + '">');
         $(object).removeClass('invite-friend');
         $(object).addClass('already-invited');
         $(object).text('Friend invited');
@@ -263,19 +269,35 @@ function processInvitation(response, event_id) {
     }
 }
 
-function initRequest(ids, event_id) {
-    if (typeof FB == 'object') {
-        FB.ui({method: "apprequests",
-          message: "Dear friend! Please join me on Klicango to always stay in touch and share with me the best parties and places.",
-          display: "iframe",
-          to: ids
-        }, function(response){
-            processInvitation(response, event_id);   
+function initLocalRequest(ids, event_id) {
+    if (ids.length) {
+        $.ajax({
+           type: 'GET',
+           dataType: 'json',
+           url: '/friends/invite_local',
+           data: {"to": ids, "event_id": event_id},
+           success : function (data, textStatus, jqXHR) { 
+               //alert('success');
+           },
         });
-    } else {
-        setTimeout(function(){
-            initRequest(ids, event_id);   
-        }, 1000);
+    }
+}
+
+function initRequest(ids, event_id) {
+    if (ids.length) {
+        if (typeof FB == 'object') {
+            FB.ui({method: "apprequests",
+              message: "Dear friend! Please join me on Klicango to always stay in touch and share with me the best parties and places.",
+              display: "iframe",
+              to: ids
+            }, function(response){
+                processInvitation(response, event_id);   
+            });
+        } else {
+            setTimeout(function(){
+                initRequest(ids, event_id);   
+            }, 1000);
+        }
     }
 }
 

@@ -3,11 +3,20 @@
     if ($teaser) {
         global $user;
         $sender = user_load($node->event_data['sender_id']);
+        if ($sender->uid != $node->uid) {
+            $creator = user_load($node->uid);
+        } else {
+            $creator = $sender;
+        }
         profile_load_profile($sender);
 ?>   
         <tr>
 			<td class="col-1">
-				<img src="<?php echo imagecache_create_url('events_overview_thumbnail', $node->field_content_images[0]['filepath']); ?>" alt="" />
+                <?php if (!empty($node->field_content_images[0]['filepath'])) : ?>
+				    <img src="<?php echo imagecache_create_url('events_overview_thumbnail', $node->field_content_images[0]['filepath']); ?>" alt="" />
+                <?php else : ?>
+                    <img src="<?php echo imagecache_create_url('events_overview_thumbnail', $creator->picture); ?>" alt="" />                
+                <?php endif; ?>
 			</td>
 			<td class="col-2">
 				<?php
@@ -21,7 +30,7 @@
                 ?> 
                 <div class="event-date"><?php echo strip_tags($node->field_date[0]['view']); ?></div>
 				<div class="event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']; ?></div>
-				<div class="going-friends"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" onclick="friendsEvent(<?php echo $node->nid; ?>)"> <?php echo $node->friends_going; ?> friends are going</a></div>
+				<div class="going-friends"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" class="going-users-link"> <?php echo $node->friends_going; ?> friends are going</a></div>
 			</td>
 			<td class="col-3">
                 <?php if (events_event_is_available_to_add($node)) { ?>
@@ -195,7 +204,7 @@
         <?php if(!empty($people_going)):?>
           <?php if(!empty($people_going['going'])):?>
             <div class="going-block">
-              <a href=""><?php echo t('Going')?> (<?php echo count($people_going['going'])?>)</a>
+              <a href="javascript: void(0);" class="going-users-link" id="event_<?php echo $node->nid; ?>"><?php echo t('Going')?> (<?php echo count($people_going['going'])?>)</a>
               <?php foreach($people_going['going'] as $_person):?>
                 <div class="person-row">
                   <div class="person-thumbnail"><?php echo $_person['photo']?></div>
@@ -206,7 +215,7 @@
           <?php endif;?>
           <?php if(!empty($people_going['invited'])):?>
             <div class="invited-block">
-              <a href=""><?php echo t('Invited')?> (<?php echo count($people_going['invited'])?>)</a>
+              <a href="javascript: void(0);" class="invited-users-link" id="event_<?php echo $node->nid; ?>"><?php echo t('Invited')?> (<?php echo count($people_going['invited'])?>)</a>
               <?php foreach($people_going['invited'] as $_person):?>
                 <div class="person-row">
                   <div class="person-thumbnail"><?php echo $_person['photo']?></div>

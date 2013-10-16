@@ -15,6 +15,12 @@ function klicango_friends_menu(){
     'access callback' => 'user_is_logged_in',
   );
   
+  $items['friends/invite_local'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_invite_local_friends',
+    'access callback' => 'user_is_logged_in',
+  );
+  
   $items['friends/find'] = array(
     'type' => MENU_CALLBACK,
     'page callback' => 'klicango_friends_find',
@@ -93,7 +99,7 @@ function klicango_friends_load_facebook_friends() {
         $html .= '<div class="person-item">';
         $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="https://graph.facebook.com/' . $id . '/picture"/></a></div>';
         $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a><span class="fb-user">' . t('Friend on facebook') . '</span></div>';
-        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ')">' . t('Invite friend') . '</a>';
+        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 0)">' . t('Invite friend') . '</a>';
         $html .= '</div>';
     }
     
@@ -187,10 +193,39 @@ function klicango_friends_preprocess_page(&$variables) {
     $variables['menu_stats']['friends_pending'] = klicango_friends_get_pending();
 }
 
+function klicango_friends_invite_local_friends() {
+    if(!empty($_GET['to']) && !empty($_GET['event_id'])) {
+        global $user;
+        $rows = 0;
+        $invited = 0;
+        $recipients = explode(',', $_GET['to']);
+        $object = new stdClass();
+        $object->sender_id = $user->uid;
+        $object->event_id = $_GET['event_id'];
+        $object->status = 1;
+        foreach ($recipients as $local_uid) {
+            if ($local_uid) {
+                $object->user_id = $local_uid;
+                $is_invited = db_result(db_query('SELECT user_id FROM events_users WHERE event_id = %d AND user_id = %d', $object->event_id, $local_uid));
+                if (!$is_invited) {
+                    $result = drupal_write_record('events_users', $object);
+                    if ($result) {
+                        $rows++;
+                    }
+                } else {
+                    $invited++;
+                }
+            }
+        }
+        drupal_json(array('success' => true, 'rows' => $rows, 'invited' => $invited));
+    }
+}
+
 function klicango_friends_invite_facebook_friends() {
     if(!empty($_GET['to']) && !empty($_GET['event_id'])) {
         global $user;
         $rows = 0;
+        $invited = 0;
         $recipients = $_GET['to'];
         $object = new stdClass();
         $object->sender_id = $user->uid;
@@ -203,12 +238,17 @@ function klicango_friends_invite_facebook_friends() {
                 $object->user_id = $user_id;
             }
             
-            $result = drupal_write_record('events_users', $object);
-            if ($result) {
-                $rows++;
+            $is_invited = db_result(db_query('SELECT facebook_id FROM events_users WHERE event_id = %d AND facebook_id = %s', $object->event_id, $facebook_id));
+            if (!$is_invited) {
+                $result = drupal_write_record('events_users', $object);
+                if ($result) {
+                    $rows++;
+                }
+            } else {
+                $invited++;
             }
         }
-        drupal_json(array('success' => true, 'rows' => $rows));
+        drupal_json(array('success' => true, 'rows' => $rows, 'invited' => $invited));
     }
 }
 
@@ -232,7 +272,7 @@ function klicango_friends_find() {
         $html .= '<div class="person-item">';
         $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="' . imagecache_create_url('facebook_image_size', $picture) . '"></a></div>';
         $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a></div>';
-        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ')">' . t('Invite friend') . '</a>';
+        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 1)">' . t('Invite friend') . '</a>';
         $html .= '</div>';
     }
     
@@ -241,7 +281,7 @@ function klicango_friends_find() {
         $html .= '<div class="person-item">';
         $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="https://graph.facebook.com/' . $id . '/picture"/></a></div>';
         $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a><span class="fb-user">' . t('Friend on facebook') . '</span></div>';
-        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ')">' . t('Invite friend') . '</a>';
+        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 0)">' . t('Invite friend') . '</a>';
         $html .= '</div>';
     }
     
@@ -299,6 +339,12 @@ function klicango_friends_get_all_friends() {
         $facebook_friends = $facebook_friends->data;
     }
     
+    //unset facebook friends already registered on klicango
+    $facebook_local = db_query('SELECT fbid FROM fboauth_users WHERE fbid IN (' . implode(',', array_keys($facebook_friends)) . ')');
+    while ($local_fid = db_fetch_array($facebook_local)) {
+        unset($facebook_friends[$local_fid['fbid']]);
+        
+    }
     return array('local' => $friends, 'facebook' => $facebook_friends);        
 }
 

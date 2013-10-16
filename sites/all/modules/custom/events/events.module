@@ -47,6 +47,11 @@ function events_menu(){
       'page callback' => 'event_accept_event_invitation',
       'access callback' => 'user_is_logged_in'
     ),
+    'event/users' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_users',
+      'access callback' => 'user_is_logged_in'
+    ),
     'remove_event_for_user' => array(
       'type' => MENU_CALLBACK,
       'page callback' => 'remove_event_for_user',
@@ -149,6 +154,16 @@ function events_theme() {
       'events_accepted_list' => array(
         'template' => 'events-accepted-list',
         'arguments' => array('events' => NULL, 'public' => NULL),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),
+      'events_local_users' => array(
+        'template' => 'events-local-users',
+        'arguments' => array('users' => NULL),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),
+      'events_facebook_users' => array(
+        'template' => 'events-facebook-users',
+        'arguments' => array('users' => NULL),
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
       'event_post_box' => array(
@@ -659,10 +674,10 @@ function events_private_page() {
 
 function events_get_friends_going($event_id, $user_id) {
     $result = db_query('SELECT COUNT(*) FROM events_users 
-                        WHERE event_id = %d AND user_id IN (
+                        WHERE event_id = %d AND status = %d AND user_id IN (
                             SELECT uid AS id FROM friends 
                             WHERE fid = %d UNION SELECT fid AS id FROM friends WHERE uid = %d
-                        )', $event_id, $user_id, $user_id);
+                        )', $event_id, EVENT_STATUS_ACCEPTED, $user_id, $user_id);
     $count = db_result($result);
     
     return $count;
@@ -885,4 +900,36 @@ function events_get_event_form_data($node){
   return json_encode(array('data'=>$data));
   //exit;
   
+}
+
+function events_users() {
+    $event = explode('_', $_GET['event_id']);
+    $event = $event[1];
+    $html = '';
+    $local_users = array();
+    $facebook_users = array();
+    
+    if ($event) {
+        if (!empty($_GET['type']) && $_GET['type'] == 'going') {
+            $result = db_query('SELECT user_id FROM events_users WHERE user_id IS NOT NULL AND event_id = %d AND status = %d', $event, EVENT_STATUS_ACCEPTED);
+            $fb_result = db_query('SELECT events_users.facebook_id, friends_facebook_invited.name FROM events_users LEFT JOIN friends_facebook_invited ON events_users.facebook_id = friends_facebook_invited.facebook_id WHERE user_id IS NULL AND event_id = %d AND status = %d', $event, EVENT_STATUS_ACCEPTED);
+        } else {
+            $result = db_query('SELECT user_id FROM events_users WHERE user_id IS NOT NULL AND event_id = %d AND status IN (%d, %d)', $event, EVENT_STATUS_NEW, EVENT_STATUS_DECLINED);
+            $fb_result = db_query('SELECT events_users.facebook_id, friends_facebook_invited.name FROM events_users LEFT JOIN friends_facebook_invited ON events_users.facebook_id = friends_facebook_invited.facebook_id WHERE user_id IS NULL AND event_id = %d AND status IN (%d, %d)', $event, EVENT_STATUS_NEW, EVENT_STATUS_DECLINED);
+        }
+        
+        while ($uid = db_fetch_array($result)) {
+            $local_users[] = user_load($uid['user_id']);
+        }
+        
+        while ($user_data = db_fetch_array($fb_result)) {
+            $facebook_users[] = $user_data;
+        }
+        
+        $html = theme('events_local_users', $local_users);
+        $html .= theme('events_facebook_users', $facebook_users);
+    }
+    
+    echo '<div id="dialog-' . htmlspecialchars($_GET['type']) . '" class="events-users ' . htmlspecialchars($_GET['type']) . '-form" title="' . htmlspecialchars($_GET['type']) . '"><div class="scroll-pane">' . $html . '</div></div>';
+    exit;
 }

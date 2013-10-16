@@ -11,11 +11,10 @@ function feature_imagecache_imagecache_default_presets() {
         '0' => array(
           'weight' => '0',
           'module' => 'imagecache',
-          'action' => 'imagecache_scale',
+          'action' => 'imagecache_scale_and_crop',
           'data' => array(
-            'width' => '100',
-            'height' => '',
-            'upscale' => 0,
+            'width' => '160',
+            'height' => '120',
           ),
         ),
       ),
@@ -64,6 +63,20 @@ function feature_imagecache_imagecache_default_presets() {
         ),
       ),
     ),
+    'facebook_image_size' => array(
+      'presetname' => 'facebook_image_size',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '50',
+            'height' => '50',
+          ),
+        ),
+      ),
+    ),
     'homepage_carousel' => array(
       'presetname' => 'homepage_carousel',
       'actions' => array(
@@ -74,6 +87,20 @@ function feature_imagecache_imagecache_default_presets() {
           'data' => array(
             'width' => '1280',
             'height' => '417',
+          ),
+        ),
+      ),
+    ),
+    'profile_picture_big' => array(
+      'presetname' => 'profile_picture_big',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '100',
+            'height' => '100',
           ),
         ),
       ),

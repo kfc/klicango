@@ -26,11 +26,24 @@ $(function() {
     loadInviteFriends(0, 10);
   });
   
-  $(".col-3 .invite-friend")
+  $(".going-users-link")
     .click(function(e) {
     e.preventDefault();
+    loadEventUsers('going', e.target.id);
+  }); 
+  
+  $(".invited-users-link")
+    .click(function(e) {
+    e.preventDefault();
+    loadEventUsers('invited', e.target.id);
+  }); 
+      
+  /*$(".col-3 .invite-friend")
+    .click(function(e) {
+    e.preventDefault();
+    alert(2);
     loadInviteFriends(0, 10);
-  });
+  });*/
   
   $("#create-event-link")
     .click(function(e) {
@@ -297,10 +310,16 @@ $(function() {
 function preprocessRequest(event_id) {
     $( "#invite-friends-form" ).dialog("close");
     var ids = '';
+    var local_ids = '';
     $("#invite-friends-form input[name='invite[]']").each(function(){
-        ids += this.value + ',';
+        if (this.title == 'facebook') {
+            ids += this.value + ',';
+        } else {
+            local_ids += this.value + ',';
+        }
     });
     initRequest(ids, event_id);
+    initLocalRequest(local_ids, event_id);
 }
 
 function declineEvent(event_id) {
@@ -345,4 +364,37 @@ function acceptEvent(event_id) {
             }
        },  
     });
+}
+
+function loadEventUsers(type, event_id) {
+        $('#dialog-' + type).remove();
+        $.ajax({
+           type: 'GET',
+           dataType: 'html',
+           url: '/event/users',
+           data: {"event_id": event_id, "type": type},
+           success : function (data, textStatus, jqXHR) {
+                $('body').append(data);
+                if ($('#dialog-' + type + 'div.scroll-pane.mCustomScrollbar').length) {
+                    $('#dialog-' + type + ' .mCSB_container').append(data);
+                } else {
+                    $('#dialog-' + type + ' div.scroll-pane').mCustomScrollbar({
+                        scrollButtons:{
+                        	enable:true
+                        }
+                    });    
+                }
+           },  
+           complete : function (jqXHR, textStatus) {  
+                $('#dialog-' + type).dialog({
+        		  autoOpen: false,
+                  width: 484,
+                  height: 340,
+        		  modal: true
+        		});
+                
+                $('#dialog-' + type).dialog('open');
+
+           },
+        });
 }
