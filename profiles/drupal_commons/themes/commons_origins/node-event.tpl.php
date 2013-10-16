@@ -130,10 +130,12 @@
             </div>
             
             <?php if(events_event_is_available_to_add($node)):?>
-              <div class="going-status-button" id="event-action-button"><a class="add-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t('Add to my calendar')?></a></div>
+              <div class="going-status-button" id="event-action-button"><a class="add-event-link" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t('Add to my calendar')?></a></div>
             
             <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
-              <div class="going-status-button" id="event-action-button"><a class="remove-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t("I'm going")?></a></div>
+              <div class="going-status-button" id="event-action-button">
+                <a class="remove-event-link" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
+              </div>
             <?php endif;?>
         <?php else : ?>
             <div id="private-event-description">
@@ -187,12 +189,12 @@
         			<div class="event-description"><?php echo nl2br($node->field_event_details[0]['safe'])?></div>
         			<?php if(events_event_is_available_to_add($node)):?>
                       <div class="going-status-button" id="event-action-button">
-                        <a class="add-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t('Add to my calendar')?></a>
+                        <a class="add-event-link" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t('Add to my calendar')?></a>
                       </div>
                     
                     <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
                       <div class="going-status-button" id="event-action-button">
-                        <a class="remove-event-link" href="/event_action?event_id=<?php echo $node->nid;?>"><?php echo t("I'm going")?></a>
+                        <a class="remove-event-link" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
                       </div>
                     <?php endif;?>
         		</div>
