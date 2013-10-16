@@ -224,7 +224,7 @@
               <a href="javascript: void(0);" class="invited-users-link" id="event_<?php echo $node->nid; ?>"><?php echo t('Invited')?> (<?php echo count($people_going['invited'])?>)</a>
               <?php 
                 if(count($people_going['invited']) > $person_to_show)
-                  $people_going['invited'] = array_slice($people_going['going'],0,$person_to_show);  
+                  $people_going['invited'] = array_slice($people_going['invited'],0,$person_to_show);  
               ?>
               <?php foreach($people_going['invited'] as $_person):?>
                 <div class="person-row">
