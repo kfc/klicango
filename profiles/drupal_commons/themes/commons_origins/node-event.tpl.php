@@ -201,10 +201,16 @@
         <?php endif; ?>
         
         <div class="event-people-block">
-        <?php if(!empty($people_going)):?>
+        <?php if(!empty($people_going)):
+          $person_to_show = 4;
+        ?>
           <?php if(!empty($people_going['going'])):?>
             <div class="going-block">
               <a href="javascript: void(0);" class="going-users-link" id="event_<?php echo $node->nid; ?>"><?php echo t('Going')?> (<?php echo count($people_going['going'])?>)</a>
+              <?php 
+                if(count($people_going['going']) > $person_to_show)
+                  $people_going['going'] = array_slice($people_going['going'],0,$person_to_show);  
+              ?>
               <?php foreach($people_going['going'] as $_person):?>
                 <div class="person-row">
                   <div class="person-thumbnail"><?php echo $_person['photo']?></div>
@@ -216,6 +222,10 @@
           <?php if(!empty($people_going['invited'])):?>
             <div class="invited-block">
               <a href="javascript: void(0);" class="invited-users-link" id="event_<?php echo $node->nid; ?>"><?php echo t('Invited')?> (<?php echo count($people_going['invited'])?>)</a>
+              <?php 
+                if(count($people_going['invited']) > $person_to_show)
+                  $people_going['invited'] = array_slice($people_going['going'],0,$person_to_show);  
+              ?>
               <?php foreach($people_going['invited'] as $_person):?>
                 <div class="person-row">
                   <div class="person-thumbnail"><?php echo $_person['photo']?></div>
