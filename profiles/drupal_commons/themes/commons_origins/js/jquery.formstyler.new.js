@@ -34,6 +34,7 @@
 				if (data[i] != '') dataList += ' data-' + i + '="' + data[i] + '"';
 			}
 			id += dataList;
+
 			// checkbox
 			if (el.is(':checkbox')) {
 				el.css({position: 'absolute', left: -9999}).each(function() {
@@ -89,12 +90,6 @@
 							if (el.is(':disabled')) checkbox.addClass('disabled');
 								else checkbox.removeClass('disabled');
 						});
-					} else {
-					   if (el.hasClass('error') == true){
-					       if(el.next('div.jq-checkbox').hasClass('error') == false) {
-					           el.next('div.jq-checkbox').addClass('error');
-					       } 
-	                   }
 					}
 				});
 
@@ -159,6 +154,7 @@
 						if (el.is(':disabled')) file.addClass('disabled');
 						el.change(function() {
 							name.text(el.val().replace(/.+[\\\/]/, ''));
+							//name.append("<img src='images/" + el.val().replace(/.+[\\\/]/, '') + "' /><div class='del-photo'><a href='' class='del-item'>Delete</a></div>");
 						})
 						.focus(function() {
 							file.addClass('focused');
@@ -585,14 +581,6 @@
 							el.next().remove();
 							selectbox();
 						});
-					} else {
-					   {
-					   if (el.hasClass('error') == true){
-					       if(el.next('div.jqselect').hasClass('error') == false) {
-					           el.next('div.jqselect').addClass('error');
-					       } 
-	                   }
-					}
 					}
 				});
 			}// end select

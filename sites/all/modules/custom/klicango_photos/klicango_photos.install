@@ -1,0 +1,66 @@
+<?php
+
+/**
+ * Implementation of hook_schema().
+ */
+function klicango_photos_schema() {
+  $schema['photo_comments'] = array(
+    'description' => t('Stores photo comments.'),
+    'fields' => array(
+      'cid'     => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => t('Primary key autoincrement.'),
+      ),
+      'fid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => t('Photo file ID'),
+      ),
+      
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => t('Commenter UID'),
+      ),
+      
+      'event_id' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => t('Event Id of a photo'),
+      ),
+      'comment' => array(
+        'type' => 'varchar',
+        'length' => 4000,
+        'not null' => FALSE,
+      ),
+      
+      'comment_fid' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => t('Comment photo fid'),
+      ),
+      
+      'timestamp' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => t('Comment timestamp'),
+      ),
+
+    ),
+    'primary key' => array('cid'),
+  );
+  return $schema;
+}
+
+function klicango_photos_update_6001() {
+    $return = array();
+    $r = drupal_install_schema('klicango_photos');
+        
+    $return[] = array('success' => TRUE, 'query' => 'klicango_photos schema installed');
+    return $return;
+}
+
+function klicango_photos_uninstall() {
+  drupal_uninstall_schema('klicango_photos');
+}

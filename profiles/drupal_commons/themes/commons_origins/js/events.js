@@ -131,7 +131,7 @@ $(function() {
  });
  
  $("#event-action-button a").on('click', function(e){
-   e.preventDefault();
+   e.preventDefault();   
    var event_id = $(this).attr('href').replace('/event_action?event_id=','');
    var action = '';
    if($(this).hasClass('add-event-link'))

@@ -1,0 +1,136 @@
+<?php
+
+function klicango_photos_menu(){
+  $items = array();
+  
+  $items['event_photo/%/%'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_photos_event_photo',
+    'page arguments' => array(1,2),
+    'access callback' => 'user_is_logged_in',
+  );
+  
+  $items['comment_photo/%/%'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_photos_comment_photo',
+    'page arguments' => array(1,2),
+    'access callback' => 'user_is_logged_in',
+  );
+
+  return $items;  
+}
+ 
+ 
+function klicango_photos_event_photo($event_id, $photo_id){
+  
+  $return = array();
+ 
+  $res = db_query("SELECT field_comment_photo_fid, f.*,comment_nid.created
+                      FROM content_field_comment_photo ph
+                      INNER JOIN node comment_nid on comment_nid.nid = ph.nid
+                      INNER JOIN node_comments nc on nc.cid = comment_nid.nid
+                      INNER JOIN files f on f.fid = field_comment_photo_fid
+                      WHERE nc.nid = %d AND field_comment_photo_fid IS NOT NULL
+                      ORDER BY comment_nid.created ASC, f.fid ASC
+                      ",$event_id);
+ 
+ $fids = array();
+  $next = $prev = null;
+  while ($row = db_fetch_object($res)) {
+    $fids[] = $row->fid;
+    if($row->fid == $photo_id)
+      $info = $row;   
+  }
+  $photo_pos = array_search($photo_id, $fids);
+  if($photo_pos == 0){
+    $next = $fids[1];  
+  }
+  elseif($photo_pos == (count($photo_pos) - 1)){
+     $prev = count($photo_pos) - 1; 
+  }
+  else{
+    $next = $fids[$photo_pos + 1];  
+    $prev = $fids[$photo_pos - 1];  
+  }
+ 
+ 
+ $res = db_query("SELECT pc.*,u.picture from photo_comments pc INNER JOIN users u on u.uid = pc.uid WHERE pc.fid = %d ORDER BY pc.timestamp DESC",$photo_id);
+ $profiles = array();
+  while ($comment = db_fetch_object($res)) {
+    $profiles[$comment->uid] = array();
+    $comments[$comment->cid] = $comment;
+  }
+  // Load profiles
+  $result = db_query('SELECT f.name, f.type, v.value,uid FROM {profile_fields} f INNER JOIN {profile_values} v ON f.fid = v.fid WHERE uid in (%s)', implode(',',array_keys($profiles)));
+   while ($field = db_fetch_object($result)) {     
+    $profiles[$field->uid][$field->name] = (_profile_field_serialize($field->type) ? unserialize($field->value) : $field->value);
+  }
+  foreach($comments as &$_comment){
+    $_comment->profile = $profiles[$_comment->uid];  
+  }
+   
+ if(!empty($info)){
+  $author = user_load($info->uid);
+  $return['image'] = array('src'=> imagecache_create_url('comment_image_big', $info->filepath, FALSE, $absolute));  
+  $return['author'] = theme('photo_author_info',$author, $info);
+  $return['comments'] = theme('photo_comments',$comments);
+  $return['next_url'] = (!empty($next) ? ('/event_photo/'.$event_id.'/'.$next) : '');
+  $return['prev_url'] = (!empty($prev) ? ('/event_photo/'.$event_id.'/'.$prev) : '');
+ }
+  echo json_encode($return);
+  exit;
+}
+
+function klicango_photos_comment_photo($comment_id, $photo_id){
+  
+}
+
+function klicango_photos_theme(){
+   return array(
+      'photo_author_info' => array(
+        'arguments' => array('author' => NULL, 'info' => NULL),
+      ),
+      
+      'photo_comments' => array(
+        'arguments' => array('comments' => NULL),
+      ),
+      
+   );
+  
+}
+
+function theme_photo_author_info($author, $info){ 
+   $output = '
+    <div id="owner-block">
+      <div class="owner-thumbnail">
+        <a href="'.url('user/'.$author->uid).'">'.theme_imagecache('user_picture_meta', $author->picture).'</a>
+      </div>
+      <div class="published">'.date('d F',$info->created).'</div>
+      <div class="owner-name"><a href="'.url('user/'.$author->uid).'">'.$author->first_name.' '.$author->surname.'</a></div>
+      <div class="owner-event"><a href="'.url('user/'.$author->uid).'">'.$author->city.'</a></div>
+    </div>';
+   return $output;
+}
+
+function theme_photo_comments($comments){
+  global $user;
+  $output = '
+  <div id="comment-form">
+        <table id="comment-table">';
+        
+   if(!empty($comments)){
+    foreach($comments as $comment){ 
+     $output .= '<td class="col-1">'.theme_imagecache('user_picture_meta', $comment->picture).'</td>'; 
+     $output .= '<td class="col-2"><a href="'.url('user/'.$comment->uid).'">'.$comment->profile['first_name'].' '.$comment->profile['surname'].'</a>'.$comment->comment.'</td>'; 
+     $output .= '<td class="col-3">'.format_interval(time()-$comment->timestamp).' '.t('ago').'</td>'; 
+    }
+   }      
+   $output .= '<tr class="row-last">
+                <td class="col-1">'.theme_imagecache('user_picture_meta', $user->picture).'</td>
+                <td class="col-2" colspan="2"><form><input type="text" /></form></td>
+              </tr>
+        </table>
+    </div>';
+  
+   return $output;
+}

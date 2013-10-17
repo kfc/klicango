@@ -1,0 +1,4 @@
+name = Klicango Photos
+description = Photos functionality.
+package = Custom
+core = 6.x
