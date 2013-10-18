@@ -27,9 +27,9 @@ function feature_imagecache_imagecache_default_presets() {
           'module' => 'imagecache',
           'action' => 'imagecache_scale',
           'data' => array(
-            'width' => '100%',
+            'width' => '800',
             'height' => '',
-            'upscale' => 0,
+            'upscale' => 1,
           ),
         ),
       ),
