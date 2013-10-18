@@ -34,7 +34,8 @@ $(function() {
       $("#photo-box").hide();
 
       function loadPhotoComments(link){
-        $("#comment-wrapper").html('');
+        //$("#comment-wrapper").html('');
+        
         var url = $(link).attr("href"); 
         $.ajax({
           type: "POST",
@@ -62,13 +63,14 @@ $(function() {
               $("#photo-box #photo-wrapper a#next-photo").attr('href',data.next_url).show();
             }
             else
-              $("#photo-box #photo-wrapper a#next-photo").hide();      
+              $("#photo-box #photo-wrapper a#next-photo").hide();    
+              
+            bindCommentSubmit();    
             
           },
         });  
         
       }
-
       // POPUP SHOW
       $("a.klicango-popup").bind('click', function(e){
         e.preventDefault();
@@ -104,6 +106,42 @@ $(function() {
         $("#photo-overlay").hide();
         $("#photo-box").hide();
       });
+      
+      
+      function bindCommentSubmit(){ 
+        $("#comment-post-form").on('submit', function(){ 
+          var comment = $("#comment-body", $(this)).val();
+          if(comment.trim() == ''){
+            alert('Please enter your comment');  
+          }
+          else{
+            postPhotoComment($(this),comment);  
+          }
+          return false;
+        });
+      }
+      
+       function postPhotoComment(form, comment){
+         $.ajax({
+          type: "POST",
+          url: '/add_photo_comment',
+          data:  $(form).serialize(),
+          dataType: 'json',
+          success: function(data){
+            if(data.result){  
+              var comment = data.new_comment;
+              $("#comment-table tr.row-last").before(comment);    
+              $("#comment-body", $(form)).val('');    
+            }
+            else{ 
+              
+            }
+          },
+        }); 
+         
+       }
+      
+      
 
        
       
