@@ -143,7 +143,7 @@ function events_theme() {
       ),
       'event_photos_list' => array(
         'template' => 'event-photos-list',
-        'arguments' => array('content' => NULL, 'photos_count' => NULL),
+        'arguments' => array('content' => NULL, 'photos_count' => NULL, 'all_photos_link' => NULL, 'more_photos_link' => NULL),
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
       'events_invited_list' => array(
@@ -377,16 +377,16 @@ function create_event_if_valid(){
 }
 
 function events_get_events_photos(){
-  
+  $photos_to_display = 7;
   $res = db_query("SELECT field_comment_photo_fid, f.*
                       FROM content_field_comment_photo ph
                       INNER JOIN node comment_nid on comment_nid.nid = ph.nid
                       INNER JOIN node_comments nc on nc.cid = comment_nid.nid
                       INNER JOIN files f on f.fid = field_comment_photo_fid
                       WHERE nc.nid = %d AND field_comment_photo_fid IS NOT NULL
-                      ORDER BY comment_nid.created DESC
-                      LIMIT 7
-                      ",arg(1));
+                      ORDER BY comment_nid.created DESC, f.fid DESC
+                      LIMIT %d
+                      ",arg(1),$photos_to_display + 1 );  // Take 1 more picture to show when 'more...' link is clicked.
   while ($r = db_fetch_array($res)) {
     $photos[] = $r;
   }
@@ -400,15 +400,23 @@ function events_get_events_photos(){
   
   $count = db_fetch_array($count_res);
   $count = $count['photos_count'];
+  
+  $all_photos_link = '/event_photo/'.arg(1).'/'.$photos[0]['fid'];
+  $more_photos_link  = '';
+  if($count > $photos_to_display){
+    $more_photos_link = '/event_photo/'.arg(1).'/'.$photos[$photos_to_display]['fid'];
+    unset($photos[count($photos) -1]);
+  }
                      
   $photos_html = '';
-  foreach($photos as $_photo){
-    $photos_html .= '<div class="item"><a href="'.imagecache_create_url('comment_image_big',$_photo['filepath']).'">'.theme_imagecache('comment_image_right_thumbnail',$_photo['filepath']).'</a></div>';
+  foreach($photos as $_photo){           
+    $photos_html .= '<div class="item"><a class="klicango-popup" href="/event_photo/'.arg(1).'/'.$_photo['fid'].'">'.theme_imagecache('comment_image_right_thumbnail',$_photo['filepath']).'</a></div>';
   }
+  
   //$view = views_get_view('event_photos');
   //$view->set_display('block_1');
   //$view->set_arguments(array(arg(1)));
-  return theme('event_photos_list',$photos_html, $count);//$view->render('block_1');
+  return theme('event_photos_list',$photos_html, $count, $all_photos_link, $more_photos_link);//$view->render('block_1');
 }
 
 function event_post_comment(){
@@ -730,31 +738,32 @@ function events_get_latest_events_photos(){
     $_user = $user;
   }
     
-  $photos_res = db_query('select ph.field_comment_photo_fid, nc.nid, f.*,n.title as node_title, evt.field_date_value as event_date,evt_image_file.filepath as event_image
+  $photos_res = db_query('select u.*, ph.field_comment_photo_fid, nc.nid,n.*, f.*,n.title as node_title, evt.field_date_value as event_date,evt_image_file.filepath as event_image
                           FROM `content_field_comment_photo` ph 
                           INNER JOIN node_comments nc on nc.cid = ph.nid
                           INNER JOIN node n on n.nid = nc.nid 
+                          INNER JOIN node comment_nid on nc.cid = comment_nid.nid 
                           INNER JOIN files f on f.fid = ph.field_comment_photo_fid 
-                          INNER JOIN content_type_event evt on evt.nid = n.nid 
+                          INNER JOIN content_type_event evt on evt.nid = nc.nid 
+                          INNER JOIN users u on u.uid = n.uid 
                           LEFT JOIN content_field_content_images evt_image on evt_image.nid = n.nid 
                           LEFT JOIN files evt_image_file on evt_image_file.fid = evt_image.field_content_images_fid 
-                          WHERE nc.nid in (SELECT nid from node where uid = %d AND type = \'event\' and status = 1) 
+                          WHERE nc.nid in (SELECT DISTINCT(nid) from ((SELECT nid from node where uid = %d AND type = \'event\' and status = 1) UNION (SELECT event_id as nid from events_users where sender_id = %d OR user_id = %d)) t ) 
                           AND field_comment_photo_fid IS NOT NULL
                           GROUP BY nc.nid, ph.field_comment_photo_fid
-                          ORDER BY evt.field_date_value DESC
-                          ', $user_id);
+                          ORDER BY evt.field_date_value DESC, comment_nid.created DESC, fid DESC
+                          ', $user_id, $user_id, $user_id);
   
   //$events = events_get_events_created_by_user($user_id);
   //if(count($events) > 0){
    // $photos_res = db_query('select * from `content_field_comment_photo` WHERE nid in (57) and field_comment_photo_fid IS NOT NULL',implode(', ',$events));
-    while ($r = db_fetch_array($photos_res)) {
+    while ($r = db_fetch_array($photos_res)) {  
       $photos[$r['nid']]['photos'][$r['field_comment_photo_fid']] = $r;
       $photos[$r['nid']]['node_title'] = $r['node_title'];
       $photos[$r['nid']]['event_date'] = $r['event_date'];
-      $photos[$r['nid']]['event_image'] = $r['event_image'];
+      $photos[$r['nid']]['event_image'] = $r['picture'];
     }
     $photos = array_slice($photos,0,$events_to_show, true);
-
     return theme('latest_events_photos', $photos, $photos_to_show);
 }
 

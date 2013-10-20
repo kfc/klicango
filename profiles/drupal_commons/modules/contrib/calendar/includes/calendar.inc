@@ -127,7 +127,7 @@ function calendar_build_week(&$curday, $view, $items, $check_month = FALSE) {
       if(!empty($items[$curday_date])){
         $_items = $items[$curday_date];
         $first_event = array_pop(array_pop($_items));
-        $has_photo = !empty($first_event->node_vid);
+        $has_photo = (strtolower($first_event->node_data_field_date_field_event_type_value) == 'private' || !empty($first_event->node_vid));
       }
       $content = calendar_build_day($curday, $view, $items);      
       $class .= ($curday_date == $today ? ' today' : '') .

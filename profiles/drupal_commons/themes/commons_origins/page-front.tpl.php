@@ -31,6 +31,7 @@
     <script src="/misc/drupal.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/events.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/friends.js"></script>
+    <script src="/profiles/drupal_commons/themes/commons_origins/js/photos.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/main.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jScrollPane.js"></script>
 	<script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.mCustomScrollbar.min.js"></script>

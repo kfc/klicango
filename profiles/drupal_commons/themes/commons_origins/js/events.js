@@ -51,7 +51,7 @@ $(function() {
     $('#create-event-form .profile-upload').styler({browseText: 'Add event photo'});
     
    
-    $("#create-event-form input[type='text']").each(function(){
+    $("#create-event-form input[type='text'], #create-event-form input[type='hidden']").each(function(){
       $(this).val('');
     });
     $("#create-event-form textarea").each(function(){
@@ -65,7 +65,7 @@ $(function() {
   $("#modify-event-link")
     .click(function(e) {
     e.preventDefault();
-    $("#create-event-form input[type='text']").each(function(){
+    $("#create-event-form input[type='text'], #create-event-form input[type='hidden']").each(function(){
       $(this).val(form_data.data[$(this).attr('name')]);
     });
     $("#create-event-form textarea").each(function(){
@@ -131,7 +131,7 @@ $(function() {
  });
  
  $("#event-action-button a").on('click', function(e){
-   e.preventDefault();
+   e.preventDefault();   
    var event_id = $(this).attr('href').replace('/event_action?event_id=','');
    var action = '';
    if($(this).hasClass('add-event-link'))

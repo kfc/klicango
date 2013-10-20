@@ -6,7 +6,7 @@
   if(!empty($field_comment_photo)){
     foreach($field_comment_photo as $_photo){
       if(!empty($_photo['filepath'])){
-        $photos_html .= '<a href="'.imagecache_create_url('comment_image_big', $_photo['filepath'], FALSE, true).'" rel="lightbox">'.theme_imagecache('comment_image',$_photo['filepath']).'</a>';
+        $photos_html .= '<a class="klicango-popup" href="/comment_photo/'.$nid.'/'.$_photo['fid'].'" rel="lightbox">'.theme_imagecache('comment_image',$_photo['filepath']).'</a>';
         $photos_num++;
       }
     }
@@ -42,7 +42,7 @@
     <?php endif;?>
     
     <div class="person-comment"><?php echo $body?></div>
-    <div class="person-activity-time"><?php echo format_interval(time()-$created).' '.t('ago');?></div>
+    <div class="person-activity-time"><?php echo format_interval(time()-$created,1).' '.t('ago');?></div>
     
   </div>
 </div>
