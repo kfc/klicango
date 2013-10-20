@@ -20,7 +20,7 @@ $(function() {
       }
   });
   
-  $("#invite-friend-link")
+  $(".invite-friend")
     .click(function(e) {
     e.preventDefault();
     loadInviteFriends(0, 10);

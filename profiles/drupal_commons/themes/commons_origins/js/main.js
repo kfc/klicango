@@ -285,19 +285,30 @@ function initLocalRequest(ids, event_id) {
 
 function initRequest(ids, event_id) {
     if (ids.length) {
-        if (typeof FB == 'object') {
-            FB.ui({method: "apprequests",
-              message: "Dear friend! Please join me on Klicango to always stay in touch and share with me the best parties and places.",
-              display: "iframe",
-              to: ids
-            }, function(response){
-                processInvitation(response, event_id);   
-            });
-        } else {
-            setTimeout(function(){
-                initRequest(ids, event_id);   
-            }, 1000);
-        }
+        $.ajax({
+           type: 'GET',
+           dataType: 'json',
+           url: '/friends/check_facebook_invite',
+           data: {"to": ids, "event_id": event_id},
+           success : function (data, textStatus, jqXHR) { 
+               if(data.success == true && data.ids.length) {
+                    ids = data.ids;
+                    if (typeof FB == 'object') {
+                        FB.ui({method: "apprequests",
+                          message: "Dear friend! Please join me on Klicango to always stay in touch and share with me the best parties and places.",
+                          display: "iframe",
+                          to: ids
+                        }, function(response){
+                            processInvitation(response, event_id);   
+                        });
+                    } else {
+                        setTimeout(function(){
+                            initRequest(ids, event_id);   
+                        }, 1000);
+                    }     
+               }
+           },
+        });
     }
 }
 

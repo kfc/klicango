@@ -20,6 +20,12 @@ function klicango_friends_menu(){
     'page callback' => 'klicango_friends_invite_local_friends',
     'access callback' => 'user_is_logged_in',
   );
+
+  $items['friends/check_facebook_invite'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_check_facebook_invite',
+    'access callback' => 'user_is_logged_in',
+  );
   
   $items['friends/find'] = array(
     'type' => MENU_CALLBACK,
@@ -193,15 +199,26 @@ function klicango_friends_preprocess_page(&$variables) {
     $variables['menu_stats']['friends_pending'] = klicango_friends_get_pending();
 }
 
-function klicango_friends_invite_local_friends() {
-    if(!empty($_GET['to']) && !empty($_GET['event_id'])) {
+function klicango_friends_invite_local_friends($data = array()) {    
+    $ajax = true;
+    if (!empty($data)) {
+        $ajax = false;
+    }
+    
+    if((!empty($_GET['to']) && !empty($_GET['event_id'])) || (!empty($data['event_id']) && !empty($data['to']))) {
         global $user;
         $rows = 0;
         $invited = 0;
-        $recipients = explode(',', $_GET['to']);
+        
+        if (empty($data)) {
+            $data['event_id'] = $_GET['event_id'];
+            $data['to'] = $_GET['to'];
+        }
+        
+        $recipients = explode(',', $data['to']);
         $object = new stdClass();
         $object->sender_id = $user->uid;
-        $object->event_id = $_GET['event_id'];
+        $object->event_id = $data['event_id'];
         $object->status = 1;
         foreach ($recipients as $local_uid) {
             if ($local_uid) {
@@ -217,7 +234,13 @@ function klicango_friends_invite_local_friends() {
                 }
             }
         }
-        drupal_json(array('success' => true, 'rows' => $rows, 'invited' => $invited));
+        $response = array('success' => true, 'rows' => $rows, 'invited' => $invited);
+        if ($ajax) {
+            drupal_json($response);
+            exit;
+        } else {
+            return $response;
+        }
     }
 }
 
@@ -339,8 +362,10 @@ function klicango_friends_get_all_friends() {
         $facebook_friends = $facebook_friends->data;
     }
     
-    //unset facebook friends already registered on klicango
-    $facebook_local = db_query('SELECT fbid FROM fboauth_users WHERE fbid IN (' . implode(',', array_keys($facebook_friends)) . ')');
+    //unset facebook friends already registered on klicango and already a friend of the user
+    
+    $facebook_local = db_query('SELECT fbid FROM fboauth_users WHERE fbid IN (' . implode(',', array_keys($facebook_friends)) . ') 
+                                AND uid IN (' . implode(',', array_keys($friends)) . ')');
     while ($local_fid = db_fetch_array($facebook_local)) {
         unset($facebook_friends[$local_fid['fbid']]);
         
@@ -434,13 +459,25 @@ function klicango_friends_all_friends($uid){
   return $friends;
 }
 
-function klicango_friends_add_invitation($fid) {
+function klicango_friends_add_invitation($fid, $ajax = true) {
+    // TODO: Check duplicate friend invitations
+    
     global $user;
     $return = array('success' => false);
-    $data = array('sender_id' => $user->uid, 'user_id' => $fid, 'status' => 1);
-    $return['success'] = drupal_write_record('friends_invitations', $data);
-    echo json_encode($return);
-    exit; 
+    $result = db_query('SELECT id FROM friends_invitations WHERE (sender_id = %d AND user_id = %d) OR (sender_id = %d AND user_id = %d)', $user->uid, $fid, $fid, $user->uid);
+    if (!$is_friend = db_result($result)) {
+        $data = array('sender_id' => $user->uid, 'user_id' => $fid, 'status' => 1);
+        $return['success'] = drupal_write_record('friends_invitations', $data);
+    } else {
+        $return['success'] = false;
+    }
+    
+    if ($ajax) {
+        echo json_encode($return);
+        exit; 
+    } else {
+        return $return;
+    }
 }
 
 function klicango_friends_remove_invitation($fid) {
@@ -540,5 +577,26 @@ function klicango_friends_friend_decline() {
     $result = db_query('UPDATE friends_invitations SET status = 4 WHERE sender_id = %d AND user_id = %d', $sender_id, $user->uid);
     db_query('DELETE FROM friends WHERE uid = %d AND fid = %d', $sender_id, $user->uid);
     drupal_json(array('status' => $result));
+    exit;
+}
+
+function klicango_friends_check_facebook_invite() {
+    if(!empty($_GET['to']) && !empty($_GET['event_id'])) {
+        $ids = rtrim($_GET['to'],',');
+        $event_id = $_GET['event_id'];
+        $ids_arr = explode(',', $ids);
+        
+        $result = db_query('SELECT uid, fbid FROM fboauth_users WHERE fbid IN (' . mysql_escape_string($ids) . ')');
+        while($user = db_fetch_array($result)) {
+            $friend_inv = klicango_friends_add_invitation($user['uid'], false);
+            $event_inv = klicango_friends_invite_local_friends(array('event_id' => $event_id, 'to' => $user['uid']));
+            if(($key = array_search($user['fbid'], $ids_arr)) !== false) {
+                unset($ids_arr[$key]);
+            }
+        }
+        drupal_json(array('success' => true, 'ids' => implode(',', $ids_arr)));
+        exit;
+    }
+    drupal_json(array('success' => false));
     exit;
 }
