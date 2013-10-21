@@ -215,8 +215,20 @@
               ?>
               <?php foreach($people_going['going'] as $_person):?>
                 <div class="person-row">
-                  <div class="person-thumbnail"><?php echo $_person['photo']?></div>
-                  <div class="person-name"><?php echo $_person['full_name']?></div>  
+                  <div class="person-thumbnail">
+                  <?php if(!empty($_person['user_id'])):?>
+                    <a href="<?php echo url('user/'.$_person['id'])?>"><?php echo $_person['photo']?></a>
+                  <?php else:?>
+                    <a title="<?php echo $_person['full_name']?>"><?php echo $_person['photo']?></a>  
+                  <?php endif;?>  
+                  </div>
+                  <div class="person-name">
+                  <?php if(!empty($_person['user_id'])):?>
+                    <a href="<?php echo url('user/'.$_person['id'])?>"><?php echo $_person['full_name']?></a>
+                  <?php else:?> 
+                    <a title="<?php echo $_person['full_name']?>"><?php echo $_person['full_name']?></a>  
+                  <?php endif;?> 
+                  </div>  
                 </div>
               <?php endforeach;?>  
             </div>
@@ -230,8 +242,20 @@
               ?>
               <?php foreach($people_going['invited'] as $_person):?>
                 <div class="person-row">
-                  <div class="person-thumbnail"><?php echo $_person['photo']?></div>
-                  <div class="person-name"><?php echo $_person['full_name']?></div>  
+                  <div class="person-thumbnail">
+                  <?php if(!empty($_person['user_id'])):?>
+                    <a href="<?php echo url('user/'.$_person['user_id'])?>"><?php echo $_person['photo']?></a>
+                  <?php else:?>
+                    <a title="<?php echo $_person['full_name']?>"><?php echo $_person['photo']?></a>  
+                  <?php endif;?>  
+                  </div>
+                  <div class="person-name">
+                  <?php if(!empty($_person['user_id'])):?>
+                    <a href="<?php echo url('user/'.$_person['user_id'])?>"><?php echo $_person['full_name']?></a>
+                  <?php else:?> 
+                    <a title="<?php echo $_person['full_name']?>"><?php echo $_person['full_name']?></a>  
+                  <?php endif;?>  
+                  </div> 
                 </div>
               <?php endforeach;?>  
             </div>
