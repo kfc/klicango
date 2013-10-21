@@ -488,3 +488,7 @@ span.comment-delete-button a{
     padding-top: 8px;
     padding-bottom: 8px;
 }
+
+#private-event-description {
+    margin-top: 20px;
+}

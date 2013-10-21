@@ -13,9 +13,9 @@
         <tr>
 			<td class="col-1">
                 <?php if (!empty($node->field_content_images[0]['filepath'])) : ?>
-				    <img src="<?php echo imagecache_create_url('events_overview_thumbnail', $node->field_content_images[0]['filepath']); ?>" alt="" />
-                <?php else : ?>
-                    <img src="<?php echo imagecache_create_url('events_overview_thumbnail', $creator->picture); ?>" alt="" />                
+				    <a href="<?php echo url('node/' . $nid); ?>"><img src="<?php echo imagecache_create_url('events_overview_thumbnail', $node->field_content_images[0]['filepath']); ?>" alt="" /></a>
+                <?php elseif (!empty($creator->picture)) : ?>
+                    <a href="<?php echo url('node/' . $nid); ?>"><img src="<?php echo imagecache_create_url('events_overview_thumbnail', $creator->picture); ?>" alt="" /></a>                
                 <?php endif; ?>
 			</td>
 			<td class="col-2">
@@ -50,7 +50,7 @@
         $location_info = user_load($node->uid);   
         $advanced_info = advanced_profile_load($location_info->uid);         
         ?>
-        <?php if(!empty($node->field_content_images)):?>
+        <?php if(!empty($node->field_content_images) && !empty($node->field_content_images[0]['filepath'])):?>
             <div class="public-event-top-banner">
               <?php echo theme_imagecache('event_image', $node->field_content_images[0]['filepath']);?>
             </div>
@@ -107,15 +107,15 @@
                   ?>
                 
                 </div>
-                <?php if(!empty($node->field_location)): ?>
+                <?php if(!empty($node->field_location) && !empty($node->field_location[0]['value'])): ?>
                   <div class="public-event-address"><?php echo $node->field_location[0]['safe']?><br/></div>
                 <?php endif;?>
                 <div class="public-event-contacts">
-                  <?php if(!empty($node->field_event_contact_phone)): ?>
+                  <?php if(!empty($node->field_event_contact_phone) && !empty($node->field_event_contact_phone[0]['value'])): ?>
                     <?php echo t('tel:').' '.$node->field_event_contact_phone[0]['safe']?>
                   <?php endif;?>
                   <br>
-                  <?php if(!empty($node->field_event_email)): ?>
+                  <?php if(!empty($node->field_event_email) && !empty($node->field_event_email[0]['value'])): ?>
                     <?php echo t('email:').' <a href="mailto:'.$node->field_event_email[0]['safe'].'">'.$node->field_event_email[0]['safe'].'</a>'?>
                   <?php endif;?>
                   
@@ -170,15 +170,15 @@
                     }
                     echo $output_date;  
                   ?>
-        			<?php if(!empty($node->field_location)): ?>
+        			<?php if(!empty($node->field_location) && !empty($node->field_location[0]['value'])): ?>
                       <div class="event-address"><?php echo $node->field_location[0]['safe']?><br/></div>
                     <?php endif;?>
         			<div class="event-contacts">
-                      <?php if(!empty($node->field_event_contact_phone)): ?>
+                      <?php if(!empty($node->field_event_contact_phone) && !empty($node->field_event_contact_phone[0]['value'])): ?>
                         <?php echo t('tel:').' '.$node->field_event_contact_phone[0]['safe']?>
                       <?php endif;?>
                       <br>
-                      <?php if(!empty($node->field_event_email)): ?>
+                      <?php if(!empty($node->field_event_email) && !empty($node->field_event_email[0]['value'])): ?>
                         <?php echo t('email:').' <a href="mailto:'.$node->field_event_email[0]['safe'].'">'.$node->field_event_email[0]['safe'].'</a>'?>
                       <?php endif;?>
                       

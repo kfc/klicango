@@ -64,7 +64,16 @@ $advanced_profile = advanced_profile_load($user_id);
       </div>
       <div class="second-column public-event-col">
         <div class="public-event-address"><?php echo $viewed_user->address?> <br> <?php echo $viewed_user->zip?> <?php echo $viewed_user->city?></div>
-        <div class="public-event-contacts">tel: <?php echo $viewed_user->phone?> <br> email: <?php echo l($viewed_user->mail, 'mailto:'.$viewed_user->mail)?></div>
+        <?php if (!empty($viewed_user->phone) || !empty($viewed_user->mail)) : ?>
+            <div class="public-event-contacts">
+            <?php if (!empty($viewed_user->phone)) : ?>
+                tel: <?php echo $viewed_user->phone?> <br>
+            <?php endif; ?>
+            <?php if (!empty($viewed_user->mail)) : ?>
+                email: <?php echo l($viewed_user->mail, 'mailto:'.$viewed_user->mail)?>
+             <?php endif; ?>
+            </div>
+        <?php endif; ?>
       </div>
       <?php if($user->uid != $viewed_user->uid):?>
         <div class="public-actions">
