@@ -219,14 +219,14 @@
                   <?php if(!empty($_person['user_id'])):?>
                     <a href="<?php echo url('user/'.$_person['id'])?>"><?php echo $_person['photo']?></a>
                   <?php else:?>
-                    <a title="<?php echo $_person['full_name']?>"><?php echo $_person['photo']?></a>  
+                    <a title="<?php echo t('Facebook user')?>"><?php echo $_person['photo']?></a>  
                   <?php endif;?>  
                   </div>
                   <div class="person-name">
                   <?php if(!empty($_person['user_id'])):?>
                     <a href="<?php echo url('user/'.$_person['id'])?>"><?php echo $_person['full_name']?></a>
                   <?php else:?> 
-                    <a title="<?php echo $_person['full_name']?>"><?php echo $_person['full_name']?></a>  
+                    <a title="<?php echo t('Facebook user')?>"><?php echo $_person['full_name']?></a>  
                   <?php endif;?> 
                   </div>  
                 </div>
@@ -246,14 +246,14 @@
                   <?php if(!empty($_person['user_id'])):?>
                     <a href="<?php echo url('user/'.$_person['user_id'])?>"><?php echo $_person['photo']?></a>
                   <?php else:?>
-                    <a title="<?php echo $_person['full_name']?>"><?php echo $_person['photo']?></a>  
+                    <a title="<?php echo t('Facebook user')?>"><?php echo $_person['photo']?></a>  
                   <?php endif;?>  
                   </div>
                   <div class="person-name">
                   <?php if(!empty($_person['user_id'])):?>
                     <a href="<?php echo url('user/'.$_person['user_id'])?>"><?php echo $_person['full_name']?></a>
                   <?php else:?> 
-                    <a title="<?php echo $_person['full_name']?>"><?php echo $_person['full_name']?></a>  
+                    <a title="<?php echo t('Facebook user')?>"><?php echo $_person['full_name']?></a>  
                   <?php endif;?>  
                   </div> 
                 </div>
