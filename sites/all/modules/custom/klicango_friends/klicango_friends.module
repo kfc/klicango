@@ -82,10 +82,27 @@ function klicango_friends_load_facebook_friends() {
     
     $limit = (isset($_GET['limit'])) ? $_GET['limit'] : 10;
     $offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
+    $event_id = $_GET['event_id'];
     
     $friends = klicango_friends_get_all_friends();
     
     $html = '';
+    
+    if($event_id) {
+        $event_id = explode('_', $event_id);
+        $event_id = $event_id[1];
+        $attenders = events_get_event_attenders($event_id);
+        $local_ids = array_keys($attenders['going']);
+        $facebook_ids = array();
+        
+        foreach ($attenders['invited'] as $key => $value) {
+            if (!empty($value['user_id'])) {
+                $local_ids[] = $value['user_id'];
+            } else if (!empty($value['facebook_id'])) {
+                $facebook_ids[] = $value['facebook_id'];
+            }
+        }
+    }
 
     if(!empty($friends['local']) && $offset == 0) {
         foreach($friends['local'] as $id => $match) {
@@ -95,7 +112,11 @@ function klicango_friends_load_facebook_friends() {
             $html .= '<div class="person-item">';
             $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="' . imagecache_create_url('facebook_image_size', $picture) . '"/></a></div>';
             $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a></div>';
-            $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 1)">' . t('Invite friend') . '</a>';
+            if (in_array($id, $local_ids)) {
+                $html .= '<a href="javascript: void(0);" class="already-invited" style="cursor: default;">' . t('Already invited') . '</a>';
+            } else {
+                $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 1)">' . t('Invite friend') . '</a>';   
+            }
             $html .= '</div>';
         }
     }
@@ -105,13 +126,17 @@ function klicango_friends_load_facebook_friends() {
         $html .= '<div class="person-item">';
         $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="https://graph.facebook.com/' . $id . '/picture"/></a></div>';
         $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a><span class="fb-user">' . t('Friend on facebook') . '</span></div>';
-        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 0)">' . t('Invite friend') . '</a>';
+        if (in_array($id, $facebook_ids)) {
+            $html .= '<a href="javascript: void(0);" class="already-invited" style="cursor: default;">' . t('Already invited') . '</a>';
+        } else {
+            $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 0)">' . t('Invite friend') . '</a>';
+        }
         $html .= '</div>';
     }
     
     $new_offset = $offset + $limit;
     if (!empty($_GET['invite'])) {
-        $html .= '<div class="show-more-friends"><a class="show_more" href="javascript: void(0);" onclick="loadInviteFriends(' . $new_offset . ', ' . $limit . ')">' . t('Show more friends') . '</a></div>';
+        $html .= '<div class="show-more-friends"><a class="show_more" href="javascript: void(0);" onclick="loadInviteFriends(' . $new_offset . ', ' . $limit . ', \'event_' . $event_id . '\')">' . t('Show more friends') . '</a></div>';
     } else {
         $html .= '<div class="show-more-friends"><a class="show_more" href="javascript: void(0);" onclick="loadFriends(' . $new_offset . ', ' . $limit . ')">' . t('Show more friends') . '</a></div>';    
     }
