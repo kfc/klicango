@@ -39,7 +39,7 @@
     				<div class="decline"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" onclick="declineEvent(<?php echo $node->nid; ?>)">Decline</a></div>
                 <?php } else { ?>
                     <?php if ($node->field_event_type[0]['value'] == 'public' || $node->uid == $user->uid) : ?>
-                        <div id="invite-friend-link" class="invite-friend"><a href="javascript: void(0);" onclick="setActiveEvent(<?php echo $node->nid; ?>);">Invite friends</a></div>
+                        <div id="invite-friend-link" class="invite-friend"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" class="current-event" onclick="setActiveEvent(<?php echo $node->nid; ?>);">Invite friends</a></div>
                     <?php endif; ?>      
                 <?php } ?>
 			</td>

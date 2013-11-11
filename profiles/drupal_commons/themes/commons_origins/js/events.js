@@ -23,7 +23,11 @@ $(function() {
   $(".invite-friend")
     .click(function(e) {
     e.preventDefault();
-    loadInviteFriends(0, 10);
+    var event_id = 0;
+    if ($(e.target).hasClass('current-event')) {
+        event_id = e.target.id;
+    }
+    loadInviteFriends(0, 10, event_id);
   });
   
   $(".going-users-link")
@@ -37,13 +41,6 @@ $(function() {
     e.preventDefault();
     loadEventUsers('invited', e.target.id);
   }); 
-      
-  /*$(".col-3 .invite-friend")
-    .click(function(e) {
-    e.preventDefault();
-    alert(2);
-    loadInviteFriends(0, 10);
-  });*/
   
   $("#create-event-link")
     .click(function(e) {
@@ -265,18 +262,30 @@ $(function() {
   
 });
  
- function loadInviteFriends(offset, limit) {
-    if (offset == 0 && $("#invite-friends-form div.scroll-pane.mCustomScrollbar").length) {
+ function loadInviteFriends(offset, limit, event_id) {
+    /*if (offset == 0 && $("#invite-friends-form div.scroll-pane.mCustomScrollbar").length) {
         $("#invite-friends-form .scroll-pane").show();
         $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
         $(".ui-dialog-content.ui-widget-content").css({"height" : 495}); 
         $( "#invite-friends-form" ).dialog( "open" );   			
-    } else {
+    } else { */
+        if (typeof $('#invite-friends-form .scroll-pane').attr('id') == 'undefined') {
+            $('#invite-friends-form .scroll-pane').attr('id', event_id);
+        } else {
+            var current = $('#invite-friends-form .scroll-pane').attr('id');
+            alert(event_id);
+            alert(current);
+            if (event_id != current) {
+                $('#invite-friends-form .mCSB_container').html('');
+                $('#invite-friends-form .scroll-pane').attr('id', event_id);
+                $('#search-friends').val('');
+            }
+        }
         $.ajax({
            type: 'GET',
            dataType: 'html',
            url: '/friends/load',
-           data: {"offset": offset, "limit": limit, "invite" : "true"},
+           data: {"offset": offset, "limit": limit, "invite" : "true", "event_id" : event_id},
            success : function (data, textStatus, jqXHR) {
                 $('#invite-friends-form .show_more').remove();
                 
@@ -303,7 +312,7 @@ $(function() {
     			$("#invite-friends-form .scroll-pane").mCustomScrollbar("update");
            }, 
         }); 
-    } 
+    /*}*/ 
     $("#invite-friends-form #search-friends").show();
 }
 

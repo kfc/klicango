@@ -61,7 +61,7 @@ function events_menu(){
     'public' => array(
       'type' => MENU_CALLBACK,
       'page callback' => 'events_public_page',
-      'access callback' => 'user_is_logged_in'
+      'access callback' => true
     ),
     'private' => array(
       'type' => MENU_CALLBACK,
@@ -560,7 +560,10 @@ function events_get_count($status, $is_public = true) {
     } else {
         $type = 'private';
     }
-    $result = db_query('SELECT COUNT(*) AS num FROM events_users AS eu LEFT JOIN content_type_event AS ev ON eu.event_id = ev.nid WHERE ev.field_event_type_value = "%s" AND eu.status = %d AND eu.user_id = %d', $type, $status, $user->uid);
+    $result = db_query('SELECT COUNT(*) AS num FROM events_users AS eu 
+                        LEFT JOIN content_type_event AS ev ON eu.event_id = ev.nid 
+                        WHERE ev.field_event_type_value = "%s" AND eu.status = %d AND eu.user_id = %d 
+                        AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW())', $type, $status, $user->uid);
     $count = db_result($result);
     
     return $count;
@@ -573,7 +576,10 @@ function events_get_events($status, $is_public = true) {
     } else {
         $type = 'private';
     }
-    $result = db_query('SELECT eu.* FROM events_users AS eu LEFT JOIN content_type_event AS ev ON eu.event_id = ev.nid WHERE ev.field_event_type_value = "%s" AND eu.status = %d AND eu.user_id = %d', $type, $status, $user->uid);
+    $result = db_query('SELECT eu.* FROM events_users AS eu 
+                        LEFT JOIN content_type_event AS ev ON eu.event_id = ev.nid 
+                        WHERE ev.field_event_type_value = "%s" AND eu.status = %d AND eu.user_id = %d 
+                        AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW())', $type, $status, $user->uid);
     
     $ids = array();
     while($event = db_fetch_array($result)) {
@@ -629,12 +635,12 @@ function events_public_page() {
     $html .= theme('events_invited_list', $events, true);
     
     $events = array();
-    $ids = events_get_events(EVENT_STATUS_ACCEPTED, true);
+    $ids = events_get_popular_events(EVENT_STATUS_ACCEPTED, true);
     if (!empty($ids)) {
         foreach ($ids as $event) {
             $node = node_load($event['event_id']);
             $node->event_data = $event;
-            $node->friends_going = events_get_friends_going($event['event_id'], $event['user_id']);
+            $node->friends_going = $event['friends'];
             $events[] = node_view($node, true);
         }
     }
@@ -941,4 +947,43 @@ function events_users() {
     
     echo '<div id="dialog-' . htmlspecialchars($_GET['type']) . '" class="events-users ' . htmlspecialchars($_GET['type']) . '-form" title="' . htmlspecialchars($_GET['type']) . '"><div class="scroll-pane">' . $html . '</div></div>';
     exit;
+}
+
+function events_get_popular_events($status, $is_public = true) {
+    global $user;
+    if ($is_public) {
+        $type = 'public';
+    } else {
+        $type = 'private';
+    }
+    
+    if (user_is_logged_in()) {             
+        $result = db_query('SELECT ev.nid AS event_id, COUNT(eu.user_id) AS friends FROM content_type_event AS ev
+                            LEFT JOIN events_users AS eu ON ev.nid = eu.event_id
+                            WHERE (eu.user_id IN (
+                                SELECT uid AS id FROM friends 
+                                WHERE fid = %d UNION SELECT fid AS id FROM friends WHERE uid = %d
+                            ) 
+                            AND ev.field_event_type_value = "%s" AND eu.status = %d AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW())
+                            AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = %d))
+                            OR eu.event_id IS NULL
+                            GROUP BY ev.nid 
+                            ORDER BY friends DESC, ev.field_date_value ASC
+                            LIMIT 0, 5', $user->uid, $user->uid, $type, $status, $user->uid);
+    } else {
+        $result = db_query('SELECT ev.nid AS event_id, COUNT(eu.user_id) AS friends FROM content_type_event AS ev
+                            LEFT JOIN events_users AS eu ON ev.nid = eu.event_id
+                            WHERE (ev.field_event_type_value = "%s" AND eu.status = %d AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW()))
+                            OR eu.event_id IS NULL
+                            GROUP BY ev.nid 
+                            ORDER BY friends DESC, ev.field_date_value ASC
+                            LIMIT 0, 5', $type, $status);
+    }
+    
+    $ids = array();
+    while($event = db_fetch_array($result)) {
+        $ids[] = $event;    
+    }
+        
+    return $ids;
 }
