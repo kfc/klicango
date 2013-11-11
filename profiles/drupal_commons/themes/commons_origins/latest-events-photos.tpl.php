@@ -6,13 +6,15 @@
       <div class="item-list">
         <?php foreach($photos as $nid => $_info):
           $fids = array_keys($_info['photos']);
+         
         ?>  
           <div class="item">
           <div class="party-thumbnail"><?php echo (!empty($_info['event_image']) ? theme_imagecache('user_picture_meta',$_info['event_image']) : '')?></div>
           <div class="party-n-d-l">
+          <span class="party-photos-link"><a href="<?php echo url('user/'.$_info['uid'])?>"><?php echo $_info['user']?></a>, </span>
             <?php $date = date('M d', strtotime($_info['event_date'])); ?>
             <a href="<?php echo url('node/'.$nid)?>" class="party-link"><?php echo $_info['node_title']?></a><span class="party-date">, <?php echo $date?> </span>
-            <span class="party-photos-link">(<a class="klicango-popup" href="/event_photo/<?php echo $nid.'/'.$fids[0] ?>"><?php echo count($_info['photos']).' '.t('photo(s)')?></a>)</span>
+            <span class="party-photos-link">(<a class="klicango-popup" href="/event_photo/<?php echo $nid.'/'.$fids[0] ?>"><?php echo count($_info['photos']).' '.(count($_info['photos']) > 1 ? t('photos') : t('photo'))?></a>)</span>
           </div>
           <div class="added-new-photos">
             <?php 

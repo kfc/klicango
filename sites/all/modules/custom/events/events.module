@@ -760,10 +760,25 @@ function events_get_latest_events_photos(){
     while ($r = db_fetch_array($photos_res)) {  
       $photos[$r['nid']]['photos'][$r['field_comment_photo_fid']] = $r;
       $photos[$r['nid']]['node_title'] = $r['node_title'];
+      $photos[$r['nid']]['user'] = $r['uid'];
+      $photos[$r['nid']]['uid'] = $r['uid'];
       $photos[$r['nid']]['event_date'] = $r['event_date'];
-      $photos[$r['nid']]['event_image'] = $r['picture'];
+      $photos[$r['nid']]['event_image'] = $r['picture'];  
     }
     $photos = array_slice($photos,0,$events_to_show, true);
+    $uids = array();
+    foreach($photos as $_data){
+      $uids[] = $_data['user']; 
+    }
+ 
+    $profiles = array();
+    $result = db_query('SELECT f.name, f.type, v.value,uid FROM {profile_fields} f INNER JOIN {profile_values} v ON f.fid = v.fid WHERE uid in (%s)', implode(',',$uids));
+    while ($field = db_fetch_object($result)) {
+      $profiles[$field->uid][$field->name] = _profile_field_serialize($field->type) ? unserialize($field->value) : $field->value;
+    }
+    foreach($photos as &$_data){
+      $_data['user'] = $profiles[$_data['user']]['first_name'].' '.$profiles[$_data['user']]['surname']; 
+    }
     return theme('latest_events_photos', $photos, $photos_to_show);
 }
 
