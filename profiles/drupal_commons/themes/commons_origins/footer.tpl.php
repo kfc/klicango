@@ -13,7 +13,7 @@
 <footer id="footer">
 	<div class="footer-left-block">
 		<img src="/profiles/drupal_commons/themes/commons_origins/images/footer-ico.png" alt="" />
-		<span>Clipby, partenaire officiel</span>
+		<span><a href="http://clipby.net" target="_blank">Clipby, partenaire officiel</a></span>
 	</div>
 	<div class="footer-right-block">
 		<ul class="menu">

@@ -495,3 +495,26 @@ span.comment-delete-button a{
   color: #2b2b2b;
   text-decoration: none;
 }
+
+#main-slider div.slider-text {
+  right: 190px !important;
+  bottom: 25px !important;
+}
+
+div.footer-left-block a{
+  color: #808285;
+  font: italic 11px Arial;
+  text-decoration: none;
+}
+
+div.footer-left-block img{
+  vertical-align: middle;
+}
+
+#main-slider{
+  height: 300px !important;
+}
+
+#main-slider ul li{
+  height: 300px !important;
+}
