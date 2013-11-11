@@ -86,7 +86,7 @@ function feature_imagecache_imagecache_default_presets() {
           'action' => 'imagecache_scale_and_crop',
           'data' => array(
             'width' => '1280',
-            'height' => '417',
+            'height' => '300',
           ),
         ),
       ),
