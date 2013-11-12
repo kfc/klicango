@@ -3,7 +3,7 @@
 ?>
 <div id="profile-friends-list">
 <?php if(in_array('individual', $user->roles)):?>
-    <h2><?php echo t('My friends'); ?><a href="javascript: void(0);" style="cursor: default;"><sub>(<?php echo sizeof($users); ?>)</sub></a><a class="find-friend-link" href="">+ Find friends</a></h2>
+    <h2><?php echo t('My friends'); ?><a href="javascript: void(0);" style="cursor: default;"><sub>(<?php echo sizeof($users); ?>)</sub></a><a class="find-friend-link friend-link-list" href="">Find friends</a></h2>
 <?php else : ?>
     <h2><?php echo t('My followers'); ?><a href="javascript: void(0);" style="cursor: default;"><sub>(<?php echo sizeof($users); ?>)</sub></a></h2>
 <?php endif; ?>

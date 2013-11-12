@@ -582,3 +582,8 @@ div.footer-right-block{
   font: 12px Arial;
   color: #767676;
 }
+
+.friend-link-list {
+  color: #96C12B !important;
+  padding: 0 23px 0 37px !important;
+}
