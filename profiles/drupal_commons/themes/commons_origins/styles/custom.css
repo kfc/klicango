@@ -548,11 +548,11 @@ div.footer-right-block{
   min-width: 390px;
 }
 
-#last-parties-photos .item-list .item .party-n-d-l a.party-link{
+#last-parties-photos .item-list .item .party-n-d-l a.private-event-link{
   color: #f54e1f;
 }
 
-.activity-stream-list .stream-item .stream-item-content .activity_status a{
+.activity-stream-list .stream-item .stream-item-content .activity_status a.private-event-link{
   color: #f54e1f;
   text-decoration: none;  
 }
@@ -586,4 +586,19 @@ div.footer-right-block{
 .friend-link-list {
   color: #96C12B !important;
   padding: 0 23px 0 37px !important;
+}
+
+.activity-stream-list .stream-item .person-thumbnail {
+    margin-top: 0px;
+}
+
+.activity-stream-list .stream-item .person-name a {
+  text-decoration: none;
+}
+.activity-stream-list .stream-item .person-name a:hover {
+  text-decoration: underline;
+}
+
+#last-parties-photos .item-list .item .party-n-d-l{
+  padding-top: 25px;
 }
