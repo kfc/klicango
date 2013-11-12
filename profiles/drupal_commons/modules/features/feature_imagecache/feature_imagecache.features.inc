@@ -13,8 +13,8 @@ function feature_imagecache_imagecache_default_presets() {
           'module' => 'imagecache',
           'action' => 'imagecache_scale_and_crop',
           'data' => array(
-            'width' => '160',
-            'height' => '120',
+            'width' => '100',
+            'height' => '88',
           ),
         ),
       ),
@@ -115,6 +115,20 @@ function feature_imagecache_imagecache_default_presets() {
           'data' => array(
             'width' => '30',
             'height' => '30',
+          ),
+        ),
+      ),
+    ),
+    'user_picture_40x40' => array(
+      'presetname' => 'user_picture_40x40',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '40',
+            'height' => '40',
           ),
         ),
       ),

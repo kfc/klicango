@@ -759,7 +759,7 @@ function events_get_latest_events_photos(){
     $_user = $user;
   }
     
-  $photos_res = db_query('select u.*, ph.field_comment_photo_fid, nc.nid,n.*, f.*,n.title as node_title, evt.field_date_value as event_date,evt_image_file.filepath as event_image
+  $photos_res = db_query('select u.*, ph.field_comment_photo_fid, nc.nid, n.uid as event_owner, n.*, f.*,n.title as node_title, evt.field_date_value as event_date,evt_image_file.filepath as event_image, evt.field_event_type_value as event_type
                           FROM `content_field_comment_photo` ph 
                           INNER JOIN node_comments nc on nc.cid = ph.nid
                           INNER JOIN node n on n.nid = nc.nid 
@@ -781,9 +781,10 @@ function events_get_latest_events_photos(){
     while ($r = db_fetch_array($photos_res)) {  
       $photos[$r['nid']]['photos'][$r['field_comment_photo_fid']] = $r;
       $photos[$r['nid']]['node_title'] = $r['node_title'];
-      $photos[$r['nid']]['user'] = $r['uid'];
-      $photos[$r['nid']]['uid'] = $r['uid'];
+      $photos[$r['nid']]['user'] = $r['event_owner'];
+      $photos[$r['nid']]['uid'] = $r['event_owner'];
       $photos[$r['nid']]['event_date'] = $r['event_date'];
+      $photos[$r['nid']]['event_type'] = $r['event_type'];
       $photos[$r['nid']]['event_image'] = $r['picture'];  
     }
     $photos = array_slice($photos,0,$events_to_show, true);
@@ -791,14 +792,14 @@ function events_get_latest_events_photos(){
     foreach($photos as $_data){
       $uids[] = $_data['user']; 
     }
- 
+
     $profiles = array();
     $result = db_query('SELECT f.name, f.type, v.value,uid FROM {profile_fields} f INNER JOIN {profile_values} v ON f.fid = v.fid WHERE uid in (%s)', implode(',',$uids));
     while ($field = db_fetch_object($result)) {
       $profiles[$field->uid][$field->name] = _profile_field_serialize($field->type) ? unserialize($field->value) : $field->value;
     }
     foreach($photos as &$_data){
-      $_data['user'] = $profiles[$_data['user']]['first_name'].' '.$profiles[$_data['user']]['surname']; 
+      $_data['user'] = $profiles[$_data['user']]['first_name'].(!empty($profiles[$_data['user']]['surname']) ? ' '.$profiles[$_data['user']]['surname'] : ''); 
     }
     return theme('latest_events_photos', $photos, $photos_to_show);
 }
@@ -909,7 +910,7 @@ function events_get_event_attenders($nid){
      if(!empty($person['facebook_id']))
       $person['full_name'] = $person['fb_name'];  
      else
-      $person['full_name'] = ((isset($person['first_name']) && isset($person['surname'])) ? $person['first_name'].' '.$person['surname'] : $person['name']);
+      $person['full_name'] = ((isset($person['first_name'])) ? $person['first_name'].(isset($person['surname']) ? ' '.$person['surname'] : '') : $person['name']);
      
     } elseif(!empty($person['facebook_id'])){ 
       $person['full_name'] = $person['fb_name'];  

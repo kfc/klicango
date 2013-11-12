@@ -106,11 +106,10 @@ function commons_event_imagecache_default_presets() {
         '0' => array(
           'weight' => '0',
           'module' => 'imagecache',
-          'action' => 'imagecache_scale',
+          'action' => 'imagecache_scale_and_crop',
           'data' => array(
             'width' => '300',
-            'height' => '',
-            'upscale' => 1,
+            'height' => '225',
           ),
         ),
       ),
