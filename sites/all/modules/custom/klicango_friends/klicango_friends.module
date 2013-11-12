@@ -89,19 +89,9 @@ function klicango_friends_load_facebook_friends() {
     $html = '';
     
     if($event_id) {
-        $event_id = explode('_', $event_id);
-        $event_id = $event_id[1];
-        $attenders = events_get_event_attenders($event_id);
-        $local_ids = array_keys($attenders['going']);
-        $facebook_ids = array();
-        
-        foreach ($attenders['invited'] as $key => $value) {
-            if (!empty($value['user_id'])) {
-                $local_ids[] = $value['user_id'];
-            } else if (!empty($value['facebook_id'])) {
-                $facebook_ids[] = $value['facebook_id'];
-            }
-        }
+        $attenders = klicango_friends_invite_get_attenders($event_id);
+        $local_ids = $attenders['local_ids'];
+        $facebook_ids = $attenders['facebook_ids'];
     }
 
     if(!empty($friends['local']) && $offset == 0) {
@@ -313,6 +303,14 @@ function klicango_friends_find() {
     $friends = klicango_friends_get_all_friends();
     $html = '';
     $matches = array_filter($friends['local'], 'array_substring_search');
+    
+    $event_id = $_GET['event_id'];
+    if($event_id) {
+        $attenders = klicango_friends_invite_get_attenders($event_id);
+        $local_ids = $attenders['local_ids'];
+        $facebook_ids = $attenders['facebook_ids'];
+    }
+    
     foreach($matches as $id => $match) {
         $result = db_query('SELECT picture FROM users WHERE uid = %d', $id);
         $picture = db_result($result);
@@ -320,7 +318,13 @@ function klicango_friends_find() {
         $html .= '<div class="person-item">';
         $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="' . imagecache_create_url('facebook_image_size', $picture) . '"></a></div>';
         $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a></div>';
-        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 1)">' . t('Invite friend') . '</a>';
+        
+        if (in_array($id, $local_ids)) {
+            $html .= '<a href="javascript: void(0);" class="already-invited" style="cursor: default;">' . t('Already invited') . '</a>';
+        } else {
+            $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 1)">' . t('Invite friend') . '</a>';   
+        }
+                
         $html .= '</div>';
     }
     
@@ -329,7 +333,13 @@ function klicango_friends_find() {
         $html .= '<div class="person-item">';
         $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="https://graph.facebook.com/' . $id . '/picture"/></a></div>';
         $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a><span class="fb-user">' . t('Friend on facebook') . '</span></div>';
-        $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 0)">' . t('Invite friend') . '</a>';
+        
+        if (in_array($id, $facebook_ids)) {
+            $html .= '<a href="javascript: void(0);" class="already-invited" style="cursor: default;">' . t('Already invited') . '</a>';
+        } else {
+            $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteFriend(this, ' . $id . ', 0)">' . t('Invite friend') . '</a>';
+        }
+        
         $html .= '</div>';
     }
     
@@ -624,4 +634,22 @@ function klicango_friends_check_facebook_invite() {
     }
     drupal_json(array('success' => false));
     exit;
+}
+
+function klicango_friends_invite_get_attenders($event_id) {
+  $event_id = explode('_', $event_id);
+  $event_id = $event_id[1];
+  $attenders = events_get_event_attenders($event_id);
+  $local_ids = array_keys($attenders['going']);
+  $facebook_ids = array();
+  
+  foreach ($attenders['invited'] as $key => $value) {
+      if (!empty($value['user_id'])) {
+          $local_ids[] = $value['user_id'];
+      } else if (!empty($value['facebook_id'])) {
+          $facebook_ids[] = $value['facebook_id'];
+      }
+  }
+  
+  return array('local_ids' => $local_ids, 'facebook_ids' => $facebook_ids);
 }

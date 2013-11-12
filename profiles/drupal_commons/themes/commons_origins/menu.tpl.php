@@ -6,8 +6,7 @@
                     <a href="/user">Calendar</a>
                 </li>
                 <li>
-                    <a href="">Followers</a>
-                    <span class="counter">12</span>
+                    <a href="/friends">Followers</a>
                 </li>
     			<li class="create_event">
     				<a id="create-event-link" href=""><?php echo t('+ Create event');?></a>

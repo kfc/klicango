@@ -20,7 +20,7 @@
 			</td>
 			<td class="col-2">
 				<?php
-                    if (events_event_is_available_to_add($node)) { 
+                    if (events_event_is_invited($node)) { 
                         echo l(($sender->first_name ? $sender->first_name : $sender->name), 'user/' . $sender->uid, array('attributes' => array('class' => 'location-name'))) ?> invites you to <?php echo l($node->title, 'node/' . $node->nid, array('attributes' => array('class' => 'event-title')));
                     } else {
                         $place = user_load($node->uid);
@@ -30,7 +30,16 @@
                 ?> 
                 <div class="event-date"><?php echo strip_tags($node->field_date[0]['view']); ?></div>
 				<div class="event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']; ?></div>
-				<div class="going-friends"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" class="going-users-link"> <?php echo $node->friends_going; ?> friends are going</a></div>
+				<div class="going-friends">
+                    <a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" class="going-users-link"> 
+                        <?php if ($node->friends_going == 1) $postfix = ' is going'; else $postfix = 's are going'; ?>
+                        <?php if (user_is_logged_in()) : ?>
+                            <?php echo $node->friends_going; ?> friend<?php echo $postfix; ?>
+                        <?php else : ?>
+                            <?php echo $node->friends_going; ?> user<?php echo $postfix; ?>
+                        <?php endif; ?>
+                    </a>
+                </div>
 			</td>
 			<td class="col-3">
                 <?php if (events_event_is_available_to_add($node)) { ?>
@@ -38,7 +47,7 @@
     				<div class="clear-fix"></div>
     				<div class="decline"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" onclick="declineEvent(<?php echo $node->nid; ?>)">Decline</a></div>
                 <?php } else { ?>
-                    <?php if ($node->field_event_type[0]['value'] == 'public' || $node->uid == $user->uid) : ?>
+                    <?php if (($node->field_event_type[0]['value'] == 'public' || $node->uid == $user->uid) && user_is_logged_in()) : ?>
                         <div id="invite-friend-link" class="invite-friend"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" class="current-event" onclick="setActiveEvent(<?php echo $node->nid; ?>);">Invite friends</a></div>
                     <?php endif; ?>      
                 <?php } ?>

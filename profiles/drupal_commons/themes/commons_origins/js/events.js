@@ -170,11 +170,15 @@ $(function() {
            last_search = this.value;
            var current_search = this.value;
            $('#invite-friends-form .search-for-friends').addClass('loading');
+           var current_id = 0;
+           if($('#invite-friends-form .scroll-pane').length && $('#invite-friends-form .scroll-pane').attr('id')) {
+              current_id = $('#invite-friends-form .scroll-pane').attr('id');
+           }
            $.ajax({
                type: 'GET',
                dataType: 'html',
                url: '/friends/find',
-               data: {"search": this.value},
+               data: {"search": this.value, "event_id" : current_id},
                success : function (data, textStatus, jqXHR) { 
                     if(last_search == current_search) {
                         $('#invite-friends-form .mCSB_container').html('');
@@ -185,11 +189,11 @@ $(function() {
                }, 
                complete : function (jqXHR, textStatus) {
                     if(last_search == current_search) {
-                        $("#invite-friends-form .scroll-pane").show();
-            			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
-                        $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
-            			$("#invite-friends-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
-            			$('#invite-friends-form .search-for-friends').removeClass('loading');
+                      $("#invite-friends-form .scroll-pane").show();
+                      $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
+                      $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
+                      $("#invite-friends-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
+                      $('#invite-friends-form .search-for-friends').removeClass('loading');
                         //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top
                     }  
                }, 
@@ -273,8 +277,6 @@ $(function() {
             $('#invite-friends-form .scroll-pane').attr('id', event_id);
         } else {
             var current = $('#invite-friends-form .scroll-pane').attr('id');
-            alert(event_id);
-            alert(current);
             if (event_id != current) {
                 $('#invite-friends-form .mCSB_container').html('');
                 $('#invite-friends-form .scroll-pane').attr('id', event_id);
@@ -303,13 +305,14 @@ $(function() {
                 $("#invite-friends-form .scroll-pane").hide();
            }, 
            complete : function (jqXHR, textStatus) {  
-    			if (offset == 0) {
-                    $( "#invite-friends-form" ).dialog( "open" );
-                }  
-                $("#invite-friends-form .scroll-pane").show();
-    			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
-    			$(".ui-dialog-content.ui-widget-content").css({"height" : 495});
-    			$("#invite-friends-form .scroll-pane").mCustomScrollbar("update");
+              if (offset == 0) {
+                  $( "#invite-friends-form" ).dialog( "open" );
+                  $('.invite-friend-search').val('')
+              }  
+              $("#invite-friends-form .scroll-pane").show();
+              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
+              $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
+              $("#invite-friends-form .scroll-pane").mCustomScrollbar("update");
            }, 
         }); 
     /*}*/ 

@@ -263,7 +263,7 @@ function processInvitation(response, event_id) {
            url: '/friends/invite',
            data: {"to": response.to, "event_id": event_id},
            success : function (data, textStatus, jqXHR) { 
-               alert('success');
+               //alert('success');
            },
         });
     }

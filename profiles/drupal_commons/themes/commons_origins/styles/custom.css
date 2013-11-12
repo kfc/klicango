@@ -518,3 +518,7 @@ div.footer-left-block img{
 #main-slider ul li{
   height: 300px !important;
 }
+
+#top-event-list .decline {
+    display: none !important;
+}
