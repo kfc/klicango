@@ -197,9 +197,6 @@ form .form-item textarea.error:-ms-input-placeholder {
   display: block;
 }
 
-.block .calendar-calendar .month-view table tr td.has-more-events:hover .inner .hover-wrapper{
-  display: none;  
-}
 
 div#content .profile {
   display:none;
@@ -561,4 +558,23 @@ div.footer-right-block{
 
 .activity-stream-list .stream-item:hover span.comment-delete-button {
   visibility: visible;
+}
+
+.block .calendar-calendar .month-view table tr td.empty:hover .inner .hover-wrapper{
+  display: none !important;
+}
+
+
+#parties-photos-block .item{
+  position: relative;
+}
+
+#parties-photos-block .item .overlay-info{
+  display: none;
+}
+
+#parties-photos-block .party-title {
+  text-decoration: none;
+  font: 12px Arial;
+  color: #767676;
 }

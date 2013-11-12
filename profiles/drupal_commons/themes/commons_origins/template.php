@@ -211,4 +211,15 @@ function commons_origins_fboauth_action__connect($action, $link) {
     
     return '<div class="form-item facebook-log-in active"><a ' . $attributes . ' onclick="if(!$(\'.facebook-log-in\').hasClass(\'active\')) return false;" href="' . $url . '">' . t('Log with Facebook') . '</a></div>';
 
-}                 
+}  
+
+function commons_origins_calendar_empty_day($curday, $view) {
+  if ($view->date_info->calendar_type != 'day') {
+    return '<div class="hover-wrapper">
+              <a class="add-event-link" href="">+</a>
+             </div>'."\n";
+  }
+  else {
+    return '<div class="calendar-dayview-empty">'. t('Empty day') .'</div>';
+  }
+}               
