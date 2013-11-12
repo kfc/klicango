@@ -32,16 +32,15 @@
   <div class="stream-item-content">
     <div class="person-name"><?php echo $name;?> <span class="activity_status"><?php echo $comment_status?></span> 
     <?php if( check_comment_delete($node->nid, $node)) : ?>
-      <span class="comment-delete-button"><?php echo l('&times','comment_delete/'.$node->nid,array('html'=>true, 'query'=>drupal_get_destination(), 'attributes'=>array('class'=>'comment-delete-link','onclick'=>'javascript:return confirm("'.t('Delete this comment?\nThis action cannot be undone.').'");')));?></span>
+      <span class="comment-delete-button"><?php echo l('&nbsp;&nbsp;','comment_delete/'.$node->nid,array('html'=>true, 'query'=>drupal_get_destination(), 'attributes'=>array('class'=>'comment-delete-link','onclick'=>'javascript:return confirm("'.t('Delete this comment?\nThis action cannot be undone.').'");')));?></span>
     <?php endif;?>
     </div>
+    <div class="person-comment"><?php echo $body?></div>
     <?php if(!empty($photos_num)):?>
       <div class="added-new-photos">
         <?php echo $photos_html?>
       </div>
     <?php endif;?>
-    
-    <div class="person-comment"><?php echo $body?></div>
     <div class="person-activity-time"><?php echo format_interval(time()-$created,1).' '.t('ago');?></div>
     
   </div>

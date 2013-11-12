@@ -81,7 +81,7 @@ input {
 	padding: 25px 25px 0;
 }
 #photo-box #comment-wrapper table{
-	margin-top: 30px;
+	
 }
 #photo-box #comment-wrapper table tr td{
 	padding: 5px 5px 10px;
@@ -91,7 +91,7 @@ input {
 #photo-box #comment-wrapper table tr.row-last td{
 	vertical-align: top;
 }
-#photo-box #comment-wrapper table tr td.col-3{vertical-align: bottom; font-size: 10px; color: #a2a2a3;}
+#photo-box #comment-wrapper table tr td.col-3{vertical-align: bottom; font-size: 10px; color: #a2a2a3; white-space: nowrap; text-align: right; padding-bottom: 0;}
 #photo-box #photo-wrapper img{
 	max-width: 800px;
 	display: block;
@@ -291,7 +291,18 @@ div.event_info{
 	font: 12px Arial;
 	color: #aaa7a8;
 }
-div.e-inner-wrapper:hover .overlay-info{
+#parties-photos-block .item a{
+	position: relative;
+	display: block;
+}
+#parties-photos-block .item a img{
+	display: block;
+}
+#parties-photos-block .item a .overlay-info{
+	display: none;
+}
+div.e-inner-wrapper:hover .overlay-info,
+#parties-photos-block .item:hover .overlay-info{
 	display: block;
 	position: absolute;
 	left: 0;
@@ -414,7 +425,7 @@ body .ui-widget-content input[type="password"],
 	float: left;
 	background: #FFF url(../images/prof-photo.png) 171px center no-repeat;
 }
-#photo-box #comment-wrapper  #comment-table{
+#photo-box #comment-wrapper  #comment-form{
 	background: #f6f8f8;
 }
 #photo-box #comment-wrapper  #owner-block{
@@ -1063,9 +1074,15 @@ div.calendar-calendar{
 .calendar-calendar td .more-events{
 	text-align: left;
 	padding-left: 4px;
+	position: relative;
+	margin-top: -14px;
+	z-index: 200;
 }
 .calendar-calendar td .more-events a{
 	text-decoration: none;
+	font-size: 10px;
+	position: relative;
+	margin-top: -2px;
 }
 .calendar-calendar td div.day a{
 	text-decoration: none;
@@ -1089,10 +1106,11 @@ div.calendar-calendar{
 	border-spacing: 0;
 	vertical-align: top;
 }
+.block .calendar-calendar .month-view table tr td .inner:hover .hover-wrapper,
 .block .calendar-calendar .month-view table tr td:hover .inner .hover-wrapper{
 	display: block;
-	
-}
+}    
+
 .block .calendar-calendar .month-view table tr td .inner .hover-wrapper .view-data-node-title{
 	padding-top: 30px;
 }
@@ -1116,7 +1134,7 @@ div.calendar-calendar{
 	margin-bottom: 2px;
 }
 .block .calendar-calendar .month-view table tr td .hover-wrapper a.add-event-link{
-	background: url(../images/add-event.jpg) 0 0 no-repeat;
+	background: url(../images/add-event.png) 0 0 no-repeat;
 	width: 12px;
 	height: 12px;
 	display: block;
@@ -1136,6 +1154,7 @@ div.calendar-calendar{
 }
 .block .calendar-calendar .month-view table tr td .inner{
 	position: relative;
+	height: 100%;
 }
 .block .calendar-calendar .month-view table tr td .inner .hover-wrapper{
 	position: absolute;
@@ -1614,3 +1633,18 @@ div.event-gratuity{
 	color: #8c8c8d;
 }
 #profile-friends-list{padding-left: 5px;}
+#comment-form #add-comment{
+	display: inline-block;
+	width: 100%;
+	clear: both;
+}
+#comment-form #add-comment .profile-thumbnail{
+	float: left;
+	margin-right: 11px;
+    padding-left: 8px;
+}
+#comment-table-wrapper{
+	max-height: 440px;
+	overflow: auto;
+	margin-top: 30px;
+}

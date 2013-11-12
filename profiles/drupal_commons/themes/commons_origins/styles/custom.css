@@ -197,9 +197,6 @@ form .form-item textarea.error:-ms-input-placeholder {
   display: block;
 }
 
-.block .calendar-calendar .month-view table tr td.has-more-events:hover .inner .hover-wrapper{
-  display: none;  
-}
 
 div#content .profile {
   display:none;
@@ -457,6 +454,10 @@ a.already-accepted.add-user-link{
 
 span.comment-delete-button{
   float: right;  
+  visibility: hidden;
+  background: url(../images/delete.png) left top no-repeat;
+  width:16px;
+  height: 16px;
 }
 span.comment-delete-button a{
   font-size: 200%;  
@@ -521,4 +522,63 @@ div.footer-left-block img{
 
 #top-event-list .decline {
     display: none !important;
+}
+
+body.not-front #middle{
+  padding-top: 70px;
+}
+
+.month-view td:not(.empty){
+  background-color: #FFFFFF;
+}
+
+.block .calendar-calendar .month-view table tr td .view-data-node-title a{
+  color: #f54e1f; 
+}
+.block .calendar-calendar .month-view table tr td .inner .hover-wrapper {
+  background: url(../images/transparency.png) left top;
+}
+  
+div.footer-right-block ul.menu li a{
+  font-size: 12px;
+}
+
+div.footer-right-block{
+  font-size: 12px;
+  min-width: 390px;
+}
+
+#last-parties-photos .item-list .item .party-n-d-l a.party-link{
+  color: #f54e1f;
+}
+
+.activity-stream-list .stream-item .stream-item-content .activity_status a{
+  color: #f54e1f;
+  text-decoration: none;  
+}
+.activity-stream-list .stream-item .stream-item-content .activity_status a:hover{
+  text-decoration: underline;  
+}
+
+.activity-stream-list .stream-item:hover span.comment-delete-button {
+  visibility: visible;
+}
+
+.block .calendar-calendar .month-view table tr td.empty:hover .inner .hover-wrapper{
+  display: none !important;
+}
+
+
+#parties-photos-block .item{
+  position: relative;
+}
+
+#parties-photos-block .item .overlay-info{
+  display: none;
+}
+
+#parties-photos-block .party-title {
+  text-decoration: none;
+  font: 12px Arial;
+  color: #767676;
 }
