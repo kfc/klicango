@@ -5,7 +5,7 @@
     <div class="pad-layer">
       <?php $date = date('F, j', strtotime($fields['field_date_value']->raw));?>
       <div class="event_title"><?php echo $fields['title']->content?></div>
-      <div class="event_gratuity"><?php echo $date.' '.t('at').' '.$fields['name']->content;?></div>
+      <div class="event_gratuity"><?php echo $date.' '.t('at').' '.$fields['value']->content;?></div>
       <div class="event_address"></div>
       <div class="event_info">
         <?php echo $fields['field_location_value']->content?><br>
