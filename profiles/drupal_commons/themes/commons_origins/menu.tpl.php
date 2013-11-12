@@ -7,6 +7,7 @@
                 </li>
                 <li>
                     <a href="/friends">Followers</a>
+                    <?php echo (!empty($menu_stats['friends_pending']) && $menu_stats['friends_pending']) ? '<span class="counter">' . $menu_stats['friends_pending'] . '</span>' : ''; ?>
                 </li>
     			<li class="create_event">
     				<a id="create-event-link" href=""><?php echo t('+ Create event');?></a>

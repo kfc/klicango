@@ -468,6 +468,10 @@ function klicango_friends_remove_friend($fid){
 function klicango_follow_place($place_id){
   $return = array('success' => false);
   if(!empty($place_id)){
+    global $user;
+    $data = array('sender_id' => $user->uid, 'user_id' => $place_id, 'status' => 1);
+    $res = drupal_write_record('friends_invitations', $data);
+    
     $return['success'] = klicango_friends_add_friend($place_id);
   }
   echo json_encode($return);
@@ -477,6 +481,10 @@ function klicango_follow_place($place_id){
 function klicango_unfollow_place($place_id){
   $return = array('success' => false);
   if(!empty($place_id)){
+    //remove invitation as well
+    global $user;
+    $result2 = db_query('DELETE FROM friends_invitations WHERE (sender_id = %d AND user_id = %d) OR (sender_id = %d AND user_id = %d)', $user->uid, $place_id, $place_id, $user->uid);
+    
     $return['success'] = klicango_friends_remove_friend($place_id);
   }
   echo json_encode($return);
@@ -564,6 +572,12 @@ function klicango_friends_page() {
     }
     
     $html .= theme('klicango_friends_friends', $users, false);
+    
+    //If it is a business user automatically update invitations to accepted
+    global $user;
+    if (in_array('professional', $user->roles)) {
+      db_query('UPDATE friends_invitations SET status = 3 WHERE user_id = %d AND status = 1', $user->uid);
+    }
     
     return $html;
 }
