@@ -66,7 +66,7 @@
 				<a href="/">Home</a>
 			</li>
             <li>
-				<a href="">Public events</a>
+				<a href="/public">Public events</a>
 			</li>
 		</ul>
 	</nav>
