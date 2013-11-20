@@ -23,7 +23,7 @@
       				<td class="col-3">
                 <?php if (in_array('individual', $user->roles)) : ?>
         					<div class="decline"><a href="javascript:void(0);" id="user_<?php echo $friend->uid;?>" onclick="declineFriend(<?php echo $friend->uid; ?>)"><?php echo t('Decline'); ?></a></div>
-        					<div class="accept"><a href="javascript:void(0);" class="add-user-link" id="user_<?php echo $friend->uid;?>" onclick="acceptFriend(<?php echo $friend->uid; ?>)"><?php echo t('Accept'); ?></a></div>
+        					<div class="accept"><a href="javascript:void(0);" class="add-user-link" title="<?php echo $friend->first_name . ' ' . $friend->surname ?>" id="user_<?php echo $friend->uid;?>" onclick="acceptFriend(<?php echo $friend->uid; ?>)"><?php echo t('Accept'); ?></a></div>
                 <?php endif; ?>
       				</td>
   			    </tr>

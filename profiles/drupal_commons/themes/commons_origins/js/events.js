@@ -365,21 +365,28 @@ function acceptEvent(event_id) {
        $('.add-event-link#event_' + event_id).text('I am going'); 
        status = 'accepted';
     } else {
-        $('.add-event-link#event_' + event_id).text('Add to my calendar');
-        status = 'new';
+        var name = $('.add-event-link#event_' + event_id).attr('title');
+        if(confirm("Are you sure you won't participate to "+name+" anymore")){
+          $('.add-event-link#event_' + event_id).text('Add to my calendar');
+          status = 'new';
+        }
+        else{
+          status = false;
+        }
     }
-    
-    $.ajax({
-       type: 'GET',
-       dataType: 'json',
-       url: '/invitation/accept',
-       data: {"event_id": event_id, "status": status},
-       success : function (data, textStatus, jqXHR) {
-            if (data.status == 'success') {
-                //to do
-            }
-       },  
-    });
+    if(status != false){
+      $.ajax({
+         type: 'GET',
+         dataType: 'json',
+         url: '/invitation/accept',
+         data: {"event_id": event_id, "status": status},
+         success : function (data, textStatus, jqXHR) {
+              if (data.status == 'success') {
+                  //to do
+              }
+         },  
+      });
+    }
 }
 
 function loadEventUsers(type, event_id) {
