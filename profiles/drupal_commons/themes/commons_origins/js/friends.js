@@ -33,31 +33,40 @@ $(".follow-place-action").click(function(e){
 $(".follow-user-action").click(function(e){
   e.preventDefault();
   var link = $(this);
-  $.ajax({
-      type: "POST",
-      url: $(this).attr('href'),
-      dataType: 'json',
-      success: function(data){
-        if(data.success){ 
-          if($(link).parent().hasClass('i-like-this-place')){
-            $(link).parent().removeClass('i-like-this-place');    
-            $(link).parent().addClass('follow-this-place');  
-            $(link).attr('href', $(link).attr('href').replace('removefriend','addfriend'));
-            $(link).html(Drupal.t('Add as friend'));  
-          } 
-          else{
-             $(link).parent().addClass('i-like-this-place');    
-             $(link).parent().removeClass('follow-this-place');  
-             $(link).attr('href', $(link).attr('href').replace('addfriend','removefriend'));
-             $(link).html(Drupal.t('Invitation pending'));  
+  var name = $(this).attr('title');
+  var id = $(this).attr('id');
+  if((id != 'unfollow-user-calendar') || (id == 'unfollow-user-calendar' && confirm("Are you sure you don't want to be friend with "+name+" anymore?"))){
+    $.ajax({
+        type: "POST",
+        url: $(this).attr('href'),
+        dataType: 'json',
+        success: function(data){
+          if(data.success){ 
+            if($(link).parent().hasClass('i-like-this-place')){
+              $(link).parent().removeClass('i-like-this-place');    
+              $(link).parent().addClass('follow-this-place');  
+              $(link).attr('href', $(link).attr('href').replace('removefriend','addfriend'));
+              $(link).attr('id', 'follow-user-calendar');
+              $(link).html(Drupal.t('Add as friend'));  
+            } 
+            else{
+               $(link).parent().addClass('i-like-this-place');    
+               $(link).parent().removeClass('follow-this-place');  
+               $(link).attr('href', $(link).attr('href').replace('addfriend','removefriend'));
+               $(link).attr('id', 'unfollow-user-calendar');
+               $(link).html(Drupal.t('Invitation pending'));  
+            }
           }
-        }
-        else{ 
-          alert('Error. Please try again later.');  
-        }
-      },
+          else{ 
+            alert('Error. Please try again later.');  
+          }
+        },
     });
+  }
 });
+
+
+
 
 });
 

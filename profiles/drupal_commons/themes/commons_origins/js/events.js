@@ -134,8 +134,11 @@ $(function() {
    if($(this).hasClass('add-event-link'))
     action = '/add_event_for_user';
    else 
-    action = '/remove_event_for_user';  
-   $.ajax({
+    action = '/remove_event_for_user'; 
+  var event_name = $(this).attr('title');  
+
+  if((action == '/add_event_for_user') ||  (action == '/remove_event_for_user' && confirm("Are you sure you won't participate to "+event_name+" anymore"))){   
+     $.ajax({
       type: "POST",
       url: action,
       data:  {'event_id' : event_id},
@@ -163,6 +166,7 @@ $(function() {
         }
       }
     });
+  }
  });
  
     $('#invite-friends-form #search-friends').keyup(function () {
