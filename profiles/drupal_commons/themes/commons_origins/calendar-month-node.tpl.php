@@ -40,20 +40,21 @@
  global $user; 
  $date = explode(' - ',strip_tags($fields['node_data_field_date_field_date_value']['data']));
  if(!empty($date) && isset($date[1]))
-  $date = $date[1];
+  $time = $date[1];  
 ?>
 <?php 
   if(arg(0) == 'user'){
     $userid = arg(1);
+    
   }?>
 <div class="<?php echo (!empty($fields['node_vid']['data']) ? 'hover-wrapper' : (strtolower($fields['node_data_field_date_field_event_type_value']['data']) == 'private' && !empty($fields['users_picture']['data']) ? 'hover-wrapper' :  'no-pic-wrapper'))?>">
-  <div class="view-field view-data-node-title node-title">
+  <div class="view-field view-data-node-title node-title <?php echo (strtolower($fields['node_data_field_date_field_event_type_value']['data']) == 'private' ? 'private-event-link' : '')?>">
     <?php print $fields['node_title']['data']; ?>
   </div>
-  <div class="event-time"><?php echo $date;?></div>
+  <div class="event-time"><?php echo $time;?></div>
   <div class="event-location"><?php echo $fields['node_data_field_date_field_location_value']['data'];?></div>
-  <?php if(events_event_is_available_to_add($node)):?>
-    <a class="add-event-link add-event-from-calendar" id="add-event-from-calendar-<?php echo $node->nid;?>" href="#">+</a>
+  <?php if($user->uid == $userid):?>
+    <a class="add-event-link add-event-from-calendar" id="add-event-from-calendar-<?php echo date('Y-m-d',strtotime($node->node_data_field_date_field_date_value2));?>" href="#">+</a>
   <?php endif;?>
 </div>  
 

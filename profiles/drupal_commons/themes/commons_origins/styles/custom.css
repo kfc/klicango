@@ -532,7 +532,7 @@ body.not-front #middle{
   background-color: #FFFFFF;
 }
 
-.block .calendar-calendar .month-view table tr td .view-data-node-title a{
+.block .calendar-calendar .month-view table tr td .view-data-node-title.private-event-link a{
   color: #f54e1f; 
 }
 .block .calendar-calendar .month-view table tr td .inner .hover-wrapper {
@@ -601,4 +601,40 @@ div.footer-right-block{
 
 #last-parties-photos .item-list .item .party-n-d-l{
   padding-top: 25px;
+}
+
+.activity-stream-list .stream-item div.added-new-photos{
+  height: 92px;
+  overflow: hidden;
+}
+
+div.activity-stream-list.left .item-list {
+  margin-bottom: 10px;
+  font: Arial 11px;
+  height: 15px; 
+}
+
+div.activity-stream-list.left .item-list .pager{
+  list-style: none;
+}
+
+div.activity-stream-list.left .item-list .pager .pager-item, .item-list .pager .pager-current, .item-list .pager .pager-first, .item-list .pager .pager-last{ 
+  display: none;
+}
+
+
+div.activity-stream-list.left .item-list .pager .pager-next{
+  float: right;
+}
+div.activity-stream-list.left .item-list .pager .pager-previous{
+  float: left;
+}
+
+.date-nav .date-prev a, .date-nav .date-next a{
+  
+  background: none;
+  font-size: 0;
+  text-decoration: none;
+  display: inline;
+  margin-top: 0px;
 }

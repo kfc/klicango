@@ -49,7 +49,8 @@ $(function() {
     
    
     $("#create-event-form input[type='text'], #create-event-form input[type='hidden']").each(function(){
-      $(this).val('');
+      $(this).val(user_data[$(this).attr('name')]);
+     // $(this).val('');
     });
     $("#create-event-form textarea").each(function(){
       $(this).val('');
@@ -207,23 +208,10 @@ $(function() {
  
  $(".hover-wrapper a.add-event-from-calendar").on('click',function(e){
   e.preventDefault();
-  var event_id = $(this).attr('id').replace('add-event-from-calendar-','');  
-  $.ajax({
-    type: "POST",
-    url: '/add_event_for_user',
-    data:  {'event_id' : event_id},
-    dataType: 'json',
-    success: function(data){
-      if(data.success){
-        $("#add-event-from-calendar-"+event_id).parent().append('<div class="event-location">Event added</div>');
-         $("#add-event-from-calendar-"+event_id).remove(); 
-      }
-      else{ 
-       alert('error acting the event');
-      }
-    }
-  }); 
-   
+  var date = $(this).attr('id').replace('add-event-from-calendar-','').split('-'); 
+  date = date[2]+'/'+date[1]+'/'+date[0];
+  $("#create-event-form input[name='date']").val(date);  
+  $( "#create-event-form" ).dialog( "open" );
  });
  
  

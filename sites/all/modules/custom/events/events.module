@@ -945,8 +945,7 @@ function events_get_event_form_data($node){
   
   return json_encode(array('data'=>$data));
   //exit;
-  
-}
+}  
 
 function events_users() {
     $event = explode('_', $_GET['event_id']);
