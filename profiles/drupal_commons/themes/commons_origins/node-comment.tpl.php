@@ -1,13 +1,22 @@
 <?php
-
+   
   global $user;
   $author = user_load($uid);
   $photos_num = 0;
   $photos_html = '';
+  
+  $preset = 'comment_image';
+  //Check the view for comment
+  if(isset($node->view) && $node->view->name == 'nodecomments' && $node->view->current_display == 'block_1'){
+    $preset = 'activity_stream_photo';  
+  }
+  else{
+  }
+  
   if(!empty($field_comment_photo)){
     foreach($field_comment_photo as $_photo){
       if(!empty($_photo['filepath'])){
-        $photos_html .= '<a class="klicango-popup" href="/comment_photo/'.$nid.'/'.$_photo['fid'].'" rel="lightbox">'.theme_imagecache('comment_image',$_photo['filepath']).'</a>';
+        $photos_html .= '<a class="klicango-popup" href="/comment_photo/'.$nid.'/'.$_photo['fid'].'" rel="lightbox">'.theme_imagecache($preset,$_photo['filepath']).'</a>';
         $photos_num++;
       }
     }

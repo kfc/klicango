@@ -595,7 +595,7 @@ div.footer-right-block{
 .activity-stream-list .stream-item .person-name a {
   text-decoration: none;
 }
-.activity-stream-list .stream-item .person-name a:hover {
+.activity-stream-list .stream-item .person-name>a:hover {
   text-decoration: underline;
 }
 
@@ -604,8 +604,11 @@ div.footer-right-block{
 }
 
 .activity-stream-list .stream-item div.added-new-photos{
-  height: 92px;
+  height: 80px;
   overflow: hidden;
+}
+.activity-stream-list .stream-item .stream-item-content .added-new-photos a{
+  margin-right: 2px;
 }
 
 div.activity-stream-list.left .item-list {
@@ -637,4 +640,8 @@ div.activity-stream-list.left .item-list .pager .pager-previous{
   text-decoration: none;
   display: inline;
   margin-top: 0px;
+}
+
+.date-heading h3{
+  font-size: 14px;
 }

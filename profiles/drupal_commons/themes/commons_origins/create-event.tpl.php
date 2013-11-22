@@ -10,7 +10,7 @@ if(arg(0) == 'node'){
     $date = strtotime($node->field_date);
     drupal_add_js("var form_data = ".events_get_event_form_data($node).";",'inline');
   }
-}
+}                         
 $address = $phone = '';
 if(in_array('individual' ,$user->roles)){
   $address = $user->city.', '.$user->country; 

@@ -5,6 +5,20 @@
  */
 function feature_imagecache_imagecache_default_presets() {
   $items = array(
+    'activity_stream_photo' => array(
+      'presetname' => 'activity_stream_photo',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '114',
+            'height' => '75',
+          ),
+        ),
+      ),
+    ),
     'comment_image' => array(
       'presetname' => 'comment_image',
       'actions' => array(
