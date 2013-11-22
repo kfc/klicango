@@ -1,6 +1,9 @@
 $(function() {   
   
-  $("#datepicker").datepicker();
+  $("#datepicker").datepicker({
+    changeMonth: true,
+    changeYear: true
+  });
   $("#datepicker").datepicker("option", "showAnim", 'slideDown');
   $("#datepicker").datepicker("option", "dateFormat", 'dd/mm/yy');
   

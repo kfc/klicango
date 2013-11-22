@@ -651,7 +651,23 @@ div.activity-stream-list.left .item-list .pager .pager-previous{
   font-size: 12px;
 }
 
+.ui-datepicker.ui-widget{
+  border: 1px solid #aaaaaa;
+  border-radius: 4px;
+}
+
 .ui-widget-content .ui-widget-header.ui-datepicker-header{
   margin-bottom: 0px;
   padding: 5px;
+  border: 1px solid #aaaaaa;
+  background: #cccccc url(../images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+  border-radius: 4px;
+  color: #222222;
+}
+.ui-widget-header.ui-datepicker-header .ui-icon {
+  background-image: url(../images/ui-icons_222222_256x240.png);
+}
+
+.ui-widget-header.ui-datepicker-header .ui-datepicker-title select{
+  margin-right: 1px;
 }
