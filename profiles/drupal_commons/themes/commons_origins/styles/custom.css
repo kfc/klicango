@@ -611,25 +611,37 @@ div.footer-right-block{
   margin-right: 2px;
 }
 
-div.activity-stream-list.left .item-list {
+div.activity-stream-list.left .item-list, div.activity-stream-list .view-nodecomments .item-list {
   margin-bottom: 10px;
   font: Arial 11px;
   height: 15px; 
 }
 
-div.activity-stream-list.left .item-list .pager{
+
+
+div.activity-stream-list.left .item-list .pager, .activity-stream-list .view-nodecomments .item-list .pager{
   list-style: none;
 }
 
-div.activity-stream-list.left .item-list .pager .pager-item, .item-list .pager .pager-current, .item-list .pager .pager-first, .item-list .pager .pager-last{ 
+div.activity-stream-list.left .item-list .pager .pager-item, .item-list .pager .pager-current, .item-list .pager .pager-first, .item-list .pager .pager-last,
+div.activity-stream-list .view-nodecomments .item-list .pager .pager-item{ 
   display: none;
 }
 
+div.activity-stream-list.left .item-list .pager .pager-next a, .activity-stream-list .view-nodecomments .item-list .pager .pager-next a,
+div.activity-stream-list.left .item-list .pager .pager-previous a, .activity-stream-list .view-nodecomments .item-list .pager .pager-previous a{
+  text-decoration: none;
+}
 
-div.activity-stream-list.left .item-list .pager .pager-next{
+div.activity-stream-list.left .item-list .pager .pager-next a:hover, .activity-stream-list .view-nodecomments .item-list .pager .pager-next a:hover,
+div.activity-stream-list.left .item-list .pager .pager-previous a:hover, .activity-stream-list .view-nodecomments .item-list .pager .pager-previous a:hover{
+  text-decoration: underline;
+}
+
+div.activity-stream-list.left .item-list .pager .pager-next, .activity-stream-list .view-nodecomments .item-list .pager .pager-next{
   float: right;
 }
-div.activity-stream-list.left .item-list .pager .pager-previous{
+div.activity-stream-list.left .item-list .pager .pager-previous, .activity-stream-list .view-nodecomments .item-list .pager .pager-previous{
   float: left;
 }
 

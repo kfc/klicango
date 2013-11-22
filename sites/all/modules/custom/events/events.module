@@ -190,11 +190,14 @@ function events_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   global $user;
   switch ($op) {
     case 'view':
-      if($node->type == 'event'){
-        $view = views_get_view('nodecomments');
+      if($node->type == 'event'){    
+        $view = views_get_view('nodecomments',true);
         $view->set_display('nodecomment_comments_1');
+        $view->set_use_pager(true);
+        $view->set_items_per_page(10);
         $args = array($node->nid);
         $view->set_arguments($args);
+        $view->pre_execute();
         $node->comments_form = theme('event_post_box');
         $node->comments_view = $view->render('nodecomment_comments_1');
         $node->current_user_status = events_get_event_status_for_user($node->nid, $user->uid);
