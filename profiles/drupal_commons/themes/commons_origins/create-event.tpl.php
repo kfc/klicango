@@ -13,7 +13,7 @@ if(arg(0) == 'node'){
 }                         
 $address = $phone = '';
 if(in_array('individual' ,$user->roles)){
-  $address = $user->city.', '.$user->country; 
+  $address = '';//$user->city.', '.$user->country; 
 }
 else{
   $address = $user->address.', '.$user->city.', '.$user->country;
@@ -40,7 +40,7 @@ drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'
   </div>
   <div class="form-item">
     <label><?php echo t('When')?></label>
-    <input type="text" name="date" placeholder="<?php echo ('format: d/m/Y');?>" />
+    <input type="text" name="date" id="datepicker" placeholder="<?php echo ('format: d/m/Y');?>" />
     <input type="text" name="time"  placeholder="<?php echo ('ex: 20:30');?>" />
   </div>
   <?php if(in_array('professional', $user->roles)):?>

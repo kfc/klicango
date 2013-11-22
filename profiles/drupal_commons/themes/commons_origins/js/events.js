@@ -1,4 +1,9 @@
 $(function() {   
+  
+  $("#datepicker").datepicker();
+  $("#datepicker").datepicker("option", "showAnim", 'slideDown');
+  $("#datepicker").datepicker("option", "dateFormat", 'dd/mm/yy');
+  
   $("#create-event-form" ).dialog({
     autoOpen: false,
     height: 442,

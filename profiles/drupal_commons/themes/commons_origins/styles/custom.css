@@ -645,3 +645,13 @@ div.activity-stream-list.left .item-list .pager .pager-previous{
 .date-heading h3{
   font-size: 14px;
 }
+
+.ui-dialog form input[type="text"], .ui-dialog form input[type="password"], .ui-dialog form textarea{
+  color: #000;
+  font-size: 12px;
+}
+
+.ui-widget-content .ui-widget-header.ui-datepicker-header{
+  margin-bottom: 0px;
+  padding: 5px;
+}

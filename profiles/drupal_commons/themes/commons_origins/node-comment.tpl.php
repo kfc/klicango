@@ -8,14 +8,16 @@
   $preset = 'comment_image';
   //Check the view for comment
   if(isset($node->view) && $node->view->name == 'nodecomments' && $node->view->current_display == 'block_1'){
-    $preset = 'activity_stream_photo';  
+    $preset = 'activity_stream_photo'; 
+    $max_photos_num = 3; 
   }
   else{
+    $max_photos_num = 100;
   }
-  
+   $i = 0;
   if(!empty($field_comment_photo)){
     foreach($field_comment_photo as $_photo){
-      if(!empty($_photo['filepath'])){
+      if(!empty($_photo['filepath']) && $i++ < $max_photos_num){
         $photos_html .= '<a class="klicango-popup" href="/comment_photo/'.$nid.'/'.$_photo['fid'].'" rel="lightbox">'.theme_imagecache($preset,$_photo['filepath']).'</a>';
         $photos_num++;
       }
