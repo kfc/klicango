@@ -48,9 +48,7 @@ $(function() {
             $("#photo-overlay").css({"position" : "absolute"}).css({"left" : 0}).css({"top" : 0}).css({"width" : "100%"}).css({"min-height" : "100%"}).css({"z-index" : 2000}).css({"height" : height}).show();
             $("#photo-box").show().center(true);
             
-            $("#photo-box #photo-wrapper a#next-photo").attr('href','/event_photo/75/218');
-            $("#photo-box #photo-wrapper a#prev-photo").attr('href','/event_photo/75/217');
-            
+           
             $("#comment-wrapper").html(data.author + data.comments);
             
             if(data.prev_url != '')

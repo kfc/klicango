@@ -1,9 +1,17 @@
 <div class="post-box">
-  <form action="/event_post_comment" enctype="multipart/form-data" method="POST">
+  <form action="/event_post_comment" id="comment-post-form" enctype="multipart/form-data" method="POST">
     <input type="hidden" name="comment_target_nid" value="<?php echo arg(1);?>">
-    <div class="post-box-title"><label><?php echo t('Post comment');?> | </label><a id="comment_add_photo_link" href=""><?php echo t('Add photo');?></a></div>
-    <div id="filesContainer">
+    <div class="comment-post-file">
+      <div class="post-box-title"><label><?php echo t('Post comment');?> | </label></div>
+      <div id="filesContainer">
+        <input type="file" id="comment-files" name="files[]" class="form-file profile-upload" multiple="multiple">
+      </div>
     </div>
-    <input type="text" name="comment_body">
+    <div class="comment-post-body">
+      <input type="text" name="comment_body" id="comment-post-body">
+      <span class="comment-post-submit-wrapper">
+        <a href="#" title="Add comment" id="comment-post-submit"><img src="/profiles/drupal_commons/themes/commons_origins/images/enter-icon.png" ></a>
+      </span>
+    </div>
   </form>
 </div>

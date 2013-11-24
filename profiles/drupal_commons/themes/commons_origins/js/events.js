@@ -7,6 +7,8 @@ $(function() {
   $("#datepicker").datepicker("option", "showAnim", 'slideDown');
   $("#datepicker").datepicker("option", "dateFormat", 'dd/mm/yy');
   
+  $('.post-box #filesContainer .profile-upload').styler({browseText: 'Add photos', multipleFilesText : 'photos'});
+  
   $("#create-event-form" ).dialog({
     autoOpen: false,
     height: 442,
@@ -135,6 +137,20 @@ $(function() {
     $(this).html('Add one more photo');  
    //$
  });
+ 
+ $("#comment-post-submit").click(function(e){
+   e.preventDefault();
+   $("#comment-post-form").submit();
+ });
+ 
+ $("#comment-post-form").submit(function(){
+    if($("#comment-post-body").val().trim() == '' && $("#comment-files-styler .jq-file__name").text() == ''){
+      alert('Enter comment or add a photo to upload');
+      return false;  
+    }
+    $('#comment-post-form :submit').attr("disabled", "disabled");   
+ });
+ 
  
  $("#event-action-button a").on('click', function(e){
    e.preventDefault();   
