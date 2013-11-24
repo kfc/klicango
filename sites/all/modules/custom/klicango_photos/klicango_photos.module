@@ -186,6 +186,7 @@ function theme_photo_comments($comments, $fid, $event_id){
   global $user;
   $output = '
   <div id="comment-form">
+    <div id="comment-table-wrapper">
         <table id="comment-table">';
         
    if(!empty($comments)){
@@ -194,11 +195,17 @@ function theme_photo_comments($comments, $fid, $event_id){
     }
    }  
        
-   $output .= '<tr class="row-last">
-                <td class="col-1">'.theme_imagecache('user_picture_meta', $user->picture).'</td>
-                <td class="col-2" colspan="2"><form method="POST" action="'.$_GET['q'].'" id="comment-post-form"><input type="hidden" name="fid" value="'.$fid.'"><input type="hidden" name="event_id" value="'.$event_id.'"><input type="text" name="comment" id="comment-body" /></form></td>
-              </tr>
+   $output .= '
         </table>
+      </div>
+      <div id="add-comment">
+        <div class="profile-thumbnail">'.theme_imagecache('user_picture_40x40', $user->picture).'</div>
+        <form method="POST" action="'.$_GET['q'].'" id="comment-post-form"><input type="hidden" name="fid" value="'.$fid.'"><input type="hidden" name="event_id" value="'.$event_id.'"><input type="text" name="comment" id="comment-body" />
+        <span class="photo-comment-submit-wrapper">
+          <a href="#" title="Add comment" id="photo-comment-submit"><img src="/profiles/drupal_commons/themes/commons_origins/images/enter-icon.png" ></a>
+        </span>
+        </form>
+      </div>
     </div>';
   
    return $output;

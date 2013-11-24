@@ -134,7 +134,15 @@ $(function() {
       });
       
       
+      
+      
       function bindCommentSubmit(){ 
+        
+        $("#photo-comment-submit").bind('click', function(e){
+          e.preventDefault();
+          $("#comment-post-form").submit();
+        });
+        
         $("#comment-post-form").on('submit', function(){ 
           var comment = $("#comment-body", $(this)).val();
           if(comment.trim() == ''){
@@ -156,7 +164,14 @@ $(function() {
           success: function(data){
             if(data.result){  
               var comment = data.new_comment;
-              $("#comment-table tr.row-last").before(comment);    
+              console.log($("#comment-table tr").length);
+              console.log($("#comment-table"));
+              if($("#comment-table tr").length > 0 )
+                $("#comment-table tr").last().after(comment);    
+              else
+                $("#comment-table").append(comment);    
+              var height = $("#comment-table").height();
+              $("#comment-table-wrapper").scrollTop(height);
               $("#comment-body", $(form)).val('');    
             }
             else{ 

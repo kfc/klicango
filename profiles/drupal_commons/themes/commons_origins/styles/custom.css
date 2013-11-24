@@ -741,6 +741,7 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
   bottom: 0px;
 }
 
+
 .comment-post-file {
   position: relative;
   height: 24px;
@@ -791,4 +792,18 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
 
 #photo-box #comment-wrapper input[type="text"]{
   background-image: none !important;
+}
+
+#comment-table-wrapper {
+  min-height: 15px;
+}
+
+#add-comment{
+  position: relative;
+}
+
+.photo-comment-submit-wrapper{
+  position: absolute;
+  right: 25px;
+  top: 7px;
 }
