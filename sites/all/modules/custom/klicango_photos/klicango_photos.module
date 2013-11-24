@@ -49,16 +49,17 @@ function klicango_photos_event_photo($event_id, $photo_id){
   }
   $photo_pos = array_search($photo_id, $fids);
   if($photo_pos == 0){
-    $next = $fids[1];  
+    $next = $fids[1]; 
+    $prev = $fids[count($fids) - 1];  
   }
-  elseif($photo_pos == (count($photo_pos) - 1)){
-     $prev = count($photo_pos) - 1; 
+  elseif($photo_pos == (count($fids) - 1)){
+     $prev = $fids[count($fids) - 2];
+     $next = $fids[0];
   }
   else{
     $next = $fids[$photo_pos + 1];  
     $prev = $fids[$photo_pos - 1];  
   }
- 
  
  $res = db_query("SELECT pc.*,u.picture from photo_comments pc INNER JOIN users u on u.uid = pc.uid WHERE pc.fid = %d ORDER BY pc.timestamp ASC",$photo_id);
  $profiles = array();
@@ -87,7 +88,7 @@ function klicango_photos_event_photo($event_id, $photo_id){
   exit;
 }
 
-function klicango_photos_comment_photo($comment_id, $photo_id){
+function klicango_photos_comment_photo($user_id, $photo_id){
   
   $return = array();
  
@@ -96,9 +97,9 @@ function klicango_photos_comment_photo($comment_id, $photo_id){
                       INNER JOIN node comment_nid on comment_nid.nid = ph.nid
                       INNER JOIN node_comments nc on nc.cid = comment_nid.nid
                       INNER JOIN files f on f.fid = field_comment_photo_fid
-                      WHERE nc.cid = %d AND field_comment_photo_fid IS NOT NULL
+                      WHERE nc.uid = %d AND field_comment_photo_fid IS NOT NULL
                       ORDER BY comment_nid.created ASC, f.fid ASC
-                      ",$comment_id);
+                      ",$user_id);
  
  $fids = array();
   $next = $prev = null;
@@ -109,16 +110,17 @@ function klicango_photos_comment_photo($comment_id, $photo_id){
   }
   $photo_pos = array_search($photo_id, $fids);
   if($photo_pos == 0){
-    $next = $fids[1];  
+    $next = $fids[1]; 
+    $prev = $fids[count($fids) - 1];  
   }
-  elseif($photo_pos == (count($photo_pos) - 1)){
-     $prev = count($photo_pos) - 1; 
+  elseif($photo_pos == (count($fids) - 1)){
+     $prev = $fids[count($fids) - 2];
+     $next = $fids[0];
   }
   else{
     $next = $fids[$photo_pos + 1];  
     $prev = $fids[$photo_pos - 1];  
   }
- 
  
  $res = db_query("SELECT pc.*,u.picture from photo_comments pc INNER JOIN users u on u.uid = pc.uid WHERE pc.fid = %d ORDER BY pc.timestamp ASC",$photo_id);
  $profiles = array();
@@ -140,8 +142,8 @@ function klicango_photos_comment_photo($comment_id, $photo_id){
   $return['image'] = array('src'=> imagecache_create_url('comment_image_big', $info->filepath, FALSE, $absolute));  
   $return['author'] = theme('photo_author_info',$author, $info);
   $return['comments'] = theme('photo_comments',$comments, $info->fid, $info->event_id);
-  $return['next_url'] = (!empty($next) ? ('/comment_photo/'.$comment_id.'/'.$next) : '');
-  $return['prev_url'] = (!empty($prev) ? ('/comment_photo/'.$comment_id.'/'.$prev) : '');
+  $return['next_url'] = (!empty($next) ? ('/comment_photo/'.$user_id.'/'.$next) : '');
+  $return['prev_url'] = (!empty($prev) ? ('/comment_photo/'.$user_id.'/'.$prev) : '');
  }
   echo json_encode($return);
   exit;

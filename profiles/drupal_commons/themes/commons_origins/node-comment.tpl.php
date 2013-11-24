@@ -16,13 +16,14 @@
   }
    $i = 0;
   if(!empty($field_comment_photo)){
-    foreach($field_comment_photo as $_photo){
+    foreach($field_comment_photo as $_photo){  
       if(!empty($_photo['filepath']) && $i++ < $max_photos_num){
-        $photos_html .= '<a class="klicango-popup" href="/comment_photo/'.$nid.'/'.$_photo['fid'].'" rel="lightbox">'.theme_imagecache($preset,$_photo['filepath']).'</a>';
-        $photos_num++;
+        $photos_html .= '<a class="klicango-popup" href="/comment_photo/'.$_photo['uid'].'/'.$_photo['fid'].'" rel="lightbox">'.theme_imagecache($preset,$_photo['filepath']).'</a>';
+        //$photos_num++;
       }
     }
   }
+  $photos_num = count($field_comment_photo);
   $options = array();
   $comment_status = (events_get_event_status_for_user($node->comment_target_nid, $node->uid) == EVENT_STATUS_ACCEPTED ? t('is going') : t('posted a new comment'));
   if($photos_num > 0){

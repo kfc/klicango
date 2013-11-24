@@ -17,7 +17,7 @@ jQuery.fn.absCenter = function(parent) {
         } else {
             parent = window;
         }
-        var img = this.siblings('img')[0];
+        var img = this.siblings('img')[0];   
         this.css({
             "position": "absolute",
             "top": ((($(parent).height() - this.outerHeight()) / 2) + $(parent).scrollTop() + "px"),
@@ -90,13 +90,41 @@ $(function() {
       $("#photo-box #photo-wrapper a#prev-photo").bind('click', function(e){
         e.preventDefault();
         loadPhotoComments(this);
-      });  
+      });
+      
+      $("#prev-photo-span").hover(
+        function(){        
+          $(this).siblings("#prev-photo").addClass('hovered');
+        },
+        function(){
+          $(this).siblings("#prev-photo").removeClass('hovered')  
+        } 
+      );
+      
+      $("#prev-photo-span").bind('click',function(){
+        $(this).siblings("#prev-photo").trigger('click');
+        
+      }); 
 
       // NEXT PHOTO
       $("#photo-box #photo-wrapper a#next-photo").bind('click', function(e){
         e.preventDefault();
         loadPhotoComments(this);
       }); 
+      
+      $("#next-photo-span").hover(
+        function(){        
+          $(this).siblings("#next-photo").addClass('hovered');
+        },
+        function(){
+          $(this).siblings("#next-photo").removeClass('hovered')  
+        } 
+      );
+      
+      $("#next-photo-span").bind('click',function(){
+        $(this).siblings("#next-photo").trigger('click');
+        
+      });
       
       $("#close-box a").bind('click', function(e){
         e.preventDefault();

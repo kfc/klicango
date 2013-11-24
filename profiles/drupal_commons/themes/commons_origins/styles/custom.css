@@ -754,3 +754,41 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
    max-height: 665px; 
    margin: 0 auto;
 }
+
+#photo-wrapper #prev-photo, #photo-wrapper #next-photo {
+ z-index: 1000;
+}
+
+#photo-wrapper #prev-photo-span {
+  top: 0px !important;
+  width: 50% !important;
+  left: 0px !important;
+  height: 100% !important;
+  position: absolute;
+  z-index: 10;
+}
+ 
+#photo-wrapper #next-photo-span {
+  top: 0px !important;
+  width: 50% !important;
+  right: 0px !important;
+  height: 100% !important;
+  position: absolute;
+  z-index: 10;
+}
+
+#photo-wrapper #prev-photo-span:hover, #photo-wrapper #next-photo-span:hover{
+  cursor: pointer;
+}
+
+#photo-box #photo-wrapper a#prev-photo.hovered{
+  background-position: 0 -40px;
+}
+
+#photo-box #photo-wrapper a#next-photo.hovered{
+  background-position: -23px -40px;
+}
+
+#photo-box #comment-wrapper input[type="text"]{
+  background-image: none !important;
+}
