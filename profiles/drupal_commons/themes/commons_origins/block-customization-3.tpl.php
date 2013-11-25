@@ -77,9 +77,9 @@ $advanced_profile = advanced_profile_load($user_id);
       </div>
       <?php if($user->uid != $viewed_user->uid):?>
         <div class="public-actions">
-        <?php if(klicango_friends_are_friends($user->uid, $viewed_user->uid)):?>
+        <?php if(user_is_logged_in() && klicango_friends_are_friends($user->uid, $viewed_user->uid)):?>
           <div class="i-like-this-place"><?php echo l(t('I like this place'),'unfollow/'.$viewed_user->uid,array('attributes'=>array('class'=>'follow-place-action','id'=>'unfollow-place-calendar', 'title' => $viewed_user->first_name)))?></div>
-        <?php else:?>
+        <?php elseif(user_is_logged_in()):?>
           <div class="add-to-calendar"><?php echo l(t('Follow this place'),'follow/'.$viewed_user->uid, array('attributes'=>array('class'=>'follow-place-action','id'=>'follow-place-calendar', 'title' => $viewed_user->first_name)))?></div>
         <?php endif;?>
         </div>  

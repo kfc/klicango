@@ -87,13 +87,13 @@ function events_menu(){
       'type' => MENU_CALLBACK,
       'page callback' => 'events_user_calendar',
       'page arguments' => array(1),
-      'access callback' => 'user_is_logged_in'
+      'access callback' => true
     ),
     'user_calendar/%/%' => array(
       'type' => MENU_CALLBACK,
       'page callback' => 'events_user_calendar',
       'page arguments' => array(1,2),
-      'access callback' => 'user_is_logged_in'
+      'access callback' => true
     ),
     
   );
