@@ -1034,6 +1034,25 @@ function events_get_popular_events($status, $is_public = true) {
 }
 
 function events_user_calendar($date, $user_id = null){
-  die($date);
-  //if(!empty($date) )
+  if(empty($user_id)){
+    global $user;
+  }
+  else{
+    $user = user_load($user_id);
+  }
+  
+  $date_parts = explode('-', $date);
+  
+  $return = array();
+  $view = views_get_view('content_event_calendar',true);
+  $view->set_display('calendar_period_2');
+  $args = array($date, $user->name);
+  $view->set_arguments($args);
+  $view->pre_execute();
+  $return['calendar'] = $view->render('calendar_period_2');
+  $return['next_url'] = url('user/'.$user->uid, array('query'=> array('cal'=> date('Y-m',strtotime('+1 month',mktime(0,0,0,$date_parts[1],1,$date_parts[0]))), 'uid'=>$user->uid ))); 
+  $return['prev_url'] = url('user/'.$user->uid, array('query'=> array('cal'=> date('Y-m',strtotime('-1 month',mktime(0,0,0,$date_parts[1],1,$date_parts[0]))), 'uid'=>$user->uid ))); 
+  $return['month_name'] = date('F Y', mktime(0,0,0,$date_parts[1],1,$date_parts[0])); 
+  echo json_encode($return);
+  exit;
 }

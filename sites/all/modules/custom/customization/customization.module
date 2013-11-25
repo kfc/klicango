@@ -263,6 +263,9 @@ function customization_views_query_alter(&$view, &$query) {
     $_user_id = 0;
     if(arg(0) == 'user')
       $_user_id = arg(1);
+    elseif(arg(0) == 'user_calendar' && arg(2) != ''){
+      $_user_id = arg(2);
+    }  
       
     if($_user_id > 0)  {
       if($user-> uid != $_user_id)

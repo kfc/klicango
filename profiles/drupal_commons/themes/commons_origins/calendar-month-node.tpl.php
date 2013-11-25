@@ -46,7 +46,11 @@
   if(arg(0) == 'user'){
     $userid = arg(1);
     
-  }?>
+  }elseif(arg(0) == 'user_calendar' && arg(2) != ''){
+    $userid = arg(2);
+  }
+  
+  ?>
 <div class="<?php echo (!empty($fields['node_vid']['data']) ? 'hover-wrapper' : (strtolower($fields['node_data_field_date_field_event_type_value']['data']) == 'private' && !empty($fields['users_picture']['data']) ? 'hover-wrapper' :  'no-pic-wrapper'))?>">
   <div class="view-field view-data-node-title node-title <?php echo (strtolower($fields['node_data_field_date_field_event_type_value']['data']) == 'private' ? 'private-event-link' : '')?>">
     <?php print $fields['node_title']['data']; ?>

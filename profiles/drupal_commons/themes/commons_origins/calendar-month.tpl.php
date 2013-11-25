@@ -20,7 +20,7 @@
  */
 //dsm('Display: '. $display_type .': '. $min_date_formatted .' to '. $max_date_formatted);    
 ?>
-<div class="calendar-calendar"><div class="month-view">
+<div class="calendar-calendar" id="calendar-<?php echo $view->args[0]?>"><div class="month-view">
 <table>
   <tbody>
     <?php 

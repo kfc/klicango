@@ -63,23 +63,27 @@ $(function() {
     loadEventUsers('invited', e.target.id);
   }); 
   
-  $("#create-event-link")
-    .click(function(e) {
-    e.preventDefault();
-    $('#create-event-form .profile-upload').styler({browseText: 'Add event photo'});
-    
-   
-    $("#create-event-form input[type='text'], #create-event-form input[type='hidden']").each(function(){
-      $(this).val(user_data[$(this).attr('name')]);
-     // $(this).val('');
-    });
-    $("#create-event-form textarea").each(function(){
-      $(this).val('');
-    });
+  function bindCreateEventLink(){
+    $("#create-event-link")
+      .click(function(e) {
+        e.preventDefault();
+        $('#create-event-form .profile-upload').styler({browseText: 'Add event photo'});
+        
+       
+        $("#create-event-form input[type='text'], #create-event-form input[type='hidden']").each(function(){
+          $(this).val(user_data[$(this).attr('name')]);
+         // $(this).val('');
+        });
+        $("#create-event-form textarea").each(function(){
+          $(this).val('');
+        });
 
-   // $( "#create-event-form" ).dialog( {title:'Create Event'} );
-    $( "#create-event-form" ).dialog( "open" );
-  });
+       // $( "#create-event-form" ).dialog( {title:'Create Event'} );
+        $( "#create-event-form" ).dialog( "open" );
+    });
+  }
+  
+  bindCreateEventLink();
   
   $("#modify-event-link")
     .click(function(e) {
@@ -99,16 +103,18 @@ $(function() {
     $( "#create-event-form" ).dialog( "open" );
   });
   
-  
-  $("#show-events-wrapper" ).dialog({
-      autoOpen: false,
-      width: 800,
-      height: 400,
-      modal: true,
-      close: function() {
-       $(".scroll-pane").hide();
-      }
-  });
+  function bindShowEventsDialog(){
+    $("#show-events-wrapper" ).dialog({
+        autoOpen: false,
+        width: 800,
+        height: 400,
+        modal: true,
+        close: function() {
+         $(".scroll-pane").hide();
+        }
+    });
+  }
+  bindShowEventsDialog();
   
   
   $("#form_create_event input[type='submit']").click(function(e){  
@@ -135,6 +141,44 @@ $(function() {
     });
        
  });
+ 
+ 
+ // Calendar AJAX support
+    
+  $("#next-month-button, #prev-month-button").on('click',function(e){ 
+    e.preventDefault();
+    var href = $(this).attr('href');
+    var date = getParameterByName(href, 'cal');
+    var uid = getParameterByName(href, 'uid');
+    if(date != '' && uid != ''){
+      $.ajax({
+         type: 'GET',
+         dataType: 'json',
+         url: '/user_calendar/'+date+'/'+uid,
+         success : function (data) {
+          $(".view-content-event-calendar .attachment-after").fadeOut("fast", function(){
+            $(".view-content-event-calendar .attachment-after").html(data.calendar);
+            $(".view-content-event-calendar .attachment-after").fadeIn("fast");
+            bindAddEventLinks();
+            bindCreateEventLink();
+            bindShowEventsDialog();
+            bindShowEventsLink();
+          });
+          $("#next-month-button").attr('href',data.next_url); 
+          $("#prev-month-button").attr('href',data.prev_url); 
+          $("#prev-month-button").attr('href',data.prev_url); 
+          $(".view-content-event-calendar .date-heading h3").text(data.month_name);
+         }, 
+      }); 
+    }
+  });
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  $("#comment_add_photo_link").click(function(e){
    e.preventDefault();
@@ -241,13 +285,17 @@ $(function() {
         }
     });
  
- $(".hover-wrapper a.add-event-from-calendar").on('click',function(e){
-  e.preventDefault();
-  var date = $(this).attr('id').replace('add-event-from-calendar-','').split('-'); 
-  date = date[2]+'/'+date[1]+'/'+date[0];
-  $("#create-event-form input[name='date']").val(date);  
-  $( "#create-event-form" ).dialog( "open" );
- });
+ function bindAddEventLinks(){
+   $(".hover-wrapper a.add-event-from-calendar").on('click',function(e){
+    e.preventDefault();
+    $('#create-event-form .profile-upload').styler({browseText: 'Add event photo'});
+    var date = $(this).attr('id').replace('add-event-from-calendar-','').split('-'); 
+    date = date[2]+'/'+date[1]+'/'+date[0];
+    $("#create-event-form input[name='date']").val(date);  
+    $( "#create-event-form" ).dialog( "open" );  
+   });  
+ }
+ bindAddEventLinks();
  
  
  function setEqualHeight(columns){
@@ -270,23 +318,27 @@ $(function() {
     setEqualHeight($(this).find("div.inner"));
   });
  
-  $("a.show-events-link").on('click',function(e){
-    e.preventDefault();
-    var date = $(this).attr('href').substring(18); // crop date part of an URL /show_events?date={date} 
+ 
+  function bindShowEventsLink(){
+    $("a.show-events-link").on('click',function(e){  
+      e.preventDefault();
+      var date = $(this).attr('href').substring(18); // crop date part of an URL /show_events?date={date} 
 
-    $( "#show-events-wrapper" ).dialog( "open" );
-    
-    $.ajax({
-           type: 'GET',
-           dataType: 'html',
-           url: $(this).attr('href'),
-           success : function (data) {
-            $( "#show-events-wrapper" ).html(data);  
-           }
+      $( "#show-events-wrapper" ).dialog( "open" );
+      
+      $.ajax({
+             type: 'GET',
+             dataType: 'html',
+             url: $(this).attr('href'),
+             success : function (data) {
+              $( "#show-events-wrapper" ).html(data);  
+             }
+      });
+          
+      return false;
     });
-        
-    return false;
-  });
+  }
+  bindShowEventsLink();
   
   
   
@@ -443,4 +495,11 @@ function loadEventUsers(type, event_id) {
 
            },
         });
+}
+
+function getParameterByName(url, name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(url);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }

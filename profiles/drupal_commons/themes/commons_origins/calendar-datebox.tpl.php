@@ -15,12 +15,15 @@
  * - $selected: Whether or not this day has any items.
  * - $items: An array of items for this day.
  */
+ global $user;
  $date_parts = explode('-',$date);
  $day_of_week =  date('D', mktime(0,0,0,$date_parts['1'],$date_parts['2'],$date_parts['0']));
  $active_user_uid = $user->uid;
  if(arg(0) == 'user' && arg(1) > 0){
   $active_user_uid = arg(1);
- }
+ }elseif(arg(0) == 'user_calendar' && arg(2) > 0){
+    $active_user_uid = arg(2);
+  }
 ?>                       
 <div class="<?php print $granularity ?> <?php print $class; ?>"> <?php print strtolower($day_of_week).' '.$day; ?> </div>
 <?php if(count($items[$date]) > 1):?>

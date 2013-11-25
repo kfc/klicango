@@ -33,6 +33,8 @@
  
 $prev_options['html'] = true;
 $next_options['html'] = true;
+$next_options['attributes']['id'] = 'next-month-button';
+$prev_options['attributes']['id'] = 'prev-month-button';
 ?>
 <div class="date-nav clear-block">
   <div class="date-prev">
