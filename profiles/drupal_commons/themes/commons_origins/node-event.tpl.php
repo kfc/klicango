@@ -203,7 +203,7 @@
                     
                     <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
                       <div class="going-status-button" id="event-action-button">
-                        <a class="remove-event-link" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
+                        <a class="remove-event-link" title="<?php echo $title?>"  <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
                       </div>
                     <?php endif;?>
         		</div>
