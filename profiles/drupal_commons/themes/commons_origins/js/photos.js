@@ -140,15 +140,23 @@ $(function() {
         
         $("#photo-comment-submit").bind('click', function(e){
           e.preventDefault();
-          $("#photo-comment-post-form").submit();
+          if($(this).attr('disabled') != 'disabled')
+            $("#photo-comment-post-form").submit();
+          $(this).attr('disabled','disabled');
+          $('#photo-comment-post-form').attr("disabled", "disabled");
+
         });
         
-        $("#photo-comment-post-form").on('submit', function(){ 
+        $("#photo-comment-post-form").on('submit', function(){
+          if($(this).attr('disabled') == 'disabled')
+            return false; 
           var comment = $("#photo-comment-body", $(this)).val();
           if(comment.trim() == ''){
             alert('Please enter your comment');  
           }
           else{
+            $('#photo-comment-post-form').attr("disabled", "disabled");
+            $("#photo-comment-submit").attr('disabled','disabled'); 
             postPhotoComment($(this),comment);  
           }
           return false;
@@ -172,7 +180,10 @@ $(function() {
                 $("#comment-table").append(comment);    
               var height = $("#comment-table").height();
               $("#comment-table-wrapper").scrollTop(height);
-              $("#photo-comment-body", $(form)).val('');    
+              $("#photo-comment-body", $(form)).val('');  
+              
+              $('#photo-comment-post-form').attr("disabled", false);
+              $("#photo-comment-submit").attr('disabled',false);  
             }
             else{ 
               

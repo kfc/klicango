@@ -195,15 +195,23 @@ $(function() {
  
  $("#comment-post-submit").click(function(e){
    e.preventDefault();
-   $("#comment-post-form").submit();
+   
+   if($(this).attr('disabled') != 'disabled')
+    $("#comment-post-form").submit();
+   $(this).attr('disabled','disabled');
+   $('#comment-post-form').attr("disabled", "disabled"); 
+   
  });
  
  $("#comment-post-form").submit(function(){
-    if($("#comment-post-body").val().trim() == '' && $("#comment-files-styler .jq-file__name").text() == ''){
+   if($(this).attr('disabled') == 'disabled')
+    return false;
+   if($("#comment-post-body").val().trim() == '' && $("#comment-files-styler .jq-file__name").text() == ''){
       alert('Enter comment or add a photo to upload');
       return false;  
     }
-    $('#comment-post-form :submit').attr("disabled", "disabled");   
+    $('#comment-post-form').attr("disabled", "disabled");
+    $("#comment-post-submit").attr('disabled','disabled');   
  });
  
  
