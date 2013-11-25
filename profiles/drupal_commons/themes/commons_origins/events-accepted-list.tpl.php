@@ -1,12 +1,12 @@
 <?php
     if ($public == true) {
-        $type = 'Top public events';
+        $type = 'Top public events<a href="">+ Find events</a>';
     } else {
         $type = 'My private events';
     }
 ?>
 <div id="top-event-list">
-    <h2><?php echo $type; ?><a href="">+ Find events</a></h2>
+    <h2><?php echo $type; ?></h2>
     <table>
         <tbody>
             <?php

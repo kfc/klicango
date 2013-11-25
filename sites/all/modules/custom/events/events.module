@@ -50,7 +50,7 @@ function events_menu(){
     'event/users' => array(
       'type' => MENU_CALLBACK,
       'page callback' => 'events_users',
-      'access callback' => 'user_is_logged_in'
+      'access callback' => true
     ),
     'remove_event_for_user' => array(
       'type' => MENU_CALLBACK,
@@ -988,33 +988,94 @@ function events_get_popular_events($status, $is_public = true) {
         $type = 'private';
     }
     
+    $ids = array();
+    
     if (user_is_logged_in()) {             
-        $result = db_query('SELECT ev.nid AS event_id, COUNT(eu.user_id) AS friends FROM content_type_event AS ev
-                            LEFT JOIN events_users AS eu ON ev.nid = eu.event_id
-                            WHERE (eu.user_id IN (
-                                SELECT uid AS id FROM friends 
-                                WHERE fid = %d UNION SELECT fid AS id FROM friends WHERE uid = %d
-                            ) 
-                            AND ev.field_event_type_value = "%s" AND eu.status = %d AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW())
-                            AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = %d))
-                            OR eu.event_id IS NULL
-                            GROUP BY ev.nid 
-                            ORDER BY friends DESC, ev.field_date_value ASC
-                            LIMIT 0, 5', $user->uid, $user->uid, $type, $status, $user->uid);
-    } else {
-        $result = db_query('SELECT ev.nid AS event_id, COUNT(eu.user_id) AS friends FROM content_type_event AS ev
-                            LEFT JOIN events_users AS eu ON ev.nid = eu.event_id
-                            WHERE (ev.field_event_type_value = "%s" AND eu.status = %d AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW()))
-                            OR eu.event_id IS NULL
-                            GROUP BY ev.nid 
-                            ORDER BY friends DESC, ev.field_date_value ASC
-                            LIMIT 0, 5', $type, $status);
+        $ids = events_top_by_friends(5);   
     }
     
-    $ids = array();
-    while($event = db_fetch_array($result)) {
-        $ids[] = $event;    
+    if (sizeof($ids) < 5) {
+      $ids += events_top_by_users((5-sizeof($ids)), $ids);
+      if (sizeof($ids) < 5) {
+        $ids += events_closest((5-sizeof($ids)), $ids);
+      } 
     }
         
     return $ids;
+}
+
+function events_top_by_friends($number, $exclude = array()) {
+  global $user;
+  
+  if (!empty($exclude)) {
+    $exclude = array_keys($exclude);
+    $exclude_str = implode(', ', $exclude);
+  }
+  
+  $result = db_query('SELECT ev.nid AS event_id, COUNT(eu.user_id) AS friends FROM content_type_event AS ev
+                      LEFT JOIN events_users AS eu ON ev.nid = eu.event_id
+                      WHERE (eu.user_id IN (
+                          SELECT uid AS id FROM friends 
+                          WHERE fid = %d UNION SELECT fid AS id FROM friends WHERE uid = %d
+                      ) 
+                      AND ev.field_event_type_value = "public" AND eu.status = 3 AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW())
+                      AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = %d))
+                      ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . '
+                      GROUP BY ev.nid 
+                      ORDER BY friends DESC, ev.field_date_value ASC
+                      LIMIT 0, %d', $user->uid, $user->uid, $user->uid, $number);
+  $ids = array();
+  while($event = db_fetch_array($result)) {
+      $ids[$event['event_id']] = $event;    
+  }
+  
+  return $ids;
+}
+
+function events_top_by_users($number, $exclude = array()) {
+  global $user;
+  
+  if (!empty($exclude)) {
+    $exclude = array_keys($exclude);
+    $exclude_str = implode(', ', $exclude);
+  }
+  
+  $result = db_query('SELECT ev.nid AS event_id, COUNT(eu.user_id) AS friends FROM content_type_event AS ev
+                      LEFT JOIN events_users AS eu ON ev.nid = eu.event_id
+                      WHERE (ev.field_event_type_value = "public" AND eu.status = 3 AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW()))
+                      ' . (user_is_logged_in() ? ' AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = ' . $user->uid . ')) ' : '') . '                      
+                      ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . '
+                      GROUP BY ev.nid 
+                      ORDER BY friends DESC, ev.field_date_value ASC
+                      LIMIT 0, %d', $number);
+                      
+  $ids = array();
+  while($event = db_fetch_array($result)) {
+      $ids[$event['event_id']] = $event;    
+  }
+
+  return $ids;
+}
+
+function events_closest($number, $exclude = array()) {
+  global $user;
+  
+  if (!empty($exclude)) {
+    $exclude = array_keys($exclude);
+    $exclude_str = implode(', ', $exclude);
+  }
+
+  $result = db_query('SELECT ev.nid AS event_id, 0 AS friends FROM content_type_event AS ev
+                      WHERE (ev.field_event_type_value = "public" AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW()))
+                      ' . (user_is_logged_in() ? ' AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = ' . $user->uid . ')) ' : '') . '
+                      ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . '
+                      ORDER BY ev.field_date_value ASC
+                      LIMIT 0, %d', $number);
+                      
+  $ids = array();
+  while($event = db_fetch_array($result)) {
+      $ids[$event['event_id']] = $event;    
+  }
+  
+  return $ids;
 }

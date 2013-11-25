@@ -277,12 +277,17 @@ $(function() {
             $('#invite-friends-form .scroll-pane').attr('id', event_id);
         } else {
             var current = $('#invite-friends-form .scroll-pane').attr('id');
-            if (event_id != current) {
+            if (event_id != current && event_id != 0) {
                 $('#invite-friends-form .mCSB_container').html('');
                 $('#invite-friends-form .scroll-pane').attr('id', event_id);
                 $('#search-friends').val('');
-            }
+            } 
         }
+        
+        if (event_id == 0) {
+          event_id = current;
+        }
+        
         $.ajax({
            type: 'GET',
            dataType: 'html',
@@ -398,10 +403,10 @@ function loadEventUsers(type, event_id) {
                 }
            },  
            complete : function (jqXHR, textStatus) {  
-                $('#dialog-' + type).dialog({
-        		  autoOpen: false,
-                  width: 484,
-                  height: 340,
+            $('#dialog-' + type).dialog({
+    		      autoOpen: false,
+              width: 484,
+              height: 340,
         		  modal: true
         		});
                 
