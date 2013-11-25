@@ -17,6 +17,8 @@ if(in_array('individual' ,$user->roles)){
   $class="private-event";
 }
 else{
+  if(!isset($user->address))
+    profile_load_profile($user);
   $address = $user->address.', '.$user->city.', '.$user->country;
   $phone = $user->phone;
   $class="public-event";
