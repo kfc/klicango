@@ -140,11 +140,11 @@ $(function() {
         
         $("#photo-comment-submit").bind('click', function(e){
           e.preventDefault();
-          $("#comment-post-form").submit();
+          $("#photo-comment-post-form").submit();
         });
         
-        $("#comment-post-form").on('submit', function(){ 
-          var comment = $("#comment-body", $(this)).val();
+        $("#photo-comment-post-form").on('submit', function(){ 
+          var comment = $("#photo-comment-body", $(this)).val();
           if(comment.trim() == ''){
             alert('Please enter your comment');  
           }

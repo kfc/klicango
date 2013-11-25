@@ -200,7 +200,7 @@ function theme_photo_comments($comments, $fid, $event_id){
       </div>
       <div id="add-comment">
         <div class="profile-thumbnail">'.theme_imagecache('user_picture_40x40', $user->picture).'</div>
-        <form method="POST" action="'.$_GET['q'].'" id="comment-post-form"><input type="hidden" name="fid" value="'.$fid.'"><input type="hidden" name="event_id" value="'.$event_id.'"><input type="text" name="comment" id="comment-body" />
+        <form method="POST" action="'.$_GET['q'].'" id="photo-comment-post-form"><input type="hidden" name="fid" value="'.$fid.'"><input type="hidden" name="event_id" value="'.$event_id.'"><input type="text" name="comment" id="photo-comment-body" />
         <span class="photo-comment-submit-wrapper">
           <a href="#" title="Add comment" id="photo-comment-submit"><img src="/profiles/drupal_commons/themes/commons_origins/images/enter-icon.png" ></a>
         </span>

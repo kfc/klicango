@@ -83,6 +83,19 @@ function events_menu(){
       'access callback' => 'user_is_logged_in'
     ),
     
+    'user_calendar/%' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_user_calendar',
+      'page arguments' => array(1),
+      'access callback' => 'user_is_logged_in'
+    ),
+    'user_calendar/%/%' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_user_calendar',
+      'page arguments' => array(1,2),
+      'access callback' => 'user_is_logged_in'
+    ),
+    
   );
   return $items;
   
@@ -1018,4 +1031,9 @@ function events_get_popular_events($status, $is_public = true) {
     }
         
     return $ids;
+}
+
+function events_user_calendar($date, $user_id = null){
+  die($date);
+  //if(!empty($date) )
 }
