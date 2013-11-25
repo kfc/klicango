@@ -201,6 +201,15 @@ form .form-item textarea.error:-ms-input-placeholder {
 div#content .profile {
   display:none;
 }
+
+#create-event-form{
+  overflow: hidden;
+}
+
+#create-event-form .scroll-pane {
+  margin-bottom: 10px;
+}
+
 #create-event-form div.person-item, .events-users div.person-item{
 	width: 100%;
 	height: 77px;
@@ -239,7 +248,7 @@ a.invite-friend{
 	margin-right: 0;
 }
 #create-event-form .form-submit{
-	padding-top: 20px;
+	padding-top: 0px;
 }
 
 a.already-invited{
@@ -532,7 +541,7 @@ body.not-front #middle{
   background-color: #FFFFFF;
 }
 
-.block .calendar-calendar .month-view table tr td .view-data-node-title a{
+.block .calendar-calendar .month-view table tr td .view-data-node-title.private-event-link a{
   color: #f54e1f; 
 }
 .block .calendar-calendar .month-view table tr td .inner .hover-wrapper {
@@ -595,10 +604,234 @@ div.footer-right-block{
 .activity-stream-list .stream-item .person-name a {
   text-decoration: none;
 }
-.activity-stream-list .stream-item .person-name a:hover {
+.activity-stream-list .stream-item .person-name>a:hover {
   text-decoration: underline;
 }
 
 #last-parties-photos .item-list .item .party-n-d-l{
   padding-top: 25px;
+}
+
+.activity-stream-list .stream-item div.added-new-photos{
+  max-height: 80px;
+  overflow: hidden;
+}
+.activity-stream-list .stream-item .stream-item-content .added-new-photos a{
+  margin-right: 2px;
+}
+
+div.activity-stream-list.left .item-list, div.activity-stream-list .view-nodecomments .item-list {
+  margin-bottom: 10px;
+  font: Arial 11px;
+  height: 15px; 
+}
+
+
+
+div.activity-stream-list.left .item-list .pager, .activity-stream-list .view-nodecomments .item-list .pager{
+  list-style: none;
+}
+
+div.activity-stream-list.left .item-list .pager .pager-item, .item-list .pager .pager-current, .item-list .pager .pager-first, .item-list .pager .pager-last,
+div.activity-stream-list .view-nodecomments .item-list .pager .pager-item{ 
+  display: none;
+}
+
+div.activity-stream-list.left .item-list .pager .pager-next a, .activity-stream-list .view-nodecomments .item-list .pager .pager-next a,
+div.activity-stream-list.left .item-list .pager .pager-previous a, .activity-stream-list .view-nodecomments .item-list .pager .pager-previous a{
+  text-decoration: none;
+}
+
+div.activity-stream-list.left .item-list .pager .pager-next a:hover, .activity-stream-list .view-nodecomments .item-list .pager .pager-next a:hover,
+div.activity-stream-list.left .item-list .pager .pager-previous a:hover, .activity-stream-list .view-nodecomments .item-list .pager .pager-previous a:hover{
+  text-decoration: underline;
+}
+
+div.activity-stream-list.left .item-list .pager .pager-next, .activity-stream-list .view-nodecomments .item-list .pager .pager-next{
+  float: right;
+}
+div.activity-stream-list.left .item-list .pager .pager-previous, .activity-stream-list .view-nodecomments .item-list .pager .pager-previous{
+  float: left;
+}
+
+.date-nav .date-prev a, .date-nav .date-next a{
+  
+  background: none;
+  font-size: 0;
+  text-decoration: none;
+  display: inline;
+  margin-top: 0px;
+}
+
+.date-heading h3{
+  font-size: 14px;
+}
+
+.ui-dialog form input[type="text"], .ui-dialog form input[type="password"], .ui-dialog form textarea{
+  color: #000;
+  font-size: 12px;
+}
+
+.ui-datepicker.ui-widget{
+  border: 1px solid #aaaaaa;
+  border-radius: 4px;
+}
+
+.ui-widget-content .ui-widget-header.ui-datepicker-header{
+  margin-bottom: 0px;
+  padding: 5px;
+  border: 1px solid #aaaaaa;
+  background: #cccccc url(../images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+  border-radius: 4px;
+  color: #222222;
+}
+.ui-widget-header.ui-datepicker-header .ui-icon {
+  background-image: url(../images/ui-icons_222222_256x240.png);
+}
+
+.ui-widget-header.ui-datepicker-header .ui-datepicker-title select{
+  margin-right: 1px;
+}
+
+.post-box-title{
+  float: left;
+  padding-top: 4px;
+}
+
+#filesContainer{
+  float: left;
+  
+}
+
+#comment-files-styler .jq-file__browse{
+  padding-left: 5px;
+  display: inline-block;
+  font: bold 11px/25px Arial;
+  color: #2b2a2a;
+  text-decoration: none;
+  height: 24px;
+  width: 90px;
+}
+#comment-files-styler .jq-file__browse{
+  color: #96c12b !important;
+}
+
+#comment-files-styler .jq-file__browse:hover{
+  color: #96c12b;
+}
+#comment-files-styler .jq-file__browse{
+  background: url(../images/prof-photo.png) right center no-repeat;
+  cursor: pointer;
+}
+#comment-files-styler input:hover,
+#comment-files-styler input:hover{
+  cursor: pointer;  
+}
+#comment-files-styler,
+#comment-files-styler{
+  float: left;
+}
+#comment-files-styler .jq-file__name{
+  font: 11px Arial;
+  color: #96c12b;
+  padding-left: 10px;
+  float: left;
+  padding-top: 6px;
+  white-space: normal !important;
+}
+
+.comment-post-body {
+  position: relative;
+}
+
+.comment-post-submit-wrapper {
+  position: absolute;
+  right: 5px;
+  bottom: 0px;
+}
+
+
+.comment-post-file {
+  position: relative;
+  height: 24px;
+}
+
+#photo-wrapper {
+   margin: 0 auto;
+   width: 800px;
+}
+#photo-wrapper img {
+   max-height: 665px; 
+   margin: 0 auto;
+}
+
+#photo-wrapper #prev-photo, #photo-wrapper #next-photo {
+ z-index: 1000;
+}
+
+#photo-wrapper #prev-photo-span {
+  top: 0px !important;
+  width: 50% !important;
+  left: 0px !important;
+  height: 100% !important;
+  position: absolute;
+  z-index: 10;
+}
+ 
+#photo-wrapper #next-photo-span {
+  top: 0px !important;
+  width: 50% !important;
+  right: 0px !important;
+  height: 100% !important;
+  position: absolute;
+  z-index: 10;
+}
+
+#photo-wrapper #prev-photo-span:hover, #photo-wrapper #next-photo-span:hover{
+  cursor: pointer;
+}
+
+
+#photo-box #comment-wrapper input[type="text"]{
+  background-image: none !important;
+}
+
+#comment-table-wrapper {
+  min-height: 15px;
+}
+
+#add-comment{
+  position: relative;
+}
+
+.photo-comment-submit-wrapper{
+  position: absolute;
+  right: 25px;
+  top: 7px;
+}
+
+#photo-box #photo-wrapper a{
+  width: 29px;
+  height: 46px;
+}
+
+#photo-box #photo-wrapper a#next-photo{
+  background-position: -29px 0px;
+}
+#photo-box #photo-wrapper a#next-photo:hover{
+  background-position: -29px -46px;  
+}
+#photo-box #photo-wrapper a#prev-photo{
+  background-position: 0px 0px;
+}
+#photo-box #photo-wrapper a#prev-photo:hover{
+  background-position: 0px -46px;  
+}
+
+#photo-box #photo-wrapper a#prev-photo.hovered{
+  background-position: 0px -46px;
+}
+
+#photo-box #photo-wrapper a#next-photo.hovered{
+  background-position: -29px -46px;
 }

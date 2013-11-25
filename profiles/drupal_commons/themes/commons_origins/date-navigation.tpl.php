@@ -30,11 +30,16 @@
  * so the title stays centered.
  *
  */
+ 
+$prev_options['html'] = true;
+$next_options['html'] = true;
+$next_options['attributes']['id'] = 'next-month-button';
+$prev_options['attributes']['id'] = 'prev-month-button';
 ?>
 <div class="date-nav clear-block">
   <div class="date-prev">
     <?php if (!empty($prev_url)) : ?>
-      <span class="next views-summary"> <?php print l('« ' . ($block ? '' : $prev_options['date']), $prev_url, $prev_options); ?></span>
+      <span class="next views-summary"> <?php print l('<img src="/profiles/drupal_commons/themes/commons_origins/images/left-arrow.png"> ' . ($block ? '' : $prev_options['date']), $prev_url, $prev_options); ?></span>
     <?php endif; ?>
   </div>
   <div class="date-heading">
@@ -42,7 +47,7 @@
   </div>
   <div class="date-next">
     <?php if (!empty($next_url)) : ?>
-      <span class="next views-summary"> <?php print l(($block ? '' : $next_options['date']) . ' »', $next_url, $next_options); ?></span>
+      <span class="next views-summary"> <?php print l(($block ? '' : $next_options['date']) . ' <img src="/profiles/drupal_commons/themes/commons_origins/images/right-arrow.png">', $next_url, $next_options); ?></span>
     <?php endif; ?>
   </div>
 </div>

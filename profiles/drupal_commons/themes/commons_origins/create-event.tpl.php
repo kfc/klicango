@@ -2,16 +2,31 @@
 global $user;
 
 $values = array();
-$nid = arg(1);
-$node = node_load($nid);
-if($node->type == 'event' && $node->uid == $user->uid){
-  $values = (array)$node;
-  $date = strtotime($node->field_date);
-  drupal_add_js("var form_data = ".events_get_event_form_data($node).";",'inline');
-  
+if(arg(0) == 'node'){
+  $nid = arg(1);
+  $node = node_load($nid);
+  if($node->type == 'event' && $node->uid == $user->uid){
+    $values = (array)$node;
+    $date = strtotime($node->field_date);
+    drupal_add_js("var form_data = ".events_get_event_form_data($node).";",'inline');
+  }
+}                         
+$address = $phone = $class = '';
+if(in_array('individual' ,$user->roles)){
+  $address = '';//$user->city.', '.$user->country; 
+  $class="private-event";
 }
+else{
+  if(!isset($user->address))
+    profile_load_profile($user);
+  $address = $user->address.', '.$user->city.', '.$user->country;
+  $phone = $user->phone;
+  $class="public-event";
+}
+drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'=>$user->mail, 'phone'=> $phone)).";",'inline');
+
 ?>
-<div id="create-event-form" title="Create Event">
+<div id="create-event-form" class="<?php echo $class;?>" title="Create Event">
   <form action="/create_event_if_valid" method="post" id="form_create_event" enctype="multipart/form-data">
   <input type="hidden" name="nid">
   <div id="create_event_form_errors"></div>
@@ -25,11 +40,11 @@ if($node->type == 'event' && $node->uid == $user->uid){
   </div>
   <div class="form-item">
     <label><?php echo t('Where')?></label>
-    <input type="text" name="location" style="width: 294px;"  placeholder="<?php echo t('such as 11, rue Bellevue, 83270 Saint-Cyr-sur-Mer')?>" />
+    <input type="text" name="location" style="width: 294px;" value="<?php echo $address;?>"  placeholder="<?php echo t('such as 11, rue Bellevue, 83270 Saint-Cyr-sur-Mer')?>" />
   </div>
   <div class="form-item">
     <label><?php echo t('When')?></label>
-    <input type="text" name="date" placeholder="<?php echo ('format: d/m/Y');?>" />
+    <input type="text" name="date" id="datepicker" placeholder="<?php echo ('format: d/m/Y');?>" />
     <input type="text" name="time"  placeholder="<?php echo ('ex: 20:30');?>" />
   </div>
   <?php if(in_array('professional', $user->roles)):?>
@@ -42,8 +57,8 @@ if($node->type == 'event' && $node->uid == $user->uid){
   
   <div class="form-item">
     <label><?php echo t('Contact')?></label>
-    <input type="text" name="email" placeholder="<?php echo t('email');?>" />
-    <input type="text" name="phone" placeholder="<?php echo t('phone');?>" />
+    <input type="text" name="email" value="<?php echo $user->mail?>" placeholder="<?php echo t('email');?>" />
+    <input type="text" name="phone" value="<?php echo $user->phone?>" placeholder="<?php echo t('phone');?>" />
   </div>
   
   <div class="form-item profile-links">

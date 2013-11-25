@@ -3,7 +3,9 @@
   <div id="close-box"><a href="">X</a></div>
   <div id="photo-wrapper">
     <a id="prev-photo" href="">prev</a>
+    <span id="prev-photo-span"></span>
     <a id="next-photo" href="">next</a>
+    <span id="next-photo-span"></span>
     <img src="">
   </div>
   <div id="comment-wrapper">

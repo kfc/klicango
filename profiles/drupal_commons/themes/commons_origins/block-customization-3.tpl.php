@@ -20,11 +20,11 @@ $advanced_profile = advanced_profile_load($user_id);
       </div>
       <?php if ($viewed_user->uid != $user->uid) : ?>
         <?php if(klicango_friends_are_friends($user->uid, $viewed_user->uid) && klicango_friends_invitation_sent($user->uid, $viewed_user->uid)):?>
-            <div class="i-like-this-place"><?php echo l(t('I\'m a friend'),'removefriend/'.$viewed_user->uid, array('attributes'=>array('class'=>'follow-user-action','id'=>'unfollow-user-calendar')))?></div>
+            <div class="i-like-this-place"><?php echo l(t('I\'m a friend'),'removefriend/'.$viewed_user->uid, array('attributes'=>array('class'=>'follow-user-action','id'=>'unfollow-user-calendar', 'title'=>($viewed_user->first_name.' '.$viewed_user->surname))))?></div>
         <?php elseif (klicango_friends_invitation_sent($user->uid, $viewed_user->uid)) : ?>
-            <div class="i-like-this-place"><?php echo l(t('Invitation pending'),'removefriend/'.$viewed_user->uid, array('attributes'=>array('class'=>'follow-user-action','id'=>'unfollow-user-calendar')))?></div>
+            <div class="i-like-this-place"><?php echo l(t('Invitation pending'),'removefriend/'.$viewed_user->uid, array('attributes'=>array('class'=>'follow-user-action','id'=>'unfollow-user-calendar', 'title'=>($viewed_user->first_name.' '.$viewed_user->surname))))?></div>
         <?php else : ?>
-            <div class="follow-this-place"><?php echo l(t('Add as friend'),'addfriend/'.$viewed_user->uid, array('attributes'=>array('class'=>'follow-user-action','id'=>'follow-user-calendar')))?></div>
+            <div class="follow-this-place"><?php echo l(t('Add as friend'),'addfriend/'.$viewed_user->uid, array('attributes'=>array('class'=>'follow-user-action','id'=>'follow-user-calendar', 'title'=>($viewed_user->first_name.' '.$viewed_user->surname))))?></div>
         <?php endif; ?>
       <?php endif; ?>
       <!--<div class="i-like-this-place"><a href="">I like this place</a></div>-->
@@ -77,12 +77,12 @@ $advanced_profile = advanced_profile_load($user_id);
       </div>
       <?php if($user->uid != $viewed_user->uid):?>
         <div class="public-actions">
-        <?php if(klicango_friends_are_friends($user->uid, $viewed_user->uid)):?>
-          <div class="i-like-this-place"><?php echo l(t('I like this place'),'unfollow/'.$viewed_user->uid,array('attributes'=>array('class'=>'follow-place-action','id'=>'follow-place-calendar')))?></div>
-        <?php else:?>
-          <div class="add-to-calendar"><?php echo l(t('Follow this place'),'follow/'.$viewed_user->uid, array('attributes'=>array('class'=>'follow-place-action','id'=>'unfollow-place-calendar')))?></div>
-        <?php endif;?>  
+        <?php if(user_is_logged_in() && klicango_friends_are_friends($user->uid, $viewed_user->uid)):?>
+          <div class="i-like-this-place"><?php echo l(t('I like this place'),'unfollow/'.$viewed_user->uid,array('attributes'=>array('class'=>'follow-place-action','id'=>'unfollow-place-calendar', 'title' => $viewed_user->first_name)))?></div>
+        <?php elseif(user_is_logged_in()):?>
+          <div class="add-to-calendar"><?php echo l(t('Follow this place'),'follow/'.$viewed_user->uid, array('attributes'=>array('class'=>'follow-place-action','id'=>'follow-place-calendar', 'title' => $viewed_user->first_name)))?></div>
+        <?php endif;?>
+        </div>  
       <?php endif;?> 
       </div>  
-    </div>
 <?php endif;?>

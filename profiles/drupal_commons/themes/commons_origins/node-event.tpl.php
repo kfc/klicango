@@ -43,7 +43,7 @@
 			</td>
 			<td class="col-3">
                 <?php if (events_event_is_available_to_add($node)) { ?>
-    				<div class="add-to-calendar"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" class="add-event-link" onclick="acceptEvent(<?php echo $node->nid; ?>)">Add to my calendar</a></div>
+    				<div class="add-to-calendar"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" title="<?php echo $title?>" class="add-event-link" onclick="acceptEvent(<?php echo $node->nid; ?>)">Add to my calendar</a></div>
     				<div class="clear-fix"></div>
     				<div class="decline"><a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" onclick="declineEvent(<?php echo $node->nid; ?>)">Decline</a></div>
                 <?php } else { ?>
@@ -143,7 +143,7 @@
             
             <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
               <div class="going-status-button" id="event-action-button">
-                <a class="remove-event-link" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
+                <a class="remove-event-link" title="<?php echo $title?>" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
               </div>
             <?php endif;?>
         <?php else : ?>
@@ -203,7 +203,7 @@
                     
                     <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
                       <div class="going-status-button" id="event-action-button">
-                        <a class="remove-event-link" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
+                        <a class="remove-event-link" title="<?php echo $title?>"  <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
                       </div>
                     <?php endif;?>
         		</div>
@@ -226,14 +226,14 @@
                 <div class="person-row">
                   <div class="person-thumbnail">
                   <?php if(!empty($_person['user_id'])):?>
-                    <a href="<?php echo url('user/'.$_person['id'])?>"><?php echo $_person['photo']?></a>
+                    <a href="<?php echo url('user/'.$_person['user_id'])?>"><?php echo $_person['photo']?></a>
                   <?php else:?>
                     <a title="<?php echo t('Facebook user')?>"><?php echo $_person['photo']?></a>  
                   <?php endif;?>  
                   </div>
                   <div class="person-name">
                   <?php if(!empty($_person['user_id'])):?>
-                    <a href="<?php echo url('user/'.$_person['id'])?>"><?php echo $_person['full_name']?></a>
+                    <a href="<?php echo url('user/'.$_person['user_id'])?>"><?php echo $_person['full_name']?></a>
                   <?php else:?> 
                     <a title="<?php echo t('Facebook user')?>"><?php echo $_person['full_name']?></a>  
                   <?php endif;?> 

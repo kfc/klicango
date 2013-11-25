@@ -14,7 +14,8 @@
 
 		var opt = $.extend({
 			idSuffix: '-styler',
-			browseText: 'Обзор...',
+      browseText: 'Обзор...',
+			multipleFilesText: 'files',
 			selectVisibleOptions: 0,
 			singleSelectzIndex: '100',
 			selectSmartPositioning: true
@@ -153,7 +154,11 @@
 						file.append(el);
 						if (el.is(':disabled')) file.addClass('disabled');
 						el.change(function() {
-							name.text(el.val().replace(/.+[\\\/]/, ''));
+              var filesCount = el.get(0).files.length;
+              if(filesCount == 1)
+							  name.text(el.val().replace(/.+[\\\/]/, ''));
+              else
+                name.text('('+ filesCount + ' '+ opt.multipleFilesText + ')');    
 							//name.append("<img src='images/" + el.val().replace(/.+[\\\/]/, '') + "' /><div class='del-photo'><a href='' class='del-item'>Delete</a></div>");
 						})
 						.focus(function() {

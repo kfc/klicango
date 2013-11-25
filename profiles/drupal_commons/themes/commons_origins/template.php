@@ -109,14 +109,21 @@ function commons_origins_preprocess_date_navigation(&$vars) {
         $next_arg = date_format($next_date, $format[$view->date_info->granularity]);
         $prev_arg = date_format($prev_date, $format[$view->date_info->granularity]);
     }
+    global $user;
+    if(arg(0) == 'user' && arg(1) > 0){
+      $user_id = arg(1);  
+    }
+    else{
+      $user_id = $user->uid; 
+    }
      
     $next_path = str_replace($view->date_info->date_arg, $next_arg, $view->date_info->url);
     $prev_path = str_replace($view->date_info->date_arg, $prev_arg, $view->date_info->url);
     $next_args[$pos] = $next_arg;
     $prev_args[$pos] = $prev_arg;   
     $querystring = date_querystring($view);
-    $vars['next_url'] = url($_GET['q'], array( 'query' => array_merge(array('cal'=>$next_path)), 'absolute' => TRUE));
-    $vars['prev_url'] = url($_GET['q'], array( 'query' => array_merge(array('cal'=>$prev_path)), 'absolute' => TRUE));
+    $vars['next_url'] = url($_GET['q'], array( 'query' => array_merge(array('cal'=>$next_path,'uid' => $user_id)), 'absolute' => TRUE));
+    $vars['prev_url'] = url($_GET['q'], array( 'query' => array_merge(array('cal'=>$prev_path,'uid' => $user_id)), 'absolute' => TRUE));
     
     
     //$vars['next_url'] = $next_path; // date_real_url($view, NULL, $next_arg);
@@ -171,7 +178,7 @@ function commons_origins_preprocess_date_navigation(&$vars) {
   // Add nofollow for next/prev links.
   $vars['prev_options']['attributes'] += array('rel' => 'nofollow');
   $vars['next_options']['attributes'] += array('rel' => 'nofollow');
-  $vars['next_options']['text'] = '123';
+
 
   
   $vars['next_options']['date'] = date_format($next_date, 'F Y');
@@ -214,12 +221,40 @@ function commons_origins_fboauth_action__connect($action, $link) {
 }  
 
 function commons_origins_calendar_empty_day($curday, $view) {
+  global $user;
+  if(arg(0) == 'user'){
+    $userid = arg(1);
+  }elseif(arg(0) == 'user_calendar' && arg(2) != ''){
+    $userid = arg(2);
+  }
   if ($view->date_info->calendar_type != 'day') {
-    return '<div class="hover-wrapper">
-              <a class="add-event-link" href="">+</a>
+    return '<div class="hover-wrapper">'.($userid == $user->uid ? '
+              <a class="add-event-link add-event-from-calendar"  id="add-event-from-calendar-'.$curday.'" href="">+</a>
+              ' : '').'
              </div>'."\n";
   }
   else {
     return '<div class="calendar-dayview-empty">'. t('Empty day') .'</div>';
   }
-}               
+}     
+function commons_origins_pager_previous($text, $limit, $element = 0, $interval = 1, $parameters = array()) {
+  global $pager_page_array;
+  $output = '';
+  $text = t('‹ back');
+  // If we are anywhere but the first page
+  if ($pager_page_array[$element] > 0) {
+    $page_new = pager_load_array($pager_page_array[$element] - $interval, $element, $pager_page_array);
+
+    // If the previous page is the first page, mark the link as such.
+    if ($page_new[$element] == 0) {
+      $output = theme('pager_first', $text, $limit, $element, $parameters);
+    }
+    // The previous page is not the first page.
+    else {
+      $output = theme('pager_link', $text, $page_new, $element, $parameters);
+    }
+  }
+
+  return $output;
+}
+

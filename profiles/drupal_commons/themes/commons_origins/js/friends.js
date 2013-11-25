@@ -3,61 +3,77 @@ $(function() {
 $(".follow-place-action").click(function(e){
   e.preventDefault();
   var link = $(this);
-  $.ajax({
-      type: "POST",
-      url: $(this).attr('href'),
-      dataType: 'json',
-      success: function(data){
-        if(data.success){ 
-          if($(link).parent().hasClass('i-like-this-place')){
-            $(link).parent().removeClass('i-like-this-place');    
-            $(link).parent().addClass('add-to-calendar');  
-            $(link).attr('href', $(link).attr('href').replace('unfollow','follow'));
-            $(link).html(Drupal.t('Follow this place'));  
-          } 
-          else{
-             $(link).parent().addClass('i-like-this-place');    
-             $(link).parent().removeClass('add-to-calendar');  
-             $(link).attr('href', $(link).attr('href').replace('follow','unfollow'));
-             $(link).html(Drupal.t('I like this place'));  
+  var name = $(this).attr('title');
+  var id = $(this).attr('id');
+  if((id == 'follow-place-calendar') || (id == 'unfollow-place-calendar' && confirm("Are you sure you don't want follow "+name+" anymore?"))){
+    $.ajax({
+        type: "POST",
+        url: $(this).attr('href'),
+        dataType: 'json',
+        success: function(data){
+          if(data.success){ 
+            if($(link).parent().hasClass('i-like-this-place')){
+              $(link).parent().removeClass('i-like-this-place');    
+              $(link).parent().addClass('add-to-calendar');  
+              $(link).attr('href', $(link).attr('href').replace('unfollow','follow'));
+              $(link).html(Drupal.t('Follow this place'));  
+              $(link).attr('id', 'follow-place-calendar');
+            } 
+            else{
+               $(link).parent().addClass('i-like-this-place');    
+               $(link).parent().removeClass('add-to-calendar');  
+               $(link).attr('href', $(link).attr('href').replace('follow','unfollow'));
+               $(link).html(Drupal.t('I like this place'));  
+               $(link).attr('id', 'unfollow-place-calendar');
+            }
           }
-        }
-        else{ 
-          alert('Error. Please try again later.');  
-        }
-      },
-    });
+          else{ 
+            alert('Error. Please try again later.');  
+          }
+        },
+      });
+  }
 });
 
 
 $(".follow-user-action").click(function(e){
   e.preventDefault();
   var link = $(this);
-  $.ajax({
-      type: "POST",
-      url: $(this).attr('href'),
-      dataType: 'json',
-      success: function(data){
-        if(data.success){ 
-          if($(link).parent().hasClass('i-like-this-place')){
-            $(link).parent().removeClass('i-like-this-place');    
-            $(link).parent().addClass('follow-this-place');  
-            $(link).attr('href', $(link).attr('href').replace('removefriend','addfriend'));
-            $(link).html(Drupal.t('Add as friend'));  
-          } 
-          else{
-             $(link).parent().addClass('i-like-this-place');    
-             $(link).parent().removeClass('follow-this-place');  
-             $(link).attr('href', $(link).attr('href').replace('addfriend','removefriend'));
-             $(link).html(Drupal.t('Invitation pending'));  
+  var name = $(this).attr('title');
+  var id = $(this).attr('id');
+  if((id == 'follow-user-calendar') || (id == 'unfollow-user-calendar' && confirm("Are you sure you don't want to be friend with "+name+" anymore?")))
+  {
+    $.ajax({
+        type: "POST",
+        url: $(this).attr('href'),
+        dataType: 'json',
+        success: function(data){
+          if(data.success){ 
+            if($(link).parent().hasClass('i-like-this-place')){
+              $(link).parent().removeClass('i-like-this-place');    
+              $(link).parent().addClass('follow-this-place');  
+              $(link).attr('href', $(link).attr('href').replace('removefriend','addfriend'));
+              $(link).attr('id', 'follow-user-calendar');
+              $(link).html(Drupal.t('Add as friend'));  
+            } 
+            else{
+               $(link).parent().addClass('i-like-this-place');    
+               $(link).parent().removeClass('follow-this-place');  
+               $(link).attr('href', $(link).attr('href').replace('addfriend','removefriend'));
+               $(link).attr('id', 'unfollow-user-calendar');
+               $(link).html(Drupal.t('Invitation pending'));  
+            }
           }
-        }
-        else{ 
-          alert('Error. Please try again later.');  
-        }
-      },
+          else{ 
+            alert('Error. Please try again later.');  
+          }
+        },
     });
+  }
 });
+
+
+
 
 });
 
@@ -93,19 +109,25 @@ function acceptFriend(event_id) {
        $('.add-user-link#user_' + event_id).text('Accepted'); 
        status = 'accepted';
     } else {
-        $('.add-user-link#user_' + event_id).text('Accept');
-        status = 'new';
+        var name = $('.add-user-link#user_' + event_id).attr('title');
+        if(confirm("Are you sure you don't want to be friend with  "+name+" anymore")){
+          $('.add-user-link#user_' + event_id).text('Accept');
+          status = 'new';
+        }
+        else 
+          status = false;
     }
-    
-    $.ajax({
-       type: 'GET',
-       dataType: 'json',
-       url: '/friend/accept',
-       data: {"sender_id": event_id, "status": status},
-       success : function (data, textStatus, jqXHR) {
-            if (data.status == true) {
-                //to do
-            }
-       },  
-    });
+    if(status != false){
+      $.ajax({
+         type: 'GET',
+         dataType: 'json',
+         url: '/friend/accept',
+         data: {"sender_id": event_id, "status": status},
+         success : function (data, textStatus, jqXHR) {
+              if (data.status == true) {
+                  //to do
+              }
+         },  
+      });
+    }
 }

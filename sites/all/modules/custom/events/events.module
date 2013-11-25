@@ -83,6 +83,19 @@ function events_menu(){
       'access callback' => 'user_is_logged_in'
     ),
     
+    'user_calendar/%' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_user_calendar',
+      'page arguments' => array(1),
+      'access callback' => true
+    ),
+    'user_calendar/%/%' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_user_calendar',
+      'page arguments' => array(1,2),
+      'access callback' => true
+    ),
+    
   );
   return $items;
   
@@ -190,11 +203,14 @@ function events_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   global $user;
   switch ($op) {
     case 'view':
-      if($node->type == 'event'){
-        $view = views_get_view('nodecomments');
+      if($node->type == 'event'){    
+        $view = views_get_view('nodecomments',true);
         $view->set_display('nodecomment_comments_1');
+        $view->set_use_pager(true);
+        $view->set_items_per_page(10);
         $args = array($node->nid);
         $view->set_arguments($args);
+        $view->pre_execute();
         $node->comments_form = theme('event_post_box');
         $node->comments_view = $view->render('nodecomment_comments_1');
         $node->current_user_status = events_get_event_status_for_user($node->nid, $user->uid);
@@ -430,7 +446,6 @@ function event_post_comment(){
     $comment->name = $user->name;
     $comment->status = 1;
     $comment->body = trim($_POST['comment_body']);
-
     if(!empty($_FILES['files'])){
       $_index = 0;
       foreach($_FILES['files']['name'] as $_name => $_ph){
@@ -945,8 +960,7 @@ function events_get_event_form_data($node){
   
   return json_encode(array('data'=>$data));
   //exit;
-  
-}
+}  
 
 function events_users() {
     $event = explode('_', $_GET['event_id']);
@@ -1078,4 +1092,28 @@ function events_closest($number, $exclude = array()) {
   }
   
   return $ids;
+}
+
+function events_user_calendar($date, $user_id = null){
+  if(empty($user_id)){
+    global $user;
+  }
+  else{
+    $user = user_load($user_id);
+  }
+  
+  $date_parts = explode('-', $date);
+  
+  $return = array();
+  $view = views_get_view('content_event_calendar',true);
+  $view->set_display('calendar_period_2');
+  $args = array($date, $user->name);
+  $view->set_arguments($args);
+  $view->pre_execute();
+  $return['calendar'] = $view->render('calendar_period_2');
+  $return['next_url'] = url('user/'.$user->uid, array('query'=> array('cal'=> date('Y-m',strtotime('+1 month',mktime(0,0,0,$date_parts[1],1,$date_parts[0]))), 'uid'=>$user->uid ))); 
+  $return['prev_url'] = url('user/'.$user->uid, array('query'=> array('cal'=> date('Y-m',strtotime('-1 month',mktime(0,0,0,$date_parts[1],1,$date_parts[0]))), 'uid'=>$user->uid ))); 
+  $return['month_name'] = date('F Y', mktime(0,0,0,$date_parts[1],1,$date_parts[0])); 
+  echo json_encode($return);
+  exit;
 }

@@ -49,16 +49,17 @@ function klicango_photos_event_photo($event_id, $photo_id){
   }
   $photo_pos = array_search($photo_id, $fids);
   if($photo_pos == 0){
-    $next = $fids[1];  
+    $next = $fids[1]; 
+    $prev = $fids[count($fids) - 1];  
   }
-  elseif($photo_pos == (count($photo_pos) - 1)){
-     $prev = count($photo_pos) - 1; 
+  elseif($photo_pos == (count($fids) - 1)){
+     $prev = $fids[count($fids) - 2];
+     $next = $fids[0];
   }
   else{
     $next = $fids[$photo_pos + 1];  
     $prev = $fids[$photo_pos - 1];  
   }
- 
  
  $res = db_query("SELECT pc.*,u.picture from photo_comments pc INNER JOIN users u on u.uid = pc.uid WHERE pc.fid = %d ORDER BY pc.timestamp ASC",$photo_id);
  $profiles = array();
@@ -87,7 +88,7 @@ function klicango_photos_event_photo($event_id, $photo_id){
   exit;
 }
 
-function klicango_photos_comment_photo($comment_id, $photo_id){
+function klicango_photos_comment_photo($user_id, $photo_id){
   
   $return = array();
  
@@ -96,9 +97,9 @@ function klicango_photos_comment_photo($comment_id, $photo_id){
                       INNER JOIN node comment_nid on comment_nid.nid = ph.nid
                       INNER JOIN node_comments nc on nc.cid = comment_nid.nid
                       INNER JOIN files f on f.fid = field_comment_photo_fid
-                      WHERE nc.cid = %d AND field_comment_photo_fid IS NOT NULL
+                      WHERE nc.uid = %d AND field_comment_photo_fid IS NOT NULL
                       ORDER BY comment_nid.created ASC, f.fid ASC
-                      ",$comment_id);
+                      ",$user_id);
  
  $fids = array();
   $next = $prev = null;
@@ -109,16 +110,17 @@ function klicango_photos_comment_photo($comment_id, $photo_id){
   }
   $photo_pos = array_search($photo_id, $fids);
   if($photo_pos == 0){
-    $next = $fids[1];  
+    $next = $fids[1]; 
+    $prev = $fids[count($fids) - 1];  
   }
-  elseif($photo_pos == (count($photo_pos) - 1)){
-     $prev = count($photo_pos) - 1; 
+  elseif($photo_pos == (count($fids) - 1)){
+     $prev = $fids[count($fids) - 2];
+     $next = $fids[0];
   }
   else{
     $next = $fids[$photo_pos + 1];  
     $prev = $fids[$photo_pos - 1];  
   }
- 
  
  $res = db_query("SELECT pc.*,u.picture from photo_comments pc INNER JOIN users u on u.uid = pc.uid WHERE pc.fid = %d ORDER BY pc.timestamp ASC",$photo_id);
  $profiles = array();
@@ -140,8 +142,8 @@ function klicango_photos_comment_photo($comment_id, $photo_id){
   $return['image'] = array('src'=> imagecache_create_url('comment_image_big', $info->filepath, FALSE, $absolute));  
   $return['author'] = theme('photo_author_info',$author, $info);
   $return['comments'] = theme('photo_comments',$comments, $info->fid, $info->event_id);
-  $return['next_url'] = (!empty($next) ? ('/comment_photo/'.$comment_id.'/'.$next) : '');
-  $return['prev_url'] = (!empty($prev) ? ('/comment_photo/'.$comment_id.'/'.$prev) : '');
+  $return['next_url'] = (!empty($next) ? ('/comment_photo/'.$user_id.'/'.$next) : '');
+  $return['prev_url'] = (!empty($prev) ? ('/comment_photo/'.$user_id.'/'.$prev) : '');
  }
   echo json_encode($return);
   exit;
@@ -184,6 +186,7 @@ function theme_photo_comments($comments, $fid, $event_id){
   global $user;
   $output = '
   <div id="comment-form">
+    <div id="comment-table-wrapper">
         <table id="comment-table">';
         
    if(!empty($comments)){
@@ -192,11 +195,17 @@ function theme_photo_comments($comments, $fid, $event_id){
     }
    }  
        
-   $output .= '<tr class="row-last">
-                <td class="col-1">'.theme_imagecache('user_picture_meta', $user->picture).'</td>
-                <td class="col-2" colspan="2"><form method="POST" action="'.$_GET['q'].'" id="comment-post-form"><input type="hidden" name="fid" value="'.$fid.'"><input type="hidden" name="event_id" value="'.$event_id.'"><input type="text" name="comment" id="comment-body" /></form></td>
-              </tr>
+   $output .= '
         </table>
+      </div>
+      <div id="add-comment">
+        <div class="profile-thumbnail">'.theme_imagecache('user_picture_40x40', $user->picture).'</div>
+        <form method="POST" action="'.$_GET['q'].'" id="photo-comment-post-form"><input type="hidden" name="fid" value="'.$fid.'"><input type="hidden" name="event_id" value="'.$event_id.'"><input type="text" name="comment" id="photo-comment-body" />
+        <span class="photo-comment-submit-wrapper">
+          <a href="#" title="Add comment" id="photo-comment-submit"><img src="/profiles/drupal_commons/themes/commons_origins/images/enter-icon.png" ></a>
+        </span>
+        </form>
+      </div>
     </div>';
   
    return $output;
@@ -225,6 +234,7 @@ function klicango_photos_add_photo_comment(){
         $comment->timestamp = $data['timestamp'];
         $comment->comment = $data['comment'];
         $comment->profile = array('first_name' => $user->first_name, 'surname' => $user->surname);
+        $comment->uid = $user->uid;
         $return['new_comment'] = theme('photo_comment', $comment);  
         
       }
