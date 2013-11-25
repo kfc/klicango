@@ -9,9 +9,20 @@ $(function() {
   
   $('.post-box #filesContainer .profile-upload').styler({browseText: 'Add photos', multipleFilesText : 'photos'});
   
-  $("#create-event-form" ).dialog({
+  $("#create-event-form.public-event" ).dialog({
     autoOpen: false,
-    height: 442,
+    height: 440,
+    width: 484,
+    modal: true,
+    close: function() {
+     $(".scroll-pane").hide();
+     $("#search-friends").hide();
+      }
+  });
+  
+   $("#create-event-form.private-event" ).dialog({
+    autoOpen: false,
+    height: 410,
     width: 484,
     modal: true,
     close: function() {
@@ -219,8 +230,8 @@ $(function() {
                complete : function (jqXHR, textStatus) {
                     if(last_search == current_search) {
                       $("#invite-friends-form .scroll-pane").show();
-                      $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
-                      $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
+                      $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 410});
+                      $(".ui-dialog-content.ui-widget-content").css({"height" : 485});
                       $("#invite-friends-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
                       $('#invite-friends-form .search-for-friends').removeClass('loading');
                         //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top

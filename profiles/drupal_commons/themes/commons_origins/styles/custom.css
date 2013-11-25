@@ -201,6 +201,15 @@ form .form-item textarea.error:-ms-input-placeholder {
 div#content .profile {
   display:none;
 }
+
+#create-event-form{
+  overflow: hidden;
+}
+
+#create-event-form .scroll-pane {
+  margin-bottom: 10px;
+}
+
 #create-event-form div.person-item, .events-users div.person-item{
 	width: 100%;
 	height: 77px;
@@ -239,7 +248,7 @@ a.invite-friend{
 	margin-right: 0;
 }
 #create-event-form .form-submit{
-	padding-top: 20px;
+	padding-top: 0px;
 }
 
 a.already-invited{

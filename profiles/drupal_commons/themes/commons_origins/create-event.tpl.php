@@ -11,18 +11,20 @@ if(arg(0) == 'node'){
     drupal_add_js("var form_data = ".events_get_event_form_data($node).";",'inline');
   }
 }                         
-$address = $phone = '';
+$address = $phone = $class = '';
 if(in_array('individual' ,$user->roles)){
   $address = '';//$user->city.', '.$user->country; 
+  $class="private-event";
 }
 else{
   $address = $user->address.', '.$user->city.', '.$user->country;
   $phone = $user->phone;
+  $class="public-event";
 }
 drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'=>$user->mail, 'phone'=> $phone)).";",'inline');
 
 ?>
-<div id="create-event-form" title="Create Event">
+<div id="create-event-form" class="<?php echo $class;?>" title="Create Event">
   <form action="/create_event_if_valid" method="post" id="form_create_event" enctype="multipart/form-data">
   <input type="hidden" name="nid">
   <div id="create_event_form_errors"></div>
