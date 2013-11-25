@@ -172,7 +172,7 @@ $(function() {
                 $("#comment-table").append(comment);    
               var height = $("#comment-table").height();
               $("#comment-table-wrapper").scrollTop(height);
-              $("#comment-body", $(form)).val('');    
+              $("#photo-comment-body", $(form)).val('');    
             }
             else{ 
               

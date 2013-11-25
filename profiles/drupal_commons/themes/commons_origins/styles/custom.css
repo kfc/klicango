@@ -810,19 +810,19 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
   background-position: -29px 0px;
 }
 #photo-box #photo-wrapper a#next-photo:hover{
-  background-position: -29px -44px;  
+  background-position: -29px -46px;  
 }
 #photo-box #photo-wrapper a#prev-photo{
   background-position: 0px 0px;
 }
 #photo-box #photo-wrapper a#prev-photo:hover{
-  background-position: 0px -44px;  
+  background-position: 0px -46px;  
 }
 
 #photo-box #photo-wrapper a#prev-photo.hovered{
-  background-position: 0px -44px;
+  background-position: 0px -46px;
 }
 
 #photo-box #photo-wrapper a#next-photo.hovered{
-  background-position: -29px -44px;
+  background-position: -29px -46px;
 }
