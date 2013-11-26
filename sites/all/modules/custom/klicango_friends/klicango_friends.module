@@ -8,6 +8,12 @@ function klicango_friends_menu(){
     'page callback' => 'klicango_friends_load_facebook_friends',
     'access callback' => 'user_is_logged_in',
   );
+  
+  $items['friends/join'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_join_friends',
+    'access callback' => 'user_is_logged_in',
+  );
     
   $items['friends/invite'] = array(
     'type' => MENU_CALLBACK,
@@ -135,6 +141,61 @@ function klicango_friends_load_facebook_friends() {
     exit;
 }
 
+function klicango_friends_join_friends() {
+    global $user;    
+    
+    $limit = (isset($_GET['limit'])) ? $_GET['limit'] : 10;
+    $offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
+    $event_id = $_GET['event_id'];
+    
+    $friends = klicango_friends_get_all_friends();
+    
+    $html = '';
+    
+    $invites = klicango_friends_get_join_invites($user->uid);
+    $local_invites = $invites['local_ids'];
+    $facebook_invites = $invites['facebook_ids'];
+    
+    if(!empty($friends['local']) && $offset == 0) {
+      $potential_friends = klicango_friends_get_friends_intersections(array_keys($friends['local']));
+      foreach ($potential_friends as $id => $matches) {      
+        $html .= '<div class="person-item">';
+        $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="' . imagecache_create_url('facebook_image_size', $matches['picture']) . '"/></a></div>';
+        $html .= '<div class="person-name"><a href="javascript: void(0);">'.$matches['name'].'</a><span class="fb-user">' . $matches['common'] . ' ' . ($matches['common'] == 1 ? t('friend in common') : t('friends in common')) . '</span></div>';
+        if (in_array($matches['uid'], $local_invites)) {
+            $html .= '<a href="javascript: void(0);" class="already-invited" style="cursor: default;">' . t('Friend request sent') . '</a>';
+        } else {
+            $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteJoinFriend(this, ' . $matches['id'] . ', 1)">' . t('Add friend') . '</a>';   
+        }
+        $html .= '</div>';
+        
+      }
+    }
+    
+    $matches = array_slice($friends['facebook'], $offset, $limit, true);
+    foreach($matches as $id => $match) {
+        $html .= '<div class="person-item">';
+        $html .= '<div class="person-thumbnail"><a href="javascript: void(0);"><img src="https://graph.facebook.com/' . $id . '/picture"/></a></div>';
+        $html .= '<div class="person-name"><a href="javascript: void(0);">'.$match.'</a><span class="fb-user">' . t('Friend on facebook') . '</span></div>';
+        if (in_array($id, $facebook_ids)) {
+            $html .= '<a href="javascript: void(0);" class="already-invited" style="cursor: default;">' . t('Friend request sent') . '</a>';
+        } else {
+            $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteJoinFriend(this, ' . $id . ', 0)">' . t('Add friend') . '</a>';
+        }
+        $html .= '</div>';
+    }
+    
+    $new_offset = $offset + $limit;
+    if ($html) {
+      $html .= '<div class="show-more-friends"><a class="show_more" href="javascript: void(0);" onclick="loadJoinFriends(' . $new_offset . ', ' . $limit . ')">' . t('Show more friends') . '</a></div>';
+    } else {
+      $html .= '<div class="show-more-friends">' . t('No potential friends found') . '</div>';
+    }
+    
+    echo $html;
+    exit;
+}
+
 function klicango_friends_facebook_token() {
     $app_id = isset($app_id) ? $app_id : variable_get('fboauth_id', '');
     $app_secret = isset($app_secret) ? $app_secret : variable_get('fboauth_secret', '');
@@ -215,13 +276,14 @@ function klicango_friends_preprocess_page(&$variables) {
 }
 
 function klicango_friends_invite_local_friends($data = array()) {    
+    global $user;
+    
     $ajax = true;
     if (!empty($data)) {
         $ajax = false;
     }
     
     if((!empty($_GET['to']) && !empty($_GET['event_id'])) || (!empty($data['event_id']) && !empty($data['to']))) {
-        global $user;
         $rows = 0;
         $invited = 0;
         
@@ -256,6 +318,26 @@ function klicango_friends_invite_local_friends($data = array()) {
         } else {
             return $response;
         }
+    } else if (!empty($_GET['to']) && empty($_GET['event_id'])) {
+      $recipients = explode(',', $_GET['to']);
+      foreach ($recipients as $recipient) {
+        if ($recipient) {
+          $rows = $invites = $invited = 0;
+          if(!klicango_friends_are_friends($user->uid, $recipient)) {
+            $rst = klicango_friends_add_invitation($recipient, false);
+            $rows++;
+            if ($rst['success']) {
+              $invites++;
+            }
+          } else {
+            $invited++;
+          } 
+          $response = array('success' => true, 'rows' => $rows, 'invited' => $invited, 'invites' => $invites);
+          drupal_json($response);
+          exit;
+        }
+      }
+        
     }
 }
 
@@ -545,36 +627,42 @@ function klicango_friends_invitation_sent($uid1, $uid2) {
 
 function klicango_friends_page() {
     $html = '';
+    global $user;
     
     $users = array();
     $ids = klicango_friends_get_friends('invitations_received');
     if (!empty($ids)) {
         foreach ($ids as $friend) {
-            $user = user_load($friend);
-            profile_load_profile($user);
-            $users[] = $user;
+            $friend_data = user_load($friend);
+            profile_load_profile($friend_data);
+            $users[] = $friend_data;
         }
     }
     
     $html .= theme('klicango_friends_invitations', $users);
     
     $users = array();
-    $ids = klicango_friends_get_friends('friends');
+    if (in_array('professional', $user->roles)) {
+      $ids = klicango_friends_get_friends('friends', 16);
+    } else {
+      $ids = klicango_friends_get_friends('friends', 16, true);
+    }
     if (!empty($ids)) {
         foreach ($ids as $friend) {
-            $user = user_load($friend);
-            profile_load_profile($user);
+            $friend_data = user_load($friend);
+            profile_load_profile($friend_data);
             $friends_count = db_query('SELECT user_id AS uid FROM friends_invitations WHERE sender_id = %d AND status = 3
                                 UNION SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3', $friend, $friend);
-            $user->friends_count = $friends_count->num_rows;
-            $users[] = $user;
+            $friend_data->friends_count = $friends_count->num_rows;
+            $users[] = $friend_data;
         }
     }
     
     $html .= theme('klicango_friends_friends', $users, false);
     
+    $html .= theme('klicango_invite_friends', 0);
+    
     //If it is a business user automatically update invitations to accepted
-    global $user;
     if (in_array('professional', $user->roles)) {
       db_query('UPDATE friends_invitations SET status = 3 WHERE user_id = %d AND status = 1', $user->uid);
     }
@@ -582,7 +670,7 @@ function klicango_friends_page() {
     return $html;
 }
 
-function klicango_friends_get_friends($type) {
+function klicango_friends_get_friends($type, $limit = false, $only_individual = false) {
     global $user;
     $users = array();
     switch($type) {
@@ -593,8 +681,25 @@ function klicango_friends_get_friends($type) {
             }
             break; 
         case 'friends' : 
-            $result = db_query('SELECT user_id AS uid FROM friends_invitations WHERE sender_id = %d AND status = 3
-                                UNION SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3', $user->uid, $user->uid);
+          if (!$only_individual) {
+              if ($limit) {
+                $result = db_query('(SELECT user_id AS uid FROM friends_invitations WHERE sender_id = %d AND status = 3)
+                                  UNION (SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3)
+                                  ORDER BY RAND() LIMIT 0, %d', $user->uid, $user->uid, $limit);  
+              } else {
+                $result = db_query('SELECT user_id AS uid FROM friends_invitations WHERE sender_id = %d AND status = 3
+                                  UNION SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3', $user->uid, $user->uid);
+              }
+              
+            } else {
+              if ($limit) {
+                $result = db_query('(SELECT user_id AS uid FROM friends_invitations WHERE sender_id = %d AND status = 3 AND 
+                                  user_id IN (SELECT uid FROM users_roles WHERE rid = 6))
+                                  UNION (SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3
+                                  AND user_id IN (SELECT uid FROM users_roles WHERE rid = 6))
+                                  ORDER BY RAND() LIMIT 0, %d', $user->uid, $user->uid, $limit);
+              }
+            }
             while ($row = db_fetch_array($result)) {
                 $users[] = $row['uid'];
             }
@@ -666,4 +771,62 @@ function klicango_friends_invite_get_attenders($event_id) {
   }
   
   return array('local_ids' => $local_ids, 'facebook_ids' => $facebook_ids);
+}
+
+function klicango_friends_get_friends_intersections($friends) {
+  global $user;
+  
+  $common = array();
+  $result = db_query('SELECT users.uid, users.picture, COUNT(friends.fid) AS common FROM users 
+                     LEFT JOIN friends ON users.uid = friends.uid 
+                     WHERE friends.fid IN (' . implode(', ', $friends) . ') AND users.uid != %d
+                     GROUP BY users.uid', $user->uid);
+  while ($_user = db_fetch_array($result)) {
+    $other_user = user_load(array('uid' => $_user['uid']));
+    if (in_array('individual', $other_user->roles, true)) {
+      $common[$_user['uid']]['common'] = $_user['common'];
+      $common[$_user['uid']]['id'] = $_user['uid'];
+      $common[$_user['uid']]['picture'] = $_user['picture'];
+      $common[$_user['uid']]['name'] = $other_user->first_name . ' ' . $other_user->surname;
+    } 
+  }
+  
+  $result = db_query('SELECT users.uid, users.picture, COUNT(friends.uid) AS common FROM users 
+                     LEFT JOIN friends ON users.uid = friends.fid 
+                     WHERE friends.uid IN (' . implode(', ', $friends) . ') AND users.uid != %d
+                     GROUP BY users.uid', $user->uid);
+  while ($_user = db_fetch_array($result)) {
+    if (!empty($common[$_user['uid']])) {
+      $common[$_user['uid']]['common'] += $_user['common'];
+    } else {
+      $other_user = user_load(array('uid' => $_user['uid']));
+      if (in_array('individual', $other_user->roles, true)) {
+        $common[$_user['uid']]['common'] = $_user['common'];
+        $common[$_user['uid']]['id'] = $_user['uid'];
+        $common[$_user['uid']]['picture'] = $_user['picture'];
+        $common[$_user['uid']]['name'] = $other_user->first_name . ' ' . $other_user->surname;
+      }
+    } 
+  }
+  
+  usort($common, function($a, $b) {
+      return $a['common'] - $b['common'];
+  });
+  
+  return $common;
+}
+
+function klicango_friends_get_join_invites ($uid) {
+  $local = $facebook = array();
+  $result = db_query('SELECT user_id FROM friends_invitations WHERE sender_id = %d AND user_id IS NOT NULL', $uid);
+  while ($user = db_fetch_array($result)) {
+    $local[] = $user['user_id'];
+  }
+  
+  $result = db_query('SELECT facebook_id FROM friends_invitations WHERE sender_id = %d AND facebook_id IS NOT NULL', $uid);
+  while ($user = db_fetch_array($result)) {
+    $facebook[] = $user['facebook_id'];
+  }
+  
+  return array('local' => $local, 'facebook' => $facebook);
 }

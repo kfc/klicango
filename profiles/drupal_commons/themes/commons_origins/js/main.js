@@ -133,10 +133,10 @@ function loadFriends(offset, limit) {
            }, 
            complete : function (jqXHR, textStatus) {  
                 $("#create-event-form .scroll-pane").show();
-    			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 695, 'top' : 50});
-    			$(".ui-dialog-content.ui-widget-content").css({"height" : 620});
-    			$("#create-event-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
-    			//$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top  
+	              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 695, 'top' : 50});
+    			      $(".ui-dialog-content.ui-widget-content").css({"height" : 620});
+    			      $("#create-event-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
+    			     //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top  
            }, 
         }); 
     } 
@@ -317,5 +317,121 @@ function setActiveEvent(event_id) {
        $('#top-event-list #active_event').val(event_id); 
     } else {
         $('#top-event-list').append('<input id="active_event" type="hidden" name="active_event" value="' + event_id + '">');
+    }
+}
+
+function loadJoinFriends(offset, limit) {
+        $.ajax({
+           type: 'GET',
+           dataType: 'html',
+           url: '/friends/join',
+           data: {"offset": offset, "limit": limit, "invite" : "true"},
+           success : function (data, textStatus, jqXHR) {
+                $('#invite-friends-form .show_more').remove();
+                
+                if ($("#invite-friends-form div.scroll-pane.mCustomScrollbar").length) {
+                    $('#invite-friends-form .mCSB_container').append(data);
+                } else {
+                    $('#invite-friends-form .scroll-pane').append(data);
+                    $("#invite-friends-form div.scroll-pane").mCustomScrollbar({
+                        scrollButtons:{
+                        	enable:true
+                        }
+                    });    
+                }                
+                
+                $("#invite-friends-form .scroll-pane").hide();
+           }, 
+           complete : function (jqXHR, textStatus) {  
+              if (offset == 0) {
+                  $( "#invite-friends-form" ).dialog( "open" );
+                  $('.invite-friend-search').val('')
+              }  
+              $("#invite-friends-form .scroll-pane").show();
+              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
+              $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
+              $("#invite-friends-form .scroll-pane").mCustomScrollbar("update");
+           }, 
+        });  
+    $("#invite-friends-form #search-friends").show();
+}
+
+function inviteJoinFriend(object, id, local) {
+    var form_id = $(object).closest('form').attr('id');
+    
+    if($('#invite_' + id).length) {
+        $('#' + form_id + ' #invite_' + id).remove();
+        $(object).removeClass('already-invited');
+        $(object).addClass('invite-friend');
+        $(object).text('Invite friend');
+    } else {
+        
+        if (local == 1) {
+            title = 'local';
+        } else {
+            title = 'facebook';
+        }
+        
+        $('#' + form_id).append('<input type="hidden" title="' + title + '" name="invite[]" id="invite_' + id + '" value="' + id + '">');
+        $(object).removeClass('invite-friend');
+        $(object).addClass('already-invited');
+        $(object).text('Friend request sent');
+    }
+}
+
+function processJoinInvitation(response) {
+    if($(response).length && $(response.to).length) {
+        $.ajax({
+           type: 'GET',
+           dataType: 'json',
+           url: '/friends/invite',
+           data: {"to": response.to},
+           success : function (data, textStatus, jqXHR) { 
+               //alert('success');
+           },
+        });
+    }
+}
+
+function initLocalJoinRequest(ids) {
+    if (ids.length) {
+        $.ajax({
+           type: 'GET',
+           dataType: 'json',
+           url: '/friends/invite_local',
+           data: {"to": ids},
+           success : function (data, textStatus, jqXHR) { 
+               //alert('success');
+           },
+        });
+    }
+}
+
+function initJoinRequest(ids) {
+    if (ids.length) {
+        $.ajax({
+           type: 'GET',
+           dataType: 'json',
+           url: '/friends/check_facebook_invite',
+           data: {"to": ids},
+           success : function (data, textStatus, jqXHR) { 
+               if(data.success == true && data.ids.length) {
+                    ids = data.ids;
+                    if (typeof FB == 'object') {
+                        FB.ui({method: "apprequests",
+                          message: "Dear friend! Please join me on Klicango to always stay in touch and share with me the best parties and places.",
+                          display: "iframe",
+                          to: ids
+                        }, function(response){
+                            processJoinInvitation(response);   
+                        });
+                    } else {
+                        setTimeout(function(){
+                            initJoinRequest(ids);   
+                        }, 1000);
+                    }     
+               }
+           },
+        });
     }
 }

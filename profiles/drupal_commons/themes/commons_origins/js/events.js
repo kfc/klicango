@@ -422,8 +422,13 @@ function preprocessRequest(event_id) {
             local_ids += this.value + ',';
         }
     });
-    initRequest(ids, event_id);
-    initLocalRequest(local_ids, event_id);
+    if (event_id != 0) {
+      initRequest(ids, event_id);
+      initLocalRequest(local_ids, event_id);
+    } else {
+      initJoinRequest(ids);
+      initLocalJoinRequest(local_ids);
+    }
 }
 
 function declineEvent(event_id) {
