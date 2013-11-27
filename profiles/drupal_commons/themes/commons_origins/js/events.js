@@ -54,6 +54,18 @@ $(function() {
     }
   });
   
+   $("#event-access-denied-page").dialog({
+    autoOpen: true,
+    width: 484,
+    height: 150,
+    modal: true,
+    position: ['middle',120],
+    closeOnEscape: true,
+    close: function() {
+      window.history.back(); 
+    }
+  });
+  
   $(".invite-friend")
     .click(function(e) {
     e.preventDefault();
@@ -163,35 +175,42 @@ $(function() {
     var href = $(this).attr('href');
     var date = getParameterByName(href, 'cal');
     var uid = getParameterByName(href, 'uid');
+    var id = $(this).attr('id');
     if(date != '' && uid != ''){
       $.ajax({
          type: 'GET',
          dataType: 'json',
          url: '/user_calendar/'+date+'/'+uid,
          success : function (data) {
-          $(".view-content-event-calendar .attachment-after").fadeOut("fast", function(){
-            $(".view-content-event-calendar .attachment-after").html(data.calendar);
-            $(".view-content-event-calendar .attachment-after").fadeIn("fast");
+           var oldMonth = $(".view-content-event-calendar .attachment-after .calendar-calendar").css({'position':'absolute'});  
+           $(".view-content-event-calendar .attachment-after").append(data.calendar);
+           var newMonth = $(".view-content-event-calendar .attachment-after .calendar-calendar:eq(1)");   
+           if(id == 'prev-month-button'){
+              newMonth.css({'position': 'absolute','right': '100%','top':'0', 'width':'100%'}); 
+              $('.view-content-event-calendar .attachment-after').height(newMonth.outerHeight());
+              oldMonth.fadeOut().animate({right: '-100%'},'normal', function(){oldMonth.remove();});
+              newMonth.animate({right: '0'});  
+           }
+           else{                                                                
+              newMonth.css({'position': 'absolute','left': '100%','top':'0', 'width':'100%'});                                                                             
+              $('.view-content-event-calendar .attachment-after').height(newMonth.outerHeight());
+              oldMonth.fadeOut().animate({'left': '-100%'},'normal', function(){oldMonth.remove();});
+              newMonth.animate({'left': '0'});
+           } 
+           
             bindAddEventLinks();
             bindCreateEventLink();
             bindShowEventsDialog();
             bindShowEventsLink();
-          });
-          $("#next-month-button").attr('href',data.next_url); 
-          $("#prev-month-button").attr('href',data.prev_url); 
-          $("#prev-month-button").attr('href',data.prev_url); 
-          $(".view-content-event-calendar .date-heading h3").text(data.month_name);
+          
+            $("#next-month-button").attr('href',data.next_url); 
+            $("#prev-month-button").attr('href',data.prev_url); 
+            $("#prev-month-button").attr('href',data.prev_url); 
+            $(".view-content-event-calendar .date-heading h3").text(data.month_name);
          }, 
       }); 
     }
   });
- 
- 
- 
- 
- 
- 
- 
  
  $("#comment_add_photo_link").click(function(e){
    e.preventDefault();

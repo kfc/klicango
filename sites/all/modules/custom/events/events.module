@@ -201,8 +201,10 @@ function events_theme() {
         'arguments' => array('viewed_user' => NULL) 
       ),
       
-      
-      
+      'event_access_denied' => array(
+        'template' =>'event-access-denied',
+        'path' => drupal_get_path('theme',variable_get('theme_default','')), 
+      ),
     );
 }
 
@@ -515,8 +517,12 @@ function events_get_events_created_by_user($user_id = null, $load_full_node = fa
 }
 
 function events_get_event_status_for_user($event_id = null, $user_id = null){
-  $status = '';       
-  if(!empty($event_id) && !empty($user_id)){
+  $status = '';                       
+  if(empty($user_id)){
+    global $user;
+    $user_id = $user->uid;
+  }       
+  if(!empty($event_id) && !empty($user_id)){   
     $res = db_query('SELECT status from {events_users} where user_id = %d AND event_id = %d',$user_id, $event_id); 
     $status = db_fetch_array($res);
     $status = $status['status'];
@@ -590,7 +596,7 @@ function remove_event_for_user(){
   exit;
 }
 
-function events_preprocess_page(&$variables) {
+function events_preprocess_page(&$variables) {    
     $variables['menu_stats']['public_pending'] = events_get_count(EVENT_STATUS_NEW, true);
     $variables['menu_stats']['private_pending'] = events_get_count(EVENT_STATUS_NEW, false);
     
@@ -610,6 +616,18 @@ function events_preprocess_page(&$variables) {
         }
       }  
     }
+    
+    if(isset($variables['node']) && $variables['node']->type == 'event'){
+      $viewed_event_id = $variables['node']->nid;
+      $status = events_get_event_status_for_user($viewed_event_id);   
+      if(strtolower($variables['node']->field_event_type[0]['value']) == 'private' && (empty($status) || !user_is_logged_in())){
+        $variables['content'] = theme('event_access_denied');
+        unset($variables['content_bottom_left']);
+        unset($variables['content_bottom_right']);
+        unset($variables['right_aside']);  
+      }
+    }
+    
 }
 
 function events_get_count($status, $is_public = true) {
@@ -1167,6 +1185,8 @@ function events_user_calendar($date, $user_id = null){
   $return['next_url'] = url('user/'.$user->uid, array('query'=> array('cal'=> date('Y-m',strtotime('+1 month',mktime(0,0,0,$date_parts[1],1,$date_parts[0]))), 'uid'=>$user->uid ))); 
   $return['prev_url'] = url('user/'.$user->uid, array('query'=> array('cal'=> date('Y-m',strtotime('-1 month',mktime(0,0,0,$date_parts[1],1,$date_parts[0]))), 'uid'=>$user->uid ))); 
   $return['month_name'] = date('F Y', mktime(0,0,0,$date_parts[1],1,$date_parts[0])); 
+  
+  header('Content-type: application/json');
   echo json_encode($return);
   exit;
 }

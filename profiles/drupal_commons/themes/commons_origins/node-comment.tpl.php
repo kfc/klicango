@@ -37,8 +37,8 @@
     }
     $comment_status .= ' '.t('in').' '.l($target_node->title,'node/'.$node->comment_target_nid,$options);
   }
-  if(!empty($user_info->first_name) && !empty($user_info->first_name))
-    $name = l($user_info->first_name.' '.$user_info->surname,'user/'.$user_info->uid);  
+  if(!empty($author->first_name) && !empty($author->first_name))
+    $name = l($author->first_name.' '.$author->surname,'user/'.$author->uid);  
   if($node->title == '<EventCreated>'){
     $comment_status = 'created new event '.l($target_node->title,'node/'.$node->comment_target_nid,$options);  
   }
