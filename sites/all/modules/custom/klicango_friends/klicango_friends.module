@@ -520,7 +520,11 @@ function klicango_friends_get_all_friends() {
             } while (!empty($result->data));
             if (is_array($facebook_friends) && !empty($facebook_friends)) {
                 cache_set('facebook_friends_' . $user->uid, $facebook_friends, 'cache', time() + 24*60*60);
+                cache_set('permanent_facebook_friends_' . $user->uid, $facebook_friends, 'cache');
             }
+        } else {
+          $facebook_friends = cache_get('permanent_facebook_friends_' . $user->uid);
+          $facebook_friends = $facebook_friends->data;
         }        
     } else {
         $facebook_friends = $facebook_friends->data;
