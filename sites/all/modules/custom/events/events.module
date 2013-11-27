@@ -52,6 +52,11 @@ function events_menu(){
       'page callback' => 'events_users',
       'access callback' => true
     ),
+    'event/find' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_find',
+      'access callback' => true
+    ),
     'remove_event_for_user' => array(
       'type' => MENU_CALLBACK,
       'page callback' => 'remove_event_for_user',
@@ -1108,19 +1113,30 @@ function events_top_by_users($number, $exclude = array()) {
   return $ids;
 }
 
-function events_closest($number, $exclude = array()) {
+function events_closest($number, $exclude = array(), $offset = 0, $search = '') {
   global $user;
   
   if (!empty($exclude)) {
     $exclude = array_keys($exclude);
     $exclude_str = implode(', ', $exclude);
   }
-
-  $result = db_query('SELECT ev.nid AS event_id, 0 AS friends FROM content_type_event AS ev
+  
+  if ($search) {
+    $result = db_query('SELECT ev.nid AS event_id, 0 AS friends FROM content_type_event AS ev 
+                      LEFT JOIN node ON ev.nid = node.nid
+                      WHERE (ev.field_event_type_value = "public" AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW()))
+                      ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . '
+                      AND node.title LIKE "%%%s%%"
+                      ORDER BY ev.field_date_value ASC', $search);
+    
+  } else {
+    $result = db_query('SELECT ev.nid AS event_id, 0 AS friends FROM content_type_event AS ev
                       WHERE (ev.field_event_type_value = "public" AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW()))
                       ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . '
                       ORDER BY ev.field_date_value ASC
-                      LIMIT 0, %d', $number);
+                      LIMIT %d, %d', $offset, $number);
+    
+  }
   // ' . (user_is_logged_in() ? ' AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = ' . $user->uid . ')) ' : '') . '
   
   $ids = array();
@@ -1153,4 +1169,17 @@ function events_user_calendar($date, $user_id = null){
   $return['month_name'] = date('F Y', mktime(0,0,0,$date_parts[1],1,$date_parts[0])); 
   echo json_encode($return);
   exit;
+}
+
+function events_find() {
+  $offset = (!empty($_GET['offset']) ? $_GET['offset'] : 0);
+  $limit = (!empty($_GET['limit']) ? $_GET['limit'] : 10);
+  $search = (!empty($_GET['search']) ? $_GET['search'] : '');  
+  
+  $events_list = events_closest($limit, array(), $offset, $search);
+  
+  foreach ($events_list as $event_id => $data) {
+    $_event = node_load($event_id);
+  }
+  
 }
