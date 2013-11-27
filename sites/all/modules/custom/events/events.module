@@ -888,7 +888,13 @@ function event_accept_event_invitation() {
     } else {
         $event_status = EVENT_STATUS_ACCEPTED;
     }
-    db_query('UPDATE events_users SET status = %d WHERE event_id = %d AND user_id = %d', $event_status, $event_id, $user->uid);
+    $count = db_query('SELECT user_id FROM events_users WHERE event_id = %d AND user_id = %d', $event_id, $user->uid);
+    if (db_result($count)) {
+      $result = db_query('UPDATE events_users SET status = %d WHERE event_id = %d AND user_id = %d', $event_status, $event_id, $user->uid);
+    } else {
+      $data = array('event_id' => $event_id, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => $event_status);      
+      drupal_write_record('events_users', $data); 
+    }
     drupal_json(array('status' => 'success'));
     exit;
 }
@@ -979,7 +985,9 @@ function events_users() {
         }
         
         while ($uid = db_fetch_array($result)) {
-            $local_users[] = user_load($uid['user_id']);
+            $_user = user_load($uid['user_id']);
+            $_user->friends_count = sizeof(klicango_friends_all_friends($uid['user_id']));
+            $local_users[] = $_user; 
         }
         
         while ($user_data = db_fetch_array($fb_result)) {
@@ -1033,11 +1041,13 @@ function events_top_by_friends($number, $exclude = array()) {
                           WHERE fid = %d UNION SELECT fid AS id FROM friends WHERE uid = %d
                       ) 
                       AND ev.field_event_type_value = "public" AND eu.status = 3 AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW())
-                      AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = %d))
                       ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . '
                       GROUP BY ev.nid 
                       ORDER BY friends DESC, ev.field_date_value ASC
                       LIMIT 0, %d', $user->uid, $user->uid, $user->uid, $number);
+  
+  //                    AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = %d))
+  
   $ids = array();
   while($event = db_fetch_array($result)) {
       $ids[$event['event_id']] = $event;    
@@ -1056,13 +1066,13 @@ function events_top_by_users($number, $exclude = array()) {
   
   $result = db_query('SELECT ev.nid AS event_id, COUNT(eu.user_id) AS friends FROM content_type_event AS ev
                       LEFT JOIN events_users AS eu ON ev.nid = eu.event_id
-                      WHERE (ev.field_event_type_value = "public" AND eu.status = 3 AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW()))
-                      ' . (user_is_logged_in() ? ' AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = ' . $user->uid . ')) ' : '') . '                      
+                      WHERE (ev.field_event_type_value = "public" AND eu.status = 3 AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW()))                      
                       ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . '
                       GROUP BY ev.nid 
                       ORDER BY friends DESC, ev.field_date_value ASC
                       LIMIT 0, %d', $number);
-                      
+  //' . (user_is_logged_in() ? ' AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = ' . $user->uid . ')) ' : '') . '
+  
   $ids = array();
   while($event = db_fetch_array($result)) {
       $ids[$event['event_id']] = $event;    
@@ -1081,11 +1091,11 @@ function events_closest($number, $exclude = array()) {
 
   $result = db_query('SELECT ev.nid AS event_id, 0 AS friends FROM content_type_event AS ev
                       WHERE (ev.field_event_type_value = "public" AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW()))
-                      ' . (user_is_logged_in() ? ' AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = ' . $user->uid . ')) ' : '') . '
                       ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . '
                       ORDER BY ev.field_date_value ASC
                       LIMIT 0, %d', $number);
-                      
+  // ' . (user_is_logged_in() ? ' AND ev.nid NOT IN (SELECT event_id FROM events_users WHERE user_id = ' . $user->uid . ')) ' : '') . '
+  
   $ids = array();
   while($event = db_fetch_array($result)) {
       $ids[$event['event_id']] = $event;    

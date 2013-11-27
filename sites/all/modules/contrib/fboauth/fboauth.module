@@ -120,6 +120,7 @@ function fboauth_user_insert(&$edit, &$account, $category) {
   if (isset($edit['fboauth_fbid'])) {
     fboauth_save($account->uid, $edit['fboauth_fbid']);
     db_query('UPDATE events_users SET user_id = %d WHERE facebook_id = "%s"', $account->uid, $edit['fboauth_fbid']);
+    db_query('UPDATE friends_invitations SET user_id = %d WHERE facebook_id = "%s"', $account->uid, $edit['fboauth_fbid']);
   }
 }
 

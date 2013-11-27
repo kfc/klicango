@@ -435,3 +435,34 @@ function initJoinRequest(ids) {
         });
     }
 }
+
+function showFriends(user_id) {
+  if ($('.user-friends-list').length) {
+    $('.user-friends-list').dialog("destroy");
+    $('.user-friends-list').remove();
+  }
+  $.ajax({
+     type: 'GET',
+     dataType: 'html',
+     url: '/friends/list',
+     data: {"uid": user_id},
+     success : function (data, textStatus, jqXHR) { 
+         $('body').append(data);
+         $("#invite-friends-form.user-" + user_id).dialog({
+            autoOpen: false,
+            width: 484,
+            modal: true,
+            close: function() {
+             $("#invite-friends-form.user-" + user_id + " .scroll-pane").hide();
+             $("#invite-friends-form.user-" + user_id + " #search-friends").hide();
+            }
+          });
+          $("#invite-friends-form.user-" + user_id +" div.scroll-pane").mCustomScrollbar({
+              scrollButtons:{
+              	enable:true
+              }
+          });
+          $("#invite-friends-form.user-" + user_id).dialog( "open" );
+     },
+  });
+}

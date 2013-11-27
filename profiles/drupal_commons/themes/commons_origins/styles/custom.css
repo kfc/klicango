@@ -533,6 +533,10 @@ div.footer-left-block img{
     display: none !important;
 }
 
+#top-event-list .invite-friend {
+    display: none !important;
+}
+
 body.not-front #middle{
   padding-top: 70px;
 }
@@ -834,4 +838,8 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
 
 #photo-box #photo-wrapper a#next-photo.hovered{
   background-position: -29px -46px;
+}
+
+.fb-user, .col-friends {
+  cursor: pointer;
 }

@@ -266,10 +266,16 @@ $(function() {
            if($('#invite-friends-form .scroll-pane').length && $('#invite-friends-form .scroll-pane').attr('id')) {
               current_id = $('#invite-friends-form .scroll-pane').attr('id');
            }
+           
+           var request_url = '/friends/find';
+           if ($('.friend-link-list').length) {
+             request_url = '/friends/join';
+           }
+           
            $.ajax({
                type: 'GET',
                dataType: 'html',
-               url: '/friends/find',
+               url: request_url,
                data: {"search": this.value, "event_id" : current_id},
                success : function (data, textStatus, jqXHR) { 
                     if(last_search == current_search) {
@@ -282,7 +288,7 @@ $(function() {
                complete : function (jqXHR, textStatus) {
                     if(last_search == current_search) {
                       $("#invite-friends-form .scroll-pane").show();
-                      $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 410});
+                      $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
                       $(".ui-dialog-content.ui-widget-content").css({"height" : 485});
                       $("#invite-friends-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
                       $('#invite-friends-form .search-for-friends').removeClass('loading');
