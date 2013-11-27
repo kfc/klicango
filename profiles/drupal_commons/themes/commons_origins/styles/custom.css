@@ -233,7 +233,7 @@ div#content .profile {
 }
 #create-event-form div.person-item  .person-name a:hover, .events-users div.person-item  .person-name a:hover{color: #96c12b;}
 span.already-invited,
-a.invite-friend{
+a.invite-friend, a.black-button{
 	margin-top: 24px;
 }
 .jScrollPaneContainer{
@@ -251,7 +251,7 @@ a.invite-friend{
 	padding-top: 0px;
 }
 
-a.already-invited{
+a.already-invited, a.white-button{
 	font: bold 12px/30px Arial;
 	color: #96c12b;
 	background: #FFF;
@@ -268,16 +268,35 @@ a.already-invited{
     -icab-border-radius: 5px; /* Icab */
     border-radius: 5px; /* CSS3 */
 }
-a.already-invited{float: right;}
-a.already-invited{
+
+a.black-button{
+  float: right;
+  background: #35332f;
+  height: 30px;
+  text-decoration: none;
+  font: bold 12px/30px Arial;
+  color: #96c12b !important;
+  padding: 0 12px;
+  border: 1px solid #90908e;
+  -moz-border-radius: 5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari, Google Chrome */
+    -khtml-border-radius: 5px; /* KHTML */
+    -o-border-radius: 5px; /* Opera */
+    -ms-border-radius: 5px; /* IE8 */
+    -icab-border-radius: 5px; /* Icab */
+    border-radius: 5px; /* CSS3 */
+}
+
+a.already-invited, a.white-button, a.black-button{float: right;}
+a.already-invited, a.white-button, a.black-button{
 	width: 140px !important;
 	text-align: center;
 	padding: 0 !important;
 }
-a.already-invited{
+a.already-invited, a.white-button{
 	margin-top: 20px;
 }
-a.invite-friend{
+a.invite-friend, a.black-button{
     margin-top: 20px !important;
 }
 .person-thumbnail {
@@ -322,7 +341,7 @@ div.search-for-friends.loading input[type="text"]{
 }
 #invite-friends-form div.person-item  .person-name a:hover{color: #96c12b;}
 span.already-invited,
-a.invite-friend{
+a.invite-friend, a.black-button{
 	margin-top: 24px;
 }
 .jScrollPaneContainer{
@@ -842,4 +861,35 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
 
 .fb-user, .col-friends {
   cursor: pointer;
+}
+#add-friends-form-user-page div.person-item .person-name{
+  float: left;
+  padding-top: 22px;
+  font: bold 12px Arial;
+  color: #2b2a2a;
+  text-decoration: none;
+}
+
+div.person-item .person-thumbnail {
+ float: left;
+ margin-right: 20px;
+}
+
+#add-friends-form-user-page {
+  margin-top: -25px;
+  padding: 0px;
+}
+#add-friends-form-user-page .add-friend-text{
+  font: 13px Arial, Tahoma, Verdana, sans-serif;
+  color: #858586;
+  height: 25px;
+  padding: 15px 15px 15px 30px ;
+  background: #F6F8F8;
+}
+
+#add-friends-form-user-page .person-item{
+  padding-left: 30px;
+  padding-bottom: 15px;
+  padding-right: 15px;
+  margin-bottom: 15px;
 }

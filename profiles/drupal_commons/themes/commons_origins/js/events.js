@@ -41,6 +41,19 @@ $(function() {
       }
   });
   
+  
+  $("#add-friends-form-user-page").dialog({
+    autoOpen: true,
+    width: 484,
+    height: 175,
+    modal: true,
+    position: ['middle',120],
+    close: function() {
+      window.history.back();
+      
+    }
+  });
+  
   $(".invite-friend")
     .click(function(e) {
     e.preventDefault();

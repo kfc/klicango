@@ -15,6 +15,12 @@ function klicango_friends_menu(){
     'access callback' => 'user_is_logged_in',
   );
   
+  $items['friends_in_common/list'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'klicango_friends_show_friends_in_common',
+    'access callback' => 'user_is_logged_in',
+  );
+  
   $items['friends/join'] = array(
     'type' => MENU_CALLBACK,
     'page callback' => 'klicango_friends_join_friends',
@@ -563,6 +569,11 @@ function klicango_friends_theme() {
         'template' => 'klicango-friends-friends',
         'arguments' => array('users' => NULL),
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ), 
+      'klicango_friends_in_common_show' => array(
+        'template' => 'show-friends-in-common-form',
+        'arguments' => array('users' => NULL, 'user_id' => NULL),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),  
     );
 }
@@ -736,6 +747,13 @@ function klicango_friends_get_friends($type, $limit = false, $only_individual = 
                 $users[] = $row['sender_id'];
             }
             break; 
+            
+        case 'invitations_sent' : 
+            $result = db_query('SELECT user_id  FROM friends_invitations WHERE sender_id = %d AND status = 1', $user->uid);
+            while ($row = db_fetch_array($result)) {
+                $users[] = $row['user_id'];
+            }
+            break;     
         case 'friends' : 
           if (!$only_individual) {
               if ($limit) {
@@ -867,9 +885,11 @@ function klicango_friends_get_friends_intersections($friends) {
     } 
   }
   
-  usort($common, function($a, $b) {
+  usort($common, 'sortByCommon');
+  
+  function sortByCommon($a, $b) {
       return $a['common'] - $b['common'];
-  });
+  }
   
   return $common;
 }
@@ -898,7 +918,7 @@ function klicango_friends_show_friends() {
     foreach ($friends as $friend) {
       $_user = user_load($friend);
       if (in_array('individual', $_user->roles)) {
-        profile_load_profile($_user);
+        //profile_load_profile($_user);
         $_user->picture_url = imagecache_create_url('facebook_image_size', $_user->picture);
         $_user->friends_count = sizeof(klicango_friends_all_friends($friend));
         $_user->name = $_user->first_name . ' ' . $_user->surname;
@@ -935,4 +955,41 @@ function klicango_friends_request_sent($uid1, $uid2) {
   } else {
     return false;
   }
+}
+
+function klicango_friends_get_friends_in_common($uid){
+  global $user;
+  $users_in_common = array();
+  $result = db_query('SELECT t1.u1 as uid from 
+    (select uid as u1 from friends where fid = %d UNION select fid as u1 from friends where uid = %d) t1
+      INNER JOIN
+    (select uid as u2 from friends where fid = %d UNION select fid as u2 from friends where uid = %d) t2 
+    on t1.u1 = t2.u2
+    
+    ', $user->uid, $user->uid, $uid, $uid);
+  while ($_user = db_fetch_array($result)) {
+    $users_in_common[] = $_user['uid'];
+  }
+  return $users_in_common;
+}
+
+function klicango_friends_show_friends_in_common() {
+  $user_id = $_GET['uid'];
+  $users = array();
+  if ($user_id) {
+    $friends = klicango_friends_get_friends_in_common($user_id);
+    
+    foreach ($friends as $friend) {
+      $_user = user_load($friend);
+      if (in_array('individual', $_user->roles)) {
+        //profile_load_profile($_user);
+        $_user->picture_url = imagecache_create_url('facebook_image_size', $_user->picture);
+        $_user->name = $_user->first_name . ' ' . $_user->surname;
+        $users[] = $_user;
+      }
+    }
+  }
+  $html = theme('klicango_friends_in_common_show', $users, $user_id);
+  echo $html;
+  exit;
 }
