@@ -327,32 +327,32 @@ function loadJoinFriends(offset, limit) {
            url: '/friends/join',
            data: {"offset": offset, "limit": limit, "invite" : "true"},
            success : function (data, textStatus, jqXHR) {
-                $('#invite-friends-form .show_more').remove();
+                $('.friends-join .show_more').remove();
                 
-                if ($("#invite-friends-form div.scroll-pane.mCustomScrollbar").length) {
+                if ($(".friends-join div.scroll-pane.mCustomScrollbar").length) {
                     if (offset != 0) {
-                      $('#invite-friends-form .mCSB_container').append(data);
+                      $('.friends-join .mCSB_container').append(data);
                     }
                 } else {
-                    $('#invite-friends-form .scroll-pane').append(data);
-                    $("#invite-friends-form div.scroll-pane").mCustomScrollbar({
+                    $('.friends-join .scroll-pane').append(data);
+                    $(".friends-join div.scroll-pane").mCustomScrollbar({
                         scrollButtons:{
                         	enable:true
                         }
                     });    
                 }                
                 
-                $("#invite-friends-form .scroll-pane").hide();
+                $(".friends-join .scroll-pane").hide();
            }, 
            complete : function (jqXHR, textStatus) {  
               if (offset == 0) {
                   $( "#invite-friends-form" ).dialog( "open" );
                   $('.invite-friend-search').val('')
               }  
-              $("#invite-friends-form .scroll-pane").show();
+              $(".friends-join .scroll-pane").show();
               $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420, "top" : 200});
               $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
-              $("#invite-friends-form .scroll-pane").mCustomScrollbar("update");
+              $(".friends-join .scroll-pane").mCustomScrollbar("update");
            }, 
         });  
     $("#invite-friends-form #search-friends").show();
