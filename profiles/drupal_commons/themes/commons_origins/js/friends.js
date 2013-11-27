@@ -73,6 +73,47 @@ $(".follow-user-action").click(function(e){
 });
 
 
+$(".action-friend-user-page").click(function(e){
+  e.preventDefault();
+  var href=$(this).attr('href');  
+  var id=$(this).attr('id');  
+  var name=$(this).attr('title');
+                                                
+  if((id == 'remove-friend-user-page' && confirm("Are you sure you don't want to be friend with  "+name+" anymore")) || (id == 'add-friend-user-page')){
+    $.ajax({
+          type: "POST",
+          url: href,
+          dataType: 'json',
+          success: function(data){
+            if(data.success == true){
+              if(id == 'remove-friend-user-page'){
+                $("#remove-friend-user-page").attr('href',$("#remove-friend-user-page").attr('href').replace('/removefriend','/addfriend'));
+                $("#remove-friend-user-page").addClass('black-button');
+                $("#remove-friend-user-page").removeClass('white-button');
+                $("#remove-friend-user-page").text(Drupal.t('Add friend'));
+                $("#remove-friend-user-page").attr('id','add-friend-user-page');
+                
+              } 
+              else if(id == 'add-friend-user-page'){
+                $("#add-friend-user-page").attr('href',$("#add-friend-user-page").attr('href').replace('/addfriend','/removefriend'));
+                $("#add-friend-user-page").addClass('white-button');
+                $("#add-friend-user-page").removeClass('black-button');
+                $("#add-friend-user-page").text(Drupal.t('Invitation sent'));
+                $("#add-friend-user-page").attr('id','remove-friend-user-page');
+                
+              } 
+              
+              
+            }
+          }
+    });
+  }
+  //addfriend/%  
+    
+  
+});
+
+
 
 
 });
@@ -130,4 +171,39 @@ function acceptFriend(event_id) {
          },  
       });
     }
+}
+
+function showFriendsInCommon(user_id) {
+  if ($('#invite-friends-form').length) {
+    $('#invite-friends-form').dialog("destroy");
+    $('#invite-friends-form').remove();
+  }
+  $.ajax({
+     type: 'GET',
+     dataType: 'html',
+     url: '/friends_in_common/list',
+     data: {"uid": user_id},
+     success : function (data, textStatus, jqXHR) { 
+         $('body').append(data);
+         
+         $("#invite-friends-form.user-" + user_id).dialog({
+            autoOpen: false,
+            width: 484,
+            modal: true,
+            position: ['middle',120],
+            close: function() {
+             $("#invite-friends-form.user-" + user_id + " .scroll-pane").hide();
+             $("#invite-friends-form.user-" + user_id + " #search-friends").hide();
+            }
+          });
+         
+          $("#invite-friends-form.user-" + user_id +" div.scroll-pane").mCustomScrollbar({
+              scrollButtons:{
+                enable:true
+              }
+          });
+          
+          $("#invite-friends-form.user-" + user_id).dialog('open');
+     },
+  });
 }

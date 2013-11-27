@@ -188,7 +188,14 @@ function events_theme() {
         'template' =>'latest-events-photos',
         'path' => drupal_get_path('theme',variable_get('theme_default','')),
         'arguments' => array('photos' => NULL, 'photos_count' => NULL)
-      )
+      ),
+      
+      'friend_request_calendar_page' => array(
+        'template' =>'friend-request-calendar-page',
+        'path' => drupal_get_path('theme',variable_get('theme_default','')), 
+        'arguments' => array('viewed_user' => NULL) 
+      ),
+      
       
       
     );
@@ -581,6 +588,23 @@ function remove_event_for_user(){
 function events_preprocess_page(&$variables) {
     $variables['menu_stats']['public_pending'] = events_get_count(EVENT_STATUS_NEW, true);
     $variables['menu_stats']['private_pending'] = events_get_count(EVENT_STATUS_NEW, false);
+    
+    global $user;
+    if(arg(0) == 'user' && arg(1) > 1){
+      $viewed_uid = arg(1);
+      if($viewed_uid != $user->uid){ //check if a place or friends
+        $viewed_user = user_load($viewed_uid);
+        if(in_array('individual', $viewed_user->roles) && user_is_logged_in()){ // Private profile
+          if(!klicango_friends_are_friends($user->uid, $viewed_uid)) {
+            $variables['content'] = theme('friend_request_calendar_page',$viewed_user);
+            unset($variables['content_bottom_left']);
+            unset($variables['content_bottom_right']);
+            unset($variables['right_aside']);
+          }
+          
+        }
+      }  
+    }
 }
 
 function events_get_count($status, $is_public = true) {
@@ -941,7 +965,7 @@ function events_get_event_attenders($nid){
     
     if($person['status'] == EVENT_STATUS_ACCEPTED){
       $people['going'][$person['user_id']] = $person;  
-    } elseif($person['status'] != EVENT_STATUS_DECLINED){
+    } elseif($person['status'] != EVENT_STATUS_ACCEPTED){
       $people['invited'][] = $person;  
       
     }
