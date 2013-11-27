@@ -350,7 +350,7 @@ function loadJoinFriends(offset, limit) {
                   $('.invite-friend-search').val('')
               }  
               $(".friends-join .scroll-pane").show();
-              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420, "top" : 200});
+              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 468, "top" : 200});
               $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
               $(".friends-join .scroll-pane").mCustomScrollbar("update");
            }, 

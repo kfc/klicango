@@ -301,7 +301,7 @@ $(function() {
                complete : function (jqXHR, textStatus) {
                     if(last_search == current_search) {
                       $("#invite-friends-form .scroll-pane").show();
-                      $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
+                      $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 468});
                       $(".ui-dialog-content.ui-widget-content").css({"height" : 485});
                       $("#invite-friends-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
                       $('#invite-friends-form .search-for-friends').removeClass('loading');
@@ -421,7 +421,7 @@ $(function() {
                   $('.invite-friend-search').val('')
               }  
               $("#invite-friends-form .scroll-pane").show();
-              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
+              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 468});
               $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
               $("#invite-friends-form .scroll-pane").mCustomScrollbar("update");
            }, 
