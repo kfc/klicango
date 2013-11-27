@@ -466,3 +466,19 @@ function showFriends(user_id) {
      },
   });
 }
+
+function inviteJoinFriendSubmit(object, user_id) {
+   $.ajax({
+     type: 'GET',
+     dataType: 'json',
+     url: '/addfriend/' + user_id,
+     success : function (data, textStatus, jqXHR) { 
+      if (data.success == 1) {
+        $(object).removeClass('invite-friend');
+        $(object).addClass('already-invited');
+        $(object).removeAttr('onclick');
+        $(object).text(Drupal.t('Friend request sent'));
+      }
+     },
+  });
+}

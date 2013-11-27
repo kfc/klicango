@@ -13,7 +13,8 @@
                   <a href="<?php echo url('user/' . $_user->uid); ?>"><?php echo $_user->name; ?></a>
                   <span class="fb-user" onclick="showFriends(<?php echo $_user->uid; ?>);"><?php echo $_user->friends_count . ' ' . ($_user->friends_count == 1 ? t('friend') : t('friends')); ?></span>
                 </div>
-                <a onclick="inviteJoinFriendSubmit(this, <?php echo $_user->uid; ?>)" class="invite-friend" href="javascript: void(0);"><?php echo t('Add friend'); ?></a>
+                <!--<a onclick="inviteJoinFriendSubmit(this, <?php echo $_user->uid; ?>)" class="invite-friend" href="javascript: void(0);"><?php echo t('Add friend'); ?></a>-->
+                <?php echo klicango_friends_add_friend_button($_user->uid); ?>
               </div>
             <?php endforeach; ?>
           <?php endif; ?>

@@ -5,5 +5,6 @@
           <?php echo $user->first_name . ' ' . $user->surname; ?></a><span class="fb-user" onclick="showFriends(<?php echo $user->uid; ?>);">
           <?php echo $user->friends_count . ' ' . ($user->friends_count == 1 ? t('friend') : t('friends')); ?></span>
         </div>
+        <?php echo klicango_friends_add_friend_button($user->uid); ?>
     </div>
 <?php endforeach; ?>

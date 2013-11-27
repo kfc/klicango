@@ -918,6 +918,8 @@ function klicango_friends_add_friend_button($uid) {
       $html = '<a class="already-invited" href="javascript: void(0);">' . t('Already friends') . '</a>';
     } else if (klicango_friends_request_sent($user->uid, $uid)) {
       $html = '<a class="already-invited" href="javascript: void(0);">' . t('Friend request sent') . '</a>';
+    } else if ($user->uid == $uid) {
+      $html = '';
     } else {
       $html = '<a href="javascript: void(0);" class="invite-friend" onclick="inviteJoinFriendSubmit(this, ' . $uid . ')">' . t('Add friend') . '</a>'; 
     }
@@ -929,7 +931,7 @@ function klicango_friends_add_friend_button($uid) {
 }
 
 function klicango_friends_request_sent($uid1, $uid2) {
-  $result = db_query('SELECT id FROM friends_invitations WHERE (sender_id = %d AND user_id = %d) OR (sender_id = %d AND user_id = %d)', $uid1, $uid2, $uid2, $uid1);
+  $result = db_query('SELECT id FROM friends_invitations WHERE (sender_id = %d AND user_id = %d) OR (sender_id = %d AND user_id = %d) AND status = 1', $uid1, $uid2, $uid2, $uid1);
   if ($result->num_rows) {
     return true;
   } else {

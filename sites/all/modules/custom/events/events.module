@@ -719,8 +719,9 @@ function events_private_page() {
 function events_get_friends_going($event_id, $user_id) {
     $result = db_query('SELECT COUNT(*) FROM events_users 
                         WHERE event_id = %d AND status = %d AND user_id IN (
-                            SELECT uid AS id FROM friends 
-                            WHERE fid = %d UNION SELECT fid AS id FROM friends WHERE uid = %d
+                            SELECT uid AS id FROM friends WHERE fid = %d AND uid IN (SELECT uid FROM users_roles WHERE rid = 6)
+                            UNION 
+                            SELECT fid AS id FROM friends WHERE uid = %d AND fid IN (SELECT uid FROM users_roles WHERE rid = 6)
                         )', $event_id, EVENT_STATUS_ACCEPTED, $user_id, $user_id);
     $count = db_result($result);
     
@@ -977,10 +978,10 @@ function events_users() {
     
     if ($event) {
         if (!empty($_GET['type']) && $_GET['type'] == 'going') {
-            $result = db_query('SELECT user_id FROM events_users WHERE user_id IS NOT NULL AND event_id = %d AND status = %d', $event, EVENT_STATUS_ACCEPTED);
+            $result = db_query('SELECT user_id FROM events_users WHERE user_id IS NOT NULL AND event_id = %d AND status = %d AND user_id IN (SELECT uid FROM users_roles WHERE rid = 6)', $event, EVENT_STATUS_ACCEPTED);
             $fb_result = db_query('SELECT events_users.facebook_id, friends_facebook_invited.name FROM events_users LEFT JOIN friends_facebook_invited ON events_users.facebook_id = friends_facebook_invited.facebook_id WHERE user_id IS NULL AND event_id = %d AND status = %d', $event, EVENT_STATUS_ACCEPTED);
         } else {
-            $result = db_query('SELECT user_id FROM events_users WHERE user_id IS NOT NULL AND event_id = %d AND status IN (%d, %d)', $event, EVENT_STATUS_NEW, EVENT_STATUS_DECLINED);
+            $result = db_query('SELECT user_id FROM events_users WHERE user_id IS NOT NULL AND event_id = %d AND status IN (%d, %d) AND user_id IN (SELECT uid FROM users_roles WHERE rid = 6)', $event, EVENT_STATUS_NEW, EVENT_STATUS_DECLINED);
             $fb_result = db_query('SELECT events_users.facebook_id, friends_facebook_invited.name FROM events_users LEFT JOIN friends_facebook_invited ON events_users.facebook_id = friends_facebook_invited.facebook_id WHERE user_id IS NULL AND event_id = %d AND status IN (%d, %d)', $event, EVENT_STATUS_NEW, EVENT_STATUS_DECLINED);
         }
         
@@ -1037,8 +1038,9 @@ function events_top_by_friends($number, $exclude = array()) {
   $result = db_query('SELECT ev.nid AS event_id, COUNT(eu.user_id) AS friends FROM content_type_event AS ev
                       LEFT JOIN events_users AS eu ON ev.nid = eu.event_id
                       WHERE (eu.user_id IN (
-                          SELECT uid AS id FROM friends 
-                          WHERE fid = %d UNION SELECT fid AS id FROM friends WHERE uid = %d
+                          SELECT uid AS id FROM friends WHERE fid = %d AND uid IN (SELECT uid FROM users_roles WHERE rid = 6)
+                          UNION 
+                          SELECT fid AS id FROM friends WHERE uid = %d AND fid IN (SELECT uid FROM users_roles WHERE rid = 6)
                       ) 
                       AND ev.field_event_type_value = "public" AND eu.status = 3 AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW())
                       ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . '
@@ -1067,7 +1069,8 @@ function events_top_by_users($number, $exclude = array()) {
   $result = db_query('SELECT ev.nid AS event_id, COUNT(eu.user_id) AS friends FROM content_type_event AS ev
                       LEFT JOIN events_users AS eu ON ev.nid = eu.event_id
                       WHERE (ev.field_event_type_value = "public" AND eu.status = 3 AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW()))                      
-                      ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . '
+                      ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . ' 
+                      AND eu.user_id IN (SELECT uid FROM users_roles WHERE rid = 6)
                       GROUP BY ev.nid 
                       ORDER BY friends DESC, ev.field_date_value ASC
                       LIMIT 0, %d', $number);
