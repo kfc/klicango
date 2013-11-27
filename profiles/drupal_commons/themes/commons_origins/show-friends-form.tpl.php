@@ -1,4 +1,10 @@
-<div id="invite-friends-form" class="user-<?php echo $user_id; ?> user-friends-list" title="Friends">
+<?php
+ $current = user_load($user_id);
+ profile_load_profile($current);
+ $name = $current->first_name . ' ' . $current->surname;
+?>
+
+<div id="invite-friends-form" class="user-<?php echo $user_id; ?> user-friends-list" title="Friends of <?php echo $name; ?>">
     <form id="invite-friends">
         <div class="scroll-pane" id="user_<?php echo $user_id; ?>">
           <?php if (!empty($users)) :?>

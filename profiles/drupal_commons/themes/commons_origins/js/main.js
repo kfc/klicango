@@ -330,7 +330,9 @@ function loadJoinFriends(offset, limit) {
                 $('#invite-friends-form .show_more').remove();
                 
                 if ($("#invite-friends-form div.scroll-pane.mCustomScrollbar").length) {
-                    $('#invite-friends-form .mCSB_container').append(data);
+                    if (offset != 0) {
+                      $('#invite-friends-form .mCSB_container').append(data);
+                    }
                 } else {
                     $('#invite-friends-form .scroll-pane').append(data);
                     $("#invite-friends-form div.scroll-pane").mCustomScrollbar({
@@ -348,7 +350,7 @@ function loadJoinFriends(offset, limit) {
                   $('.invite-friend-search').val('')
               }  
               $("#invite-friends-form .scroll-pane").show();
-              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420});
+              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 420, "top" : 200});
               $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
               $("#invite-friends-form .scroll-pane").mCustomScrollbar("update");
            }, 

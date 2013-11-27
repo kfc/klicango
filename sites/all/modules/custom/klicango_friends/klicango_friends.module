@@ -202,6 +202,11 @@ function klicango_friends_join_friends() {
     }
     
     if (empty($_GET['search'])) {
+      
+      foreach ($facebook_invites as $_id) {
+        unset($friends['facebook'][$_id]);
+      }
+      
       $matches = array_slice($friends['facebook'], $offset, $limit, true);
     } else {
       $matches = array_filter($friends['facebook'], 'array_substring_search');
