@@ -392,11 +392,16 @@ function create_event_if_valid(){
       
       // Send invitations to all followers of a place
       if(!$edit_mode && in_array('professional', $user->roles)){
-         $followers = klicango_friends_all_friends($user->uid);
+        
+        //TEMPORARY Send invitation to all users
+          db_query("INSERT INTO events_users(user_id, event_id, sender_id,status) 
+                    SELECT DISTINCT(uid),".$event->nid.",".$user->uid.",1 from (SELECT uid from {users_roles} where rid = (SELECT rid FROM role WHERE name = 'individual' )) t");
+        
+         /*$followers = klicango_friends_all_friends($user->uid);
          if(!empty($followers)){                                 
            db_query("INSERT INTO events_users(user_id, event_id, sender_id,status) 
                     SELECT DISTINCT(uid),".$event->nid.",".$user->uid.",1 from (SELECT uid FROM friends WHERE (fid = ".$user->uid.") UNION SELECT fid as uid FROM friends WHERE (uid = ".$user->uid.")) t ");
-         }
+         } */
       }
       if($event->nid > 0)
         drupal_goto('node/'.$event->nid, $query);

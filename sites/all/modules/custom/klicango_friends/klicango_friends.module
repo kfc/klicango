@@ -970,18 +970,18 @@ function klicango_friends_request_sent($uid1, $uid2) {
 
 function klicango_friends_get_friends_in_common($uid){
   global $user;
-  $users_in_common = array();
-  $result = db_query('SELECT t1.u1 as uid from 
-    (select uid as u1 from friends where fid = %d UNION select fid as u1 from friends where uid = %d) t1
-      INNER JOIN
-    (select uid as u2 from friends where fid = %d UNION select fid as u2 from friends where uid = %d) t2 
-    on t1.u1 = t2.u2
-    
-    ', $user->uid, $user->uid, $uid, $uid);
-  while ($_user = db_fetch_array($result)) {
-    $users_in_common[] = $_user['uid'];
-  }
-  return $users_in_common;
+    $users_in_common = array();
+    $result = db_query('SELECT t1.u1 as uid from 
+      (select uid as u1 from friends where fid = %d UNION select fid as u1 from friends where uid = %d) t1
+        INNER JOIN
+      (select uid as u2 from friends where fid = %d UNION select fid as u2 from friends where uid = %d) t2 
+      on t1.u1 = t2.u2
+      
+      ', $user->uid, $user->uid, $uid, $uid);
+    while ($_user = db_fetch_array($result)) {
+      $users_in_common[] = $_user['uid'];
+    }
+    return $users_in_common;
 }
 
 function klicango_friends_show_friends_in_common() {
@@ -1003,4 +1003,14 @@ function klicango_friends_show_friends_in_common() {
   $html = theme('klicango_friends_in_common_show', $users, $user_id);
   echo $html;
   exit;
+}
+
+
+function klicango_friends_get_all_users($type = 'individual'){
+  $users = array();
+  $result = db_query("SELECT uid from {users_roles} where rid = (SELECT rid FROM role WHERE name = '%s' )", $type);
+  while ($_user = db_fetch_array($result)) {
+    $users[] = $_user['uid'];
+  }
+  return $users;  
 }
