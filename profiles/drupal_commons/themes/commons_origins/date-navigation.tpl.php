@@ -44,6 +44,7 @@ $prev_options['attributes']['id'] = 'prev-month-button';
   </div>
   <div class="date-heading">
     <h3><?php print $nav_title ?></h3>
+    <input type="text" id="date-heading-date-input">
   </div>
   <div class="date-next">
     <?php if (!empty($next_url)) : ?>

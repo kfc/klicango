@@ -917,3 +917,32 @@ div.person-item .person-thumbnail {
   margin: -15px 15px 15px 15px;
   
 }
+
+
+.view-content-event-calendar .calendar-calendar .date-heading{
+  position: relative;
+}
+
+#date-heading-date-input{
+  width:0px;
+  height:0px;
+  visibility:hidden;
+  top:20px;
+  left:-50px;
+  position: absolute;
+}
+  
+.ui-datepicker-multi .ui-datepicker-calendar, .ui-datepicker-multi  .ui-datepicker-buttonpane .ui-datepicker-current,  .ui-datepicker-multi .ui-datepicker-group,
+.ui-datepicker-multi .ui-datepicker-prev, .ui-datepicker-multi .ui-datepicker-next
+{
+  display: none;
+}  
+
+.ui-datepicker-multi{
+  width: 17em !important;
+}
+
+ .ui-datepicker-multi .ui-datepicker-group-first.ui-datepicker-group-first {
+  display: block;
+  width: 100%;
+}

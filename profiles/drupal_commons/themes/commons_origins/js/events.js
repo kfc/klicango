@@ -3,11 +3,50 @@ $(function() {
   function bindDatepicker(){
     $("#datepicker").datepicker({
       changeMonth: true,
-      changeYear: true
+      changeYear: true,
+      beforeShow : function(){  
+
+      }
     });
     $("#datepicker").datepicker("option", "showAnim", 'slideDown');
     $("#datepicker").datepicker("option", "dateFormat", 'dd/mm/yy');
   }
+  
+  
+  $("#date-heading-date-input").datepicker({
+      dateFormat : 'yy-mm-dd',
+      changeMonth: true,
+      changeYear: true,
+      showButtonPanel: true,
+      numberOfMonths: 2,
+      onChangeMonthYear : function(year, month, inst) {
+        $(this).datepicker('setDate', year+'-'+month+'-01');
+        
+       // $(".ui-datepicker-calendar").hide();
+       // $(".ui-datepicker-buttonpane .ui-datepicker-current").hide(); 
+      },
+      onClose : function(dateText){        
+        if(dateText != ''){
+          dateText = dateText.substring(0, 7);
+          var href= $("#prev-month-button").attr('href');
+          href= href.replace(getParameterByName(href, 'cal'), dateText );
+          $("#prev-month-button").attr('href',href); 
+
+          $("#prev-month-button").trigger('click');
+        }
+      }
+    });
+    $(".view-content-event-calendar .calendar-calendar .date-heading h3").click(function(){  
+      $("#date-heading-date-input").datepicker('show'); 
+      $(".ui-datepicker-calendar").hide();
+      $(".ui-datepicker-buttonpane .ui-datepicker-current").hide();
+    });
+    
+    //$("#datepicker").datepicker("option", "showAnim", 'slideDown');
+    //$("#datepicker").datepicker("option", "dateFormat", 'dd/mm/yy');
+
+  
+  
   bindDatepicker();
   
   $('.post-box #filesContainer .profile-upload').styler({browseText: 'Add photos', multipleFilesText : 'photos'});
@@ -207,7 +246,6 @@ $(function() {
             bindShowEventsLink();
           
             $("#next-month-button").attr('href',data.next_url); 
-            $("#prev-month-button").attr('href',data.prev_url); 
             $("#prev-month-button").attr('href',data.prev_url); 
             $(".view-content-event-calendar .date-heading h3").text(data.month_name);
          }, 
