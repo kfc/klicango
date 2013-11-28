@@ -2,7 +2,11 @@
 
     if ($teaser) {
         global $user;
-        $sender = user_load($node->event_data['sender_id']);
+        if(!empty($node->event_data['sender_id']))
+          $sender = user_load($node->event_data['sender_id']);
+        else
+          $sender = user_load($node->uid);    
+          
         if ($sender->uid != $node->uid) {
             $creator = user_load($node->uid);
         } else {
