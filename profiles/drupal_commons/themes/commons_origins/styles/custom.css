@@ -893,3 +893,11 @@ div.person-item .person-thumbnail {
   padding-right: 15px;
   margin-bottom: 15px;
 }
+
+.view-content-event-calendar .attachment-after{
+  position: relative;
+}
+
+.view.view-content-event-calendar{
+  overflow: hidden;
+}
