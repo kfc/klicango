@@ -49,16 +49,16 @@ function klicango_photos_event_photo($event_id, $photo_id){
   }
   $photo_pos = array_search($photo_id, $fids);
   if($photo_pos == 0){
-    $next = $fids[1]; 
-    $prev = $fids[count($fids) - 1];  
+    $next = $fids[count($fids) - 1]; 
+    $prev = $fids[1];  
   }
   elseif($photo_pos == (count($fids) - 1)){
-     $prev = $fids[count($fids) - 2];
-     $next = $fids[0];
+     $prev = $fids[0];
+     $next = $fids[count($fids) - 2];
   }
   else{
-    $next = $fids[$photo_pos + 1];  
-    $prev = $fids[$photo_pos - 1];  
+    $next = $fids[$photo_pos -1];  
+    $prev = $fids[$photo_pos + 1];  
   }
  
  $res = db_query("SELECT pc.*,u.picture from photo_comments pc INNER JOIN users u on u.uid = pc.uid WHERE pc.fid = %d ORDER BY pc.timestamp ASC",$photo_id);
