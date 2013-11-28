@@ -38,11 +38,11 @@ $(function() {
                     
                     $("#datepicker-user").datepicker({
                       changeMonth: true,
-                      changeYear: true
+                      changeYear: true,
+                      dateFormat : 'dd/mm/yy',
+                      showAnim : 'slideDown'
                     });
-                    $("#datepicker-user").datepicker("option", "showAnim", 'slideDown');
-                    $("#datepicker-user").datepicker("option", "dateFormat", 'dd/mm/yy');
-                    
+                     
                     var dialog_id = e.target.id;
                     $('#dialog-' + e.target.id + ' input[type="submit"]').click(function(e){  
                         e.preventDefault();
@@ -222,10 +222,10 @@ function showDialog(dialog_id) {
                 
                 $("#datepicker-user").datepicker({
                   changeMonth: true,
-                  changeYear: true
+                  changeYear: true,
+                  dateFormat : 'dd/mm/yy',
+                  showAnim : 'slideDown'
                 });
-                $("#datepicker-user").datepicker("option", "showAnim", 'slideDown');
-                $("#datepicker-user").datepicker("option", "dateFormat", 'dd/mm/yy');
                 
                 $("select").styler();
                 $('input[type="checkbox"]').styler();
