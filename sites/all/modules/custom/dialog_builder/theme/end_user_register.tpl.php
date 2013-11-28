@@ -21,7 +21,7 @@
     			<option value="male">male</option>
     			<option value="female">female</option>
     		</select>
-    		<input type="text" name="birthday" placeholder="<?php echo t('birthday (ex: 17/12/1993)')?>" value="<?php echo !(empty($data) && !empty($data->birthday)) ? $data->birthday : ''; ?>" />
+    		<input type="text" name="birthday" id="datepicker-user" placeholder="<?php echo t('birthday (ex: 17/12/1993)')?>" value="<?php echo !(empty($data) && !empty($data->birthday)) ? $data->birthday : ''; ?>" />
     	</div>
     	<div class="form-item">
     		<label>Location</label>

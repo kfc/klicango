@@ -604,9 +604,9 @@ function remove_event_for_user(){
 function events_preprocess_page(&$variables) {    
     $variables['menu_stats']['public_pending'] = events_get_count(EVENT_STATUS_NEW, true);
     $variables['menu_stats']['private_pending'] = events_get_count(EVENT_STATUS_NEW, false);
-    
+        
     global $user;
-    if(arg(0) == 'user' && arg(1) > 1){
+    if(arg(0) == 'user' && arg(1) > 1 && !in_array('site admin',$user->roles)){
       $viewed_uid = arg(1);
       if($viewed_uid != $user->uid){ //check if a place or friends
         $viewed_user = user_load($viewed_uid);

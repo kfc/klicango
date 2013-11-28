@@ -1,11 +1,14 @@
 $(function() {   
   
-  $("#datepicker").datepicker({
-    changeMonth: true,
-    changeYear: true
-  });
-  $("#datepicker").datepicker("option", "showAnim", 'slideDown');
-  $("#datepicker").datepicker("option", "dateFormat", 'dd/mm/yy');
+  function bindDatepicker(){
+    $("#datepicker").datepicker({
+      changeMonth: true,
+      changeYear: true
+    });
+    $("#datepicker").datepicker("option", "showAnim", 'slideDown');
+    $("#datepicker").datepicker("option", "dateFormat", 'dd/mm/yy');
+  }
+  bindDatepicker();
   
   $('.post-box #filesContainer .profile-upload').styler({browseText: 'Add photos', multipleFilesText : 'photos'});
   

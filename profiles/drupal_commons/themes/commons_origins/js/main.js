@@ -25,6 +25,8 @@ $(function() {
             		  modal: true
             		});
                     
+                    
+                    
                     $("select").styler();
                     $('input[type="checkbox"]').styler();
                     
@@ -33,12 +35,21 @@ $(function() {
                     $('.banner-upload').styler({browseText: 'Add banner photo'});
                     $('.banner-upload-update').styler({browseText: 'Add more photos'});
 
+                    
+                    $("#datepicker-user").datepicker({
+                      changeMonth: true,
+                      changeYear: true
+                    });
+                    $("#datepicker-user").datepicker("option", "showAnim", 'slideDown');
+                    $("#datepicker-user").datepicker("option", "dateFormat", 'dd/mm/yy');
+                    
                     var dialog_id = e.target.id;
                     $('#dialog-' + e.target.id + ' input[type="submit"]').click(function(e){  
                         e.preventDefault();
                         validateRemote(dialog_id, e);
                     });
                     $('#dialog-' + e.target.id).dialog('open');
+                    
 
                }, 
             });    
@@ -208,6 +219,13 @@ function showDialog(dialog_id) {
                   height: 'auto',
         		  modal: true
         		});
+                
+                $("#datepicker-user").datepicker({
+                  changeMonth: true,
+                  changeYear: true
+                });
+                $("#datepicker-user").datepicker("option", "showAnim", 'slideDown');
+                $("#datepicker-user").datepicker("option", "dateFormat", 'dd/mm/yy');
                 
                 $("select").styler();
                 $('input[type="checkbox"]').styler();
