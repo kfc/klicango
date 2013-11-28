@@ -782,10 +782,12 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
 #photo-wrapper {
    margin: 0 auto;
    width: 800px;
+   min-height: 265px;
 }
 #photo-wrapper img {
    max-height: 665px; 
    margin: 0 auto;
+
 }
 
 #photo-wrapper #prev-photo, #photo-wrapper #next-photo {
@@ -796,7 +798,7 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
   top: 0px !important;
   width: 50% !important;
   left: 0px !important;
-  height: 100% !important;
+
   position: absolute;
   z-index: 10;
 }
@@ -805,7 +807,7 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
   top: 0px !important;
   width: 50% !important;
   right: 0px !important;
-  height: 100% !important;
+  
   position: absolute;
   z-index: 10;
 }
@@ -835,29 +837,37 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
 
 #photo-box #photo-wrapper a{
   width: 29px;
-  height: 46px;
+  
 }
 
 #photo-box #photo-wrapper a#next-photo{
-  background-position: -29px 0px;
+  background-position: -29px -2px;
+  height: 44px;
 }
 #photo-box #photo-wrapper a#next-photo:hover{
-  background-position: -29px -46px;  
+  background-position: -29px -46px; 
+  height: 44px; 
 }
+#photo-box #photo-wrapper a#next-photo.hovered{
+  background-position: -29px -46px;
+  height: 44px;
+}
+
+
 #photo-box #photo-wrapper a#prev-photo{
-  background-position: 0px 0px;
+  background-position: 0px -2px;
+  height: 44px;
 }
 #photo-box #photo-wrapper a#prev-photo:hover{
   background-position: 0px -46px;  
+  height: 44px;
 }
 
 #photo-box #photo-wrapper a#prev-photo.hovered{
   background-position: 0px -46px;
+  height: 44px;
 }
 
-#photo-box #photo-wrapper a#next-photo.hovered{
-  background-position: -29px -46px;
-}
 
 .fb-user, .col-friends {
   cursor: pointer;

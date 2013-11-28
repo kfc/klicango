@@ -43,7 +43,7 @@ function feature_imagecache_imagecache_default_presets() {
           'data' => array(
             'width' => '800',
             'height' => '',
-            'upscale' => 1,
+            'upscale' => 0,
           ),
         ),
       ),

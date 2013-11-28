@@ -13,13 +13,28 @@ jQuery.fn.center = function(parent) {
 }
 jQuery.fn.absCenter = function(parent) {
         if (parent) {
-            parent = this.parent();
+            parent = this.parents('#photo-box');
         } else {
             parent = window;
         }
         var img = this.siblings('img')[0];   
         this.css({
             "position": "absolute",
+            "top": ((($(parent).height() - this.outerHeight()) / 2) + $(parent).scrollTop() + "px"),
+            //"left": ((($(parent).width() - this.outerWidth()) / 2) + $(parent).scrollLeft() + "px")
+        });
+    return this;
+    }
+    
+jQuery.fn.imgAbsCenter = function(parent) {
+        if (parent) {
+            parent = this.parents('#photo-box');
+        } else {
+            parent = window;
+        }
+        var img = this.siblings('img')[0];   
+        this.css({
+            "position": "relative",
             "top": ((($(parent).height() - this.outerHeight()) / 2) + $(parent).scrollTop() + "px"),
             //"left": ((($(parent).width() - this.outerWidth()) / 2) + $(parent).scrollLeft() + "px")
         });
@@ -43,9 +58,16 @@ $(function() {
           dataType: 'json',
           success: function(data){
             $(link).addClass("processed");
-            $("#photo-box #photo-wrapper img").attr("src", data.image.src).load(function(){$("#photo-box #photo-wrapper a").absCenter(true)});
+            $("#photo-box #photo-wrapper img").attr("src", data.image.src).load(function(){
+                $("#photo-box #photo-wrapper a").absCenter(true);
+                $("#photo-box #photo-wrapper img").imgAbsCenter(true);
+                $("#prev-photo-span").css('height',$('#photo-box').height());
+                $("#next-photo-span").css('height',$('#photo-box').height());
+                
+            });
             var height = $("#wrapper").height();
             $("#photo-overlay").css({"position" : "absolute"}).css({"left" : 0}).css({"top" : 0}).css({"width" : "100%"}).css({"min-height" : "100%"}).css({"z-index" : 2000}).css({"height" : height}).show();
+            $("#photo-box").show().center(true);
             $("#photo-box").show().center(true);
             
            
@@ -133,7 +155,12 @@ $(function() {
         $("#photo-box").hide();
       });
       
-      
+      $(document).keyup(function(e) {
+        if (e.keyCode == 27) { 
+          if($("#photo-box").is(":visible"))
+            $("#close-box a").trigger('click'); 
+        }   
+      });
       
       
       function bindCommentSubmit(){ 
@@ -160,7 +187,7 @@ $(function() {
             postPhotoComment($(this),comment);  
           }
           return false;
-        });
+        }); 
       }
       
        function postPhotoComment(form, comment){
