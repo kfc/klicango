@@ -271,7 +271,7 @@
           <?php endif;?>
         
         <?php endif;?>
-        <?php if ($node->field_event_type[0]['value'] == 'public' || $node->uid == $user->uid) :?>
+        <?php if (user_is_logged_in() && $node->field_event_type[0]['value'] == 'public' || $node->uid == $user->uid) :?>
             <div class="invite-friend" id="invite-friend-link"><a href="javascript: void(0);"><?php echo t('Invite Friends')?></a></div>
           <?php endif; ?>
         </div>

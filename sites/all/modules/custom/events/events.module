@@ -615,7 +615,7 @@ function events_preprocess_page(&$variables) {
     if(isset($variables['node']) && $variables['node']->type == 'event'){
       $viewed_event_id = $variables['node']->nid;
       $status = events_get_event_status_for_user($viewed_event_id);   
-      if(empty($status) || !user_is_logged_in()){
+      if(strtolower($variables['node']->field_event_type[0]['value']) == 'private' && (empty($status) || !user_is_logged_in())){
         $variables['content'] = theme('event_access_denied');
         unset($variables['content_bottom_left']);
         unset($variables['content_bottom_right']);
