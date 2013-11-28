@@ -2,13 +2,18 @@
   global $user;
   if(user_is_anonymous()):
 ?>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("a#log_in").trigger('click');
+    });
+  </script>
 
-<div id="event-access-denied-page" title="<?php echo t('User page access denied')?>">
+<div id="">
   <div class="add-friend-text">
-    <?php echo t('User pages are available only for registered users');?>
+    <?php echo t('User pages are available only for registered users.');?>
   </div>
     <div class="person-item">
-        <a class="black-button" href="/"><?php echo t('Go to homepage'); ?></a>
+        <a class="black-button" style="float: left" href="/"><?php echo t('Go to homepage'); ?></a>
     </div>
 </div>
 

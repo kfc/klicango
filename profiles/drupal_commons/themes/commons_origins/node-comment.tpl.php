@@ -38,7 +38,7 @@
     $comment_status .= ' '.t('in').' '.l($target_node->title,'node/'.$node->comment_target_nid,$options);
   }
   if(!empty($author->first_name) && !empty($author->first_name))
-    $name = l($author->first_name.' '.$author->surname,'user/'.$author->uid);  
+    $name = l($author->first_name.' '.$author->surname,'user/'.$author->uid,array('attributes'=>array('class'=>(in_array('professional',$author->roles) ? 'publicContent' : ''))));  
   if($node->title == '<EventCreated>'){
     $comment_status = 'created new event '.l($target_node->title,'node/'.$node->comment_target_nid,$options);  
   }

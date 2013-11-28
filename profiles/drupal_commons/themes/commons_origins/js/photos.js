@@ -85,7 +85,8 @@ $(function() {
             else
               $("#photo-box #photo-wrapper a#next-photo").hide();    
               
-            bindCommentSubmit();    
+            bindCommentSubmit();
+            bindLoginUserLink();    
             
           },
         });  
@@ -161,6 +162,15 @@ $(function() {
             $("#close-box a").trigger('click'); 
         }   
       });
+      
+      function bindLoginUserLink(){
+        $(".login-user-link").click(function(e){
+          e.preventDefault();
+          $("#close-box a").trigger('click');
+          $("a#log_in").trigger('click');
+        });
+      }
+      bindLoginUserLink();
       
       
       function bindCommentSubmit(){ 

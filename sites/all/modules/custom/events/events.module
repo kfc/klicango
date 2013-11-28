@@ -610,14 +610,13 @@ function events_preprocess_page(&$variables) {
       $viewed_uid = arg(1);
       if($viewed_uid != $user->uid){ //check if a place or friends
         $viewed_user = user_load($viewed_uid);
-        if((in_array('individual', $viewed_user->roles) && user_is_logged_in()) || !user_is_logged_in()){ // Private profile
+        if((in_array('individual', $viewed_user->roles))){ // Private profile
           if(!klicango_friends_are_friends($user->uid, $viewed_uid)  || !user_is_logged_in()) {
             $variables['content'] = theme('friend_request_calendar_page',$viewed_user);
             unset($variables['content_bottom_left']);
             unset($variables['content_bottom_right']);
             unset($variables['right_aside']);
           }
-          
         }
       }  
     }
@@ -632,6 +631,16 @@ function events_preprocess_page(&$variables) {
         unset($variables['right_aside']);  
       }
     }
+    
+    /*if(user_is_anonymous()){ 
+      drupal_add_js("
+      
+        $(document).ready(function(){
+          $('div.person-name>a:not(.publicContent)').addClass('protectedContent');
+        })
+      
+      ",'inline');
+    } */
     
 }
 

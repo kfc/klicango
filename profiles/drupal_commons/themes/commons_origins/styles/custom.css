@@ -821,18 +821,19 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
   background-image: none !important;
 }
 
-#comment-table-wrapper {
+#comment-table-wrapper table{
   min-height: 15px;
 }
 
 #add-comment{
   position: relative;
+  padding-top: 15px;
 }
 
 .photo-comment-submit-wrapper{
   position: absolute;
   right: 25px;
-  top: 7px;
+  top: 22px;
 }
 
 #photo-box #photo-wrapper a{
@@ -910,4 +911,9 @@ div.person-item .person-thumbnail {
 
 .view.view-content-event-calendar{
   overflow: hidden;
+}
+
+.add-comment-login-wrapper{
+  margin: -15px 15px 15px 15px;
+  
 }

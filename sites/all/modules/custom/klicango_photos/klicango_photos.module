@@ -7,14 +7,14 @@ function klicango_photos_menu(){
     'type' => MENU_CALLBACK,
     'page callback' => 'klicango_photos_event_photo',
     'page arguments' => array(1,2),
-    'access callback' => 'user_is_logged_in',
+    'access callback' => true,
   );
   
   $items['comment_photo/%/%'] = array(
     'type' => MENU_CALLBACK,
     'page callback' => 'klicango_photos_comment_photo',
     'page arguments' => array(1,2),
-    'access callback' => 'user_is_logged_in',
+    'access callback' => true,
   );
   
    $items['add_photo_comment'] = array(
@@ -186,18 +186,18 @@ function theme_photo_comments($comments, $fid, $event_id){
   global $user;
   $output = '
   <div id="comment-form">
-    <div id="comment-table-wrapper">
-        <table id="comment-table">';
-        
-   if(!empty($comments)){
-    foreach($comments as $comment){ 
-      $output .= theme('photo_comment', $comment);
-    }
-   }  
-       
-   $output .= '
-        </table>
-      </div>
+    <div id="comment-table-wrapper">';
+    $output .= '<table id="comment-table">'; 
+     if(!empty($comments)){
+      foreach($comments as $comment){ 
+        $output .= theme('photo_comment', $comment);
+      }
+     }  
+     $output .= '</table>';    
+     $output .= '
+      </div>';
+   if(user_is_logged_in()){
+    $output .= '
       <div id="add-comment">
         <div class="profile-thumbnail">'.theme_imagecache('user_picture_40x40', $user->picture).'</div>
         <form method="POST" action="'.$_GET['q'].'" id="photo-comment-post-form"><input type="hidden" name="fid" value="'.$fid.'"><input type="hidden" name="event_id" value="'.$event_id.'"><input type="text" name="comment" id="photo-comment-body" />
@@ -205,8 +205,13 @@ function theme_photo_comments($comments, $fid, $event_id){
           <a href="#" title="Add comment" id="photo-comment-submit"><img src="/profiles/drupal_commons/themes/commons_origins/images/enter-icon.png" ></a>
         </span>
         </form>
-      </div>
-    </div>';
+      </div>';
+   }
+   else{
+    $output .= '<div id="add-comment"><div class="add-comment-login-wrapper"><a href="#" class="login-user-link">Login</a> or <a href="#" class="login-user-link">register</a> to post comments.</div></div>';   
+     
+   }  
+   $output .= '</div>';
   
    return $output;
 }
