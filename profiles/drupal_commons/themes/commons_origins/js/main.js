@@ -484,3 +484,41 @@ function inviteJoinFriendSubmit(object, user_id) {
      },
   });
 }
+
+function loadFindEvents(offset, limit) {
+        $.ajax({
+           type: 'GET',
+           dataType: 'html',
+           url: '/events/find',
+           data: {"offset": offset, "limit": limit},
+           success : function (data, textStatus, jqXHR) {
+                $('.friends-join .show_more').remove();
+                
+                if ($(".friends-join div.scroll-pane.mCustomScrollbar").length) {
+                    if (offset != 0) {
+                      $('.friends-join .mCSB_container').append(data);
+                    }
+                } else {
+                    $('.friends-join .scroll-pane').append(data);
+                    $(".friends-join div.scroll-pane").mCustomScrollbar({
+                        scrollButtons:{
+                        	enable:true
+                        }
+                    });    
+                }                
+                
+                $(".friends-join .scroll-pane").hide();
+           }, 
+           complete : function (jqXHR, textStatus) {  
+              if (offset == 0) {
+                  $( "#invite-friends-form" ).dialog( "open" );
+                  $('.invite-friend-search').val('')
+              }  
+              $(".friends-join .scroll-pane").show();
+              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 468, "top" : 200});
+              $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
+              $(".friends-join .scroll-pane").mCustomScrollbar("update");
+           }, 
+        });  
+    $("#invite-friends-form #search-friends").show();
+}
