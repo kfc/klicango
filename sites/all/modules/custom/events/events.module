@@ -168,7 +168,7 @@ function events_theme() {
         'template' => 'events-invited-list',
         'arguments' => array('events' => NULL, 'public' => NULL),
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
-      ),
+      ),    
       'events_accepted_list' => array(
         'template' => 'events-accepted-list',
         'arguments' => array('events' => NULL, 'public' => NULL),
@@ -205,6 +205,22 @@ function events_theme() {
         'template' =>'event-access-denied',
         'path' => drupal_get_path('theme',variable_get('theme_default','')), 
       ),
+      
+       'date_events_list' => array(
+        'template' => 'date-events-list',
+        'arguments' => array('events' => NULL),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),
+      
+      'event_for_day' => array(
+        'template' => 'event-for-day',
+        'arguments' => array('event' => NULL, 'viewed_user_id' => NULL),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),
+      
+      
+      
+      
     );
 }
 
@@ -891,11 +907,18 @@ function show_events($user_id,$date){
   } */
 
   $event_nids = get_user_events_for_date($user_id, $date);
+  if($user_id != $user->uid){
+    $available_events = get_private_calendar_events_viewed_by_user($user_id, $user->uid, EVENT_STATUS_ACCEPTED);
+    $event_nids = array_intersect($available_events, $event_nids);  
+  }
+
   $events = array();
-  foreach($event_nids as $_nid)
-    $events[] = node_view(node_load($_nid), true);
-    
-  echo theme('events_invited_list', $events, true);
+  foreach($event_nids as $_nid){
+    $events[] = theme('event_for_day',node_load($_nid),$user_id);  
+  }
+   
+  $return = array('html'=>theme('date_events_list', $events, true), 'title'=>date('d F Y',mktime(0,0,0,substr($date,5,2),substr($date,8,2),substr($date,0,4))));  
+  echo json_encode($return);
   exit;
 }
 
@@ -921,7 +944,7 @@ function get_user_events_for_date($user_id = null, $date = null, $load_full_node
     // Also, select events that are user subscribed to
     $res = db_query("SELECT event_id from {events_users} eu
                       INNER JOIN {content_type_event} e on eu.event_id = e.nid
-                      where user_id = %d AND DATE_FORMAT(field_date_value,'%%Y-%%m-%%d') = '%s'",$user_id, $date);
+                      where user_id = %d AND eu.status = %d AND DATE_FORMAT(field_date_value,'%%Y-%%m-%%d') = '%s'",$user_id, EVENT_STATUS_ACCEPTED,$date);
     while ($r = db_fetch_array($res)) {
       if($load_full_node)
         $events[$r['event_id']] = node_load($r['event_id']);
@@ -1215,5 +1238,23 @@ function events_find() {
   foreach ($events_list as $event_id => $data) {
     $_event = node_load($event_id);
   }
+  
+}
+
+function get_private_calendar_events_viewed_by_user($viewed_user_id ,$user_id, $status = ''){
+  $events_ids = array();
+  $result = db_query("SELECT eu.event_id 
+                      FROM events_users eu 
+                      INNER JOIN content_type_event e on e.nid = eu.event_id
+                      WHERE user_id  = %d 
+                      AND (field_event_type_value  = 'public' 
+                        OR ((field_event_type_value  = 'private') AND (eu.event_id IN (SELECT event_id FROM events_users WHERE user_id = %d))))
+                      ".(!empty($status) ? "AND eu.status = %d" : "")." 
+  ", $viewed_user_id, $user_id,(!empty($status) ? $status : ""));
+  while ($_event = db_fetch_object($result)) {
+    $events_ids[] = $_event->event_id;
+  }
+
+  return $events_ids;
   
 }

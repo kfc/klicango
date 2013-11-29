@@ -24,8 +24,11 @@
  }elseif(arg(0) == 'user_calendar' && arg(2) > 0){
     $active_user_uid = arg(2);
   }
+  $day_events_count = 0;
+  foreach($items[$date] as $_time => $_time_events)
+    $day_events_count += count($_time_events);
 ?>                       
 <div class="<?php print $granularity ?> <?php print $class; ?>"> <?php print strtolower($day_of_week).' '.$day; ?> </div>
-<?php if(count($items[$date]) > 1):?>
-  <div class="more-events"><a rel="lightbox" class="show-events-link" href="/show_events/<?php echo $active_user_uid?>/<?php echo $date;?>"><?php echo '+'.(count($items[$date])-1).' '.t('event(s)');?></a></div>    
+<?php if($day_events_count > 1):?>
+  <div class="more-events"><a rel="lightbox" class="show-events-link" href="/show_events/<?php echo $active_user_uid?>/<?php echo $date;?>"><?php echo '+'.($day_events_count - 1).' '.t('event(s)');?></a></div>    
 <?php endif;?>

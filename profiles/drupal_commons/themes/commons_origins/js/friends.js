@@ -126,11 +126,7 @@ function declineFriend(user_id) {
        url: '/friend/decline',
        data: {"sender_id": user_id},
        success : function (data, textStatus, jqXHR) {
-            console.log(data.status);
             if (data.status == true) {
-                console.log(user_id);
-                console.log($('#user_' + user_id));
-                console.log($('#user_' + user_id).closest('tr'));
                 $('#user_' + user_id).closest('tr').hide('slow');
                 if ($('#user_' + user_id).closest('table').find('tr').length == 1) {
                     $('#new-friends-list').remove();
