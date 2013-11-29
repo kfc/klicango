@@ -271,20 +271,27 @@ function customization_views_query_alter(&$view, &$query) {
       if($user-> uid != $_user_id)
         $_user = user_load($_user_id);
       else 
-        $_user = $user;  
-      if(($_user->uid != $user->uid) && in_array('individual',$_user->roles)){
-        
-      }
-      else{
-        array_pop($query->where[0]['clauses']);   
+        $_user = $user;
+       
+       
+       array_pop($query->where[0]['clauses']);   
         array_pop($query->where[0]['args']);
         $query->where[0]['clauses'][] = $query->where['date']['clauses'][0];
         //$query->where[0]['args'][] = $query->where['date']['args'][0];
-        unset($query->where['date']); 
+        unset($query->where['date']);     
+        
+       // If user views individual's calendar then show public events and events you are participating or invited to        
+      if(($_user->uid != $user->uid) && in_array('individual',$_user->roles)){
+        $available_events = get_private_calendar_events_viewed_by_user($_user->uid, $user->uid, EVENT_STATUS_ACCEPTED);  
+        if(!empty($available_events)){          
+            $query->where[0]['clauses'][] = 'node.nid IN (%s)';
+            $query->where[0]['args'][] = implode(',',$available_events);
+          }
+          $query->group_operator = 'OR';  
+      }
+      else{ 
         $query->where[0]['clauses'][] = 'node.uid = %d';
-        $query->where[0]['args'][] = $_user->uid;
-        
-        
+        $query->where[0]['args'][] = $_user->uid;  
         //$query->where 
         if(in_array('individual',$_user->roles)){
           $user_accepted_events = events_get_user_events_with_status($_user->uid, EVENT_STATUS_ACCEPTED); // GET ACCEPTED EVENTS

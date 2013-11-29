@@ -946,3 +946,72 @@ div.person-item .person-thumbnail {
   display: block;
   width: 100%;
 }
+
+.ui-datepicker-multi {
+  z-index: 1000 !important;
+}
+
+#date-events-list {
+  padding-left: 20px;
+}
+#date-events-list table tr td.col-1{
+  width: 140px;
+  padding-right: 0px;
+  padding-bottom: 20px;
+}
+
+#date-events-list table tr td.col-2 {
+  vertical-align: top;
+  padding-top: 20px;
+  font: 14px/16px 'Arial';
+  color: #6d6e71;
+  width: 280px;
+}      
+
+#date-events-list table tr td.col-2 .event-title, #date-events-list table tr td.col-2 .going-users-link, #date-events-list table tr td.col-2 .location-name{
+  color: #96c12b;
+  font: 14px/16px 'Arial'
+}
+#date-events-list table tr td.col-2 .event-title.private{
+  color: #f54e1f;
+}
+
+#date-events-list div.add-to-calendar{
+  float: left;
+}
+#date-events-list table{width: 100%;}
+
+#date-events-list div.add-to-calendar{margin-bottom: 9px; }
+#date-events-list div.add-to-calendar a,
+#date-events-list div.decline a{
+  background: #35332f;
+  font: bold 12px/30px Arial;
+  color: #96c12b;display: block;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  width: 139px;
+  height: 30px;
+  border: 1px solid #949391;
+  -moz-border-radius: 3px; /* Firefox */
+    -webkit-border-radius: 3px; /* Safari, Google Chrome */
+    -khtml-border-radius: 3px; /* KHTML */
+    -o-border-radius: 3px; /* Opera */
+    -ms-border-radius: 3px; /* IE8 */
+    -icab-border-radius: 3px; /* Icab */
+    border-radius: 3px; /* CSS3 */
+    text-decoration: none;
+    text-align: center;
+}
+#date-events-list div.decline a{font-weight: normal !important;}
+
+#date-events-list.scroll-pane{
+  width: 550px;
+  height: 350px;
+}
+
+.add-event-from-day-events-link.accepted{
+  color: #222222;
+  background: #FFF;
+}

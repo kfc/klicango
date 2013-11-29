@@ -63,6 +63,20 @@ function feature_imagecache_imagecache_default_presets() {
         ),
       ),
     ),
+    'day_event_image' => array(
+      'presetname' => 'day_event_image',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '120',
+            'height' => '120',
+          ),
+        ),
+      ),
+    ),
     'events_overview_thumbnail' => array(
       'presetname' => 'events_overview_thumbnail',
       'actions' => array(

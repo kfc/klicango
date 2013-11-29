@@ -12,7 +12,7 @@ $(function() {
     $("#datepicker").datepicker("option", "dateFormat", 'dd/mm/yy');
   }
   
-  
+  var cur_date = '';
   $("#date-heading-date-input").datepicker({
       dateFormat : 'yy-mm-dd',
       changeMonth: true,
@@ -21,12 +21,9 @@ $(function() {
       numberOfMonths: 2,
       onChangeMonthYear : function(year, month, inst) {
         $(this).datepicker('setDate', year+'-'+month+'-01');
-        
-       // $(".ui-datepicker-calendar").hide();
-       // $(".ui-datepicker-buttonpane .ui-datepicker-current").hide(); 
       },
       onClose : function(dateText){        
-        if(dateText != ''){
+        if(dateText != '' && cur_date != dateText){
           dateText = dateText.substring(0, 7);
           var href= $("#prev-month-button").attr('href');
           href= href.replace(getParameterByName(href, 'cal'), dateText );
@@ -34,6 +31,9 @@ $(function() {
 
           $("#prev-month-button").trigger('click');
         }
+      },
+      beforeShow : function(){  
+        cur_date = $("#date-heading-date-input").val();
       }
     });
     $(".view-content-event-calendar .calendar-calendar .date-heading h3").click(function(){  
@@ -173,8 +173,8 @@ $(function() {
   function bindShowEventsDialog(){
     $("#show-events-wrapper" ).dialog({
         autoOpen: false,
-        width: 800,
-        height: 400,
+        width: 600,
+        height: 450,
         modal: true,
         close: function() {
          $(".scroll-pane").hide();
@@ -248,6 +248,7 @@ $(function() {
             $("#next-month-button").attr('href',data.next_url); 
             $("#prev-month-button").attr('href',data.prev_url); 
             $(".view-content-event-calendar .date-heading h3").text(data.month_name);
+            $("#date-heading-date-input").datepicker('setDate', date.substring(0,4)+'-'+date.substring(5,7)+'-01');
          }, 
       }); 
     }
@@ -415,11 +416,28 @@ $(function() {
       
       $.ajax({
              type: 'GET',
-             dataType: 'html',
+             dataType: 'json',
              url: $(this).attr('href'),
              success : function (data) {
-              $( "#show-events-wrapper" ).html(data);  
-             }
+              $( "#show-events-wrapper" ).html(data.html); 
+              $( "#show-events-wrapper" ).dialog( "option", "title", data.title  ); 
+              // $("#date-events-list.scroll-pane .list-item").height(1000);
+              $("#date-events-list.scroll-pane .list-item").height($("#date-events-list.scroll-pane .list-item .col-1 img").length * 135);
+              
+              if($(".add-event-from-day-events-link").length > 0){    
+                $("#date-events-list.scroll-pane").width($("#date-events-list.scroll-pane").width() + 50);
+                $("#date-events-list.scroll-pane .list-item").width($("#date-events-list.scroll-pane .list-item").width() + 50);
+                $( "#show-events-wrapper" ).dialog( "option", "width", $( "#show-events-wrapper" ).dialog( "option", "width") + 50  );   
+              }
+              $("#date-events-list.scroll-pane").mCustomScrollbar();
+              
+              $(".going-users-link")
+                .click(function(e) {
+                e.preventDefault();
+                loadEventUsers('going', e.target.id);
+              });
+             },
+            
       });
           
       return false;
@@ -559,6 +577,24 @@ function acceptEvent(event_id) {
          },  
       });
     }
+}
+
+function acceptEventFromDayEventsList(event_id) {
+
+  $.ajax({
+     type: 'GET',
+     dataType: 'json',
+     url: '/invitation/accept',
+     data: {"event_id": event_id, "status": status},
+     success : function (data, textStatus, jqXHR) {
+          if (data.status == 'success') {
+            $('.add-event-from-day-events-link#event_' + event_id).addCass('accepted');
+            $('.add-event-from-day-events-link#event_' + event_id).text(Drupal.t('Event added'));
+              //to do
+          }
+     },  
+  });
+
 }
 
 function loadEventUsers(type, event_id) {
