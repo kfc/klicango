@@ -1015,3 +1015,9 @@ div.person-item .person-thumbnail {
   color: #222222;
   background: #FFF;
 }
+
+.has-value {
+  color: #000000 !important;
+  font-size: 12px !important;
+  font-family: Arial !important;
+}
