@@ -12,7 +12,7 @@ $(function() {
     $("#datepicker").datepicker("option", "dateFormat", 'dd/mm/yy');
   }
   
-  
+  var cur_date = '';
   $("#date-heading-date-input").datepicker({
       dateFormat : 'yy-mm-dd',
       changeMonth: true,
@@ -21,12 +21,9 @@ $(function() {
       numberOfMonths: 2,
       onChangeMonthYear : function(year, month, inst) {
         $(this).datepicker('setDate', year+'-'+month+'-01');
-        
-       // $(".ui-datepicker-calendar").hide();
-       // $(".ui-datepicker-buttonpane .ui-datepicker-current").hide(); 
       },
       onClose : function(dateText){        
-        if(dateText != ''){
+        if(dateText != '' && cur_date != dateText){
           dateText = dateText.substring(0, 7);
           var href= $("#prev-month-button").attr('href');
           href= href.replace(getParameterByName(href, 'cal'), dateText );
@@ -34,6 +31,9 @@ $(function() {
 
           $("#prev-month-button").trigger('click');
         }
+      },
+      beforeShow : function(){  
+        cur_date = $("#date-heading-date-input").val();
       }
     });
     $(".view-content-event-calendar .calendar-calendar .date-heading h3").click(function(){  
@@ -248,6 +248,7 @@ $(function() {
             $("#next-month-button").attr('href',data.next_url); 
             $("#prev-month-button").attr('href',data.prev_url); 
             $(".view-content-event-calendar .date-heading h3").text(data.month_name);
+            $("#date-heading-date-input").datepicker('setDate', date.substring(0,4)+'-'+date.substring(5,7)+'-01');
          }, 
       }); 
     }

@@ -946,3 +946,7 @@ div.person-item .person-thumbnail {
   display: block;
   width: 100%;
 }
+
+.ui-datepicker-multi {
+  z-index: 1000 !important;
+}
