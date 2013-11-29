@@ -250,7 +250,8 @@ function dialog_builder_signup_user() {
     drupal_goto('<front>');
 }          
            
-function dialog_builder_save_user($account, $variables) {
+function dialog_builder_save_user(&$account, $variables) {
+    global $user;
     if ($variables['user_type'] == 6) {
         $fields = array('first_name', 'surname', 'sex', 'birthday', 'country', 'city', 'university', 'degree');
     } else {
@@ -263,12 +264,27 @@ function dialog_builder_save_user($account, $variables) {
     while ($row = db_fetch_array($result)) {
         $db_fields[$row['name']] = $row['fid'];
     }
-    
     db_query('DELETE FROM profile_values WHERE uid = %d', $account->uid);
     
-    foreach ($db_fields as $field => $fid) {
-        db_query('INSERT INTO profile_values (fid, uid, value) VALUES (%d, %d, "%s")', $fid, $account->uid, $variables[$field]);
+    if(user_is_logged_in()) {
+      $data = unserialize($user->data);
     }
+    
+    foreach ($db_fields as $field => $fid) {
+        $result = db_query('INSERT INTO profile_values (fid, uid, value) VALUES (%d, %d, "%s")', $fid, $account->uid, $variables[$field]);
+        $account->$field = $variables[$field];
+        if (user_is_logged_in()) {
+          $user->$field = $variables[$field];
+          if (!empty($data) && !empty($data[$field])) {
+            $data[$field] = $variables[$field];
+          }
+        }
+    }
+    
+    if(!empty($data)) {
+      $user = user_save($user, $data);
+    }
+    
 }
 
 function dialog_builder_delete_profile_photo($account, $variables) {

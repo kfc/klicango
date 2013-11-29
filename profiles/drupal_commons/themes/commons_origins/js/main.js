@@ -182,7 +182,8 @@ function parseResults(dialog_id, data) {
             function() {
                 $('#dialog-' + dialog_id + ' input[name="' + this + '"]').addClass('error');
                 $('#dialog-' + dialog_id + ' select[name="' + this + '"]').addClass('error');
-                $('#dialog-' + dialog_id + ' select[checkbox="' + this + '"]').addClass('error');
+                $('#dialog-' + dialog_id + ' #' + this +'-styler').addClass('error');
+                $('#dialog-' + dialog_id + ' checkbox[name="' + this + '"]').addClass('error');
             }
         );        
     } else {

@@ -180,6 +180,8 @@
 
 			// select
 			} else if (el.is('select')) {
+		    is_default = '';
+		    if (el.val() != '0') is_default = 'has-value';
 				el.each(function() {
 					if (el.next('div.jqselect').length < 1) {
 
@@ -234,7 +236,7 @@
 									var selectbox =
 										$('<div' + id + ' class="jq-selectbox jqselect error' + cl + '" style="display: inline-block; position: relative; z-index:' + opt.singleSelectzIndex + '">'+
 												'<div class="jq-selectbox__select"' + title + '>'+
-													'<div class="jq-selectbox__select-text"></div>'+
+													'<div class="jq-selectbox__select-text ' + is_default + '"></div>'+
 													'<div class="jq-selectbox__trigger"><div class="jq-selectbox__trigger-arrow"></div></div>'+
 												'</div>'+
 											'</div>');
@@ -242,7 +244,7 @@
 									var selectbox =
 										$('<div' + id + ' class="jq-selectbox jqselect' + cl + '" style="display: inline-block; position: relative; z-index:' + opt.singleSelectzIndex + '">'+
 												'<div class="jq-selectbox__select"' + title + '>'+
-													'<div class="jq-selectbox__select-text"></div>'+
+													'<div class="jq-selectbox__select-text ' + is_default + '"></div>'+
 													'<div class="jq-selectbox__trigger"><div class="jq-selectbox__trigger-arrow"></div></div>'+
 												'</div>'+
 											'</div>');
