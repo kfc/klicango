@@ -590,7 +590,7 @@ function acceptEventFromDayEventsList(event_id) {
           if (data.status == 'success') {
             $('.add-event-from-day-events-link#event_' + event_id).addClass('already-accepted');
             $('.add-event-from-day-events-link#event_' + event_id).text(Drupal.t('I am going'));
-              //to do
+            $('.add-event-from-day-events-link#event_' + event_id).attr('onclick','');
           }
      },  
   });
