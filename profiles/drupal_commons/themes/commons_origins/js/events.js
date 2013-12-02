@@ -588,8 +588,9 @@ function acceptEventFromDayEventsList(event_id) {
      data: {"event_id": event_id, "status": status},
      success : function (data, textStatus, jqXHR) {
           if (data.status == 'success') {
-            $('.add-event-from-day-events-link#event_' + event_id).addCass('accepted');
+            $('.add-event-from-day-events-link#event_' + event_id).addClass('accepted');
             $('.add-event-from-day-events-link#event_' + event_id).text(Drupal.t('Event added'));
+            $('.add-event-from-day-events-link#event_' + event_id).attr('onclick','');
               //to do
           }
      },  

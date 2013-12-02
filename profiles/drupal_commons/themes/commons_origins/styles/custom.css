@@ -1,4 +1,4 @@
-form .form-item input.error{
+form .form-item input.error, form .form-item textarea.error{
   border-color: red;
 }
 
@@ -1012,8 +1012,8 @@ div.person-item .person-thumbnail {
 }
 
 .add-event-from-day-events-link.accepted{
-  color: #222222;
-  background: #FFF;
+  color: #222222 !important;
+  background: #FFF !important;
 }
 
 .has-value {
