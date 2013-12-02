@@ -1,6 +1,6 @@
 <?php
     if ($public == true) {
-        $type = 'Top public events<a href="">+ Find events</a>';
+        $type = 'Top public events<a href="javascript: void(0)" onclick="loadFindEvents(0, 10);">+ Find events</a>';
     } else {
         $type = 'My private events';
     }

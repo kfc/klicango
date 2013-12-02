@@ -64,7 +64,7 @@ $(function() {
   
    $("#create-event-form.private-event" ).dialog({
     autoOpen: false,
-    height: 410,
+    height: 378,
     width: 484,
     modal: true,
     close: function() {
@@ -499,8 +499,8 @@ $(function() {
                   $('.invite-friend-search').val('')
               }  
               $("#invite-friends-form .scroll-pane").show();
-              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 468});
-              $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
+              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 438});
+              $(".ui-dialog-content.ui-widget-content").css({"height" : 465});
               $("#invite-friends-form .scroll-pane").mCustomScrollbar("update");
            }, 
         }); 
@@ -588,8 +588,8 @@ function acceptEventFromDayEventsList(event_id) {
      data: {"event_id": event_id, "status": status},
      success : function (data, textStatus, jqXHR) {
           if (data.status == 'success') {
-            $('.add-event-from-day-events-link#event_' + event_id).addCass('accepted');
-            $('.add-event-from-day-events-link#event_' + event_id).text(Drupal.t('Event added'));
+            $('.add-event-from-day-events-link#event_' + event_id).addClass('already-accepted');
+            $('.add-event-from-day-events-link#event_' + event_id).text(Drupal.t('I am going'));
               //to do
           }
      },  

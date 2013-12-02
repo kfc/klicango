@@ -314,6 +314,13 @@ div.search-for-friends.loading input[type="text"]{
 	padding-right: 25px;
 	width: 420px !important;
 }
+
+#find-events-wrapper div.search-for-friends.loading input[type="text"]{
+	background: url(../images/throbber.svg) 510px center no-repeat;
+	padding-right: 25px;
+	width: 510px !important;
+}
+
 #invite-friends-form {
     display: none;
 }
@@ -394,7 +401,7 @@ body .ui-widget-content .form-submit input[type="button"]{
     -icab-border-radius: 5px; /* Icab */
     border-radius: 5px; /* CSS3 */
 }
-a.already-accepted.add-event-link{
+a.already-accepted.add-event-link, a.already-accepted.add-event-from-day-events-link {
 	font: bold 12px/30px Arial !important;
     width: 139px !important;
     margin-top: 0px;
@@ -1020,4 +1027,75 @@ div.person-item .person-thumbnail {
   color: #000000 !important;
   font-size: 12px !important;
   font-family: Arial !important;
+}
+
+#find-events-list {
+  padding-left: 20px;
+}
+#find-events-list table tr td.col-1{
+  width: 140px;
+  padding-right: 0px;
+  padding-bottom: 20px;
+}
+
+#find-events-list table tr td.col-2 {
+  vertical-align: top;
+  padding-top: 20px;
+  font: 14px/16px 'Arial';
+  color: #6d6e71;
+  width: 280px;
+}      
+
+#find-events-list table tr td.col-2 .event-title, #find-events-list table tr td.col-2 .going-users-link, #find-events-list table tr td.col-2 .location-name{
+  color: #96c12b;
+  font: 14px/16px 'Arial'
+}
+#find-events-list table tr td.col-2 .event-title.private{
+  color: #f54e1f;
+}
+
+#find-events-list div.add-to-calendar{
+  float: left;
+}
+#find-events-list table{width: 100%;}
+
+#find-events-list div.add-to-calendar{margin-bottom: 9px; }
+#find-events-list div.add-to-calendar a,
+#find-events-list div.decline a{
+  background: #35332f;
+  font: bold 12px/30px Arial;
+  color: #96c12b;display: block;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  width: 139px;
+  height: 30px;
+  border: 1px solid #949391;
+  -moz-border-radius: 3px; /* Firefox */
+    -webkit-border-radius: 3px; /* Safari, Google Chrome */
+    -khtml-border-radius: 3px; /* KHTML */
+    -o-border-radius: 3px; /* Opera */
+    -ms-border-radius: 3px; /* IE8 */
+    -icab-border-radius: 3px; /* Icab */
+    border-radius: 3px; /* CSS3 */
+    text-decoration: none;
+    text-align: center;
+}
+#find-events-list div.decline a{font-weight: normal !important;}
+
+#find-events-list.scroll-pane{
+  width: 550px;
+  height: 350px;
+}
+
+#find-events-wrapper .form-item {
+  padding-left: 20px;
+}
+#find-events-wrapper .form-item input {
+  width: 535px;
+}
+
+#dialog-end_user_register, #dialog-professional_user_register {
+  padding-bottom: 20px;
 }

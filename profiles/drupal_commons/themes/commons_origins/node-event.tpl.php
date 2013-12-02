@@ -35,15 +35,15 @@
                 <div class="event-date"><?php echo strip_tags($node->field_date[0]['view']); ?></div>
 				<div class="event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']; ?></div>
 				<div class="going-friends">
-                    <a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" class="going-users-link"> 
-                        <?php if ($node->friends_going == 1) $postfix = ' is going'; else $postfix = 's are going'; ?>
-                        <?php if (user_is_logged_in()) : ?>
-                            <?php echo $node->friends_going; ?> friend<?php echo $postfix; ?>
-                        <?php else : ?>
-                            <?php echo $node->friends_going; ?> user<?php echo $postfix; ?>
-                        <?php endif; ?>
-                    </a>
-                </div>
+            <a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" class="going-users-link"> 
+                <?php if ($node->friends_going == 1) $postfix = ' is going'; else $postfix = 's are going'; ?>
+                <?php if (user_is_logged_in()) : ?>
+                    <?php echo $node->friends_going; ?> <?php echo (!empty($node->whoisgoing) ? $node->whoisgoing : 'friend') ?><?php echo $postfix; ?>
+                <?php else : ?>
+                    <?php echo $node->friends_going; ?> user<?php echo $postfix; ?>
+                <?php endif; ?>
+            </a>
+        </div>
 			</td>
 			<td class="col-3">
                 <?php if (events_event_is_available_to_add($node)) { ?>

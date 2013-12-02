@@ -19,11 +19,11 @@ $(function() {
                }, 
                complete : function (jqXHR, textStatus) {  
                     $('#dialog-' + e.target.id).dialog({
-            		  autoOpen: false,
+                		  autoOpen: false,
                       width: $('#dialog-' + e.target.id).attr('width'),
                       height: 'auto',
-            		  modal: true
-            		});
+            		      modal: true
+                		});
                     
                     
                     
@@ -49,8 +49,10 @@ $(function() {
                         validateRemote(dialog_id, e);
                     });
                     $('#dialog-' + e.target.id).dialog('open');
-                    
 
+                    if (e.target.id == '') {
+                      $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 482});
+                    }
                }, 
             });    
         } else {
@@ -77,49 +79,80 @@ $(function() {
 	$( "#create-event-form #add-friends")
 		  .click(function(e) {
 			e.preventDefault();
-            $("#search-friends").show();
+            //$("#search-friends").show();
             loadFriends(0, 10);
 			//$(".scroll-pane").slideDown("normal");
 	});
     
-    $('#create-event-form #search-friends').keyup(function () {
-        if(this.value.length > 1) {
-           last_search = this.value;
-           var current_search = this.value;
-           $('.search-for-friends').addClass('loading');
-           $.ajax({
-               type: 'GET',
-               dataType: 'html',
-               url: '/friends/find',
-               data: {"search": this.value},
-               success : function (data, textStatus, jqXHR) {
-                    if(last_search == current_search) {
-                        $('.mCSB_container').html('');
-                        $('.mCSB_container').append(data);                
-                        
-                        $(".scroll-pane").hide();
-                    }                    
-               }, 
-               complete : function (jqXHR, textStatus) {
-                    if(last_search == current_search) {
-                        $(".scroll-pane").show();
-            			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 695, 'top' : 50});
-            			$(".ui-dialog-content.ui-widget-content").css({"height" : 620});
-            			$(".scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
-            			$('.search-for-friends').removeClass('loading');
-                        //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top
-                    }  
-               }, 
-            }); 
-        }
-    });
+  $('#create-event-form #search-friends').keyup(function () {
+      if(this.value.length > 1) {
+         last_search = this.value;
+         var current_search = this.value;
+         $('.search-for-friends').addClass('loading');
+         $.ajax({
+             type: 'GET',
+             dataType: 'html',
+             url: '/friends/find',
+             data: {"search": this.value},
+             success : function (data, textStatus, jqXHR) {
+                  if(last_search == current_search) {
+                      $('.mCSB_container').html('');
+                      $('.mCSB_container').append(data);                
+                      
+                      $(".scroll-pane").hide();
+                  }                    
+             }, 
+             complete : function (jqXHR, textStatus) {
+                  if(last_search == current_search) {
+                      $(".scroll-pane").show();
+          			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 685, 'top' : 50});
+          			$(".ui-dialog-content.ui-widget-content").css({"height" : 610});
+          			$(".scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
+          			$('.search-for-friends').removeClass('loading');
+                      //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top
+                  }  
+             }, 
+          }); 
+      }
+  });
+  
+  $('#find-events-wrapper #search-friends').keyup(function () {
+      if(this.value.length > 1) {
+         last_search = this.value;
+         var current_search = this.value;
+         $('#find-events-wrapper .search-for-friends').addClass('loading');
+         $.ajax({
+             type: 'GET',
+             dataType: 'html',
+             url: '/events/find',
+             data: {"search": this.value},
+             success : function (data, textStatus, jqXHR) {
+                  if(last_search == current_search) {
+                      $('#find-events-wrapper .mCSB_container table').html('');
+                      $('#find-events-wrapper .mCSB_container table').append(data);                
+                      
+                      $("#find-events-wrapper .scroll-pane").hide();
+                  }                    
+             }, 
+             complete : function (jqXHR, textStatus) {
+                  if(last_search == current_search) {
+                      $("#find-events-wrapper .scroll-pane").show();
+                			$("#find-events-wrapper .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
+                			$('#find-events-wrapper .search-for-friends').removeClass('loading');
+                      //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top
+                  }  
+             }, 
+          }); 
+      }
+  });
+  
 });
 
 function loadFriends(offset, limit) {
     if (offset == 0 && $("#create-event-form div.scroll-pane.mCustomScrollbar").length) {
         $("#create-event-form .scroll-pane").show();
-        $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 695, 'top' : 50});
-        $(".ui-dialog-content.ui-widget-content").css({"height" : 620});    			
+        $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 685, 'top' : 50});
+        $(".ui-dialog-content.ui-widget-content").css({"height" : 610});    			
     } else {
         $.ajax({
            type: 'GET',
@@ -144,8 +177,9 @@ function loadFriends(offset, limit) {
            }, 
            complete : function (jqXHR, textStatus) {  
                 $("#create-event-form .scroll-pane").show();
-	              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 695, 'top' : 50});
-    			      $(".ui-dialog-content.ui-widget-content").css({"height" : 620});
+                $("#create-event-form #search-friends").show();
+	              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 685, 'top' : 50});
+    			      $(".ui-dialog-content.ui-widget-content").css({"height" : 610});
     			      $("#create-event-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
     			     //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top  
            }, 
@@ -237,15 +271,17 @@ function showDialog(dialog_id) {
                     e.preventDefault();
                     validateRemote(dialog_id, e);
                 });
+                
                 $('#dialog-' + dialog_id).dialog('open');
+                
            }, 
         });    
     } else {
         $('#dialog-' + dialog_id).dialog({
-    	  autoOpen: false,
-          width: $('#dialog-' + dialog_id).attr('width'),
-          height: 'auto',
-    	  modal: true
+    	     autoOpen: false,
+            width: $('#dialog-' + dialog_id).attr('width'),
+            height: 'auto',
+    	     modal: true
     	});
         $('#dialog-' + dialog_id).dialog('open');    
     }
@@ -369,8 +405,8 @@ function loadJoinFriends(offset, limit) {
                   $('.invite-friend-search').val('')
               }  
               $(".friends-join .scroll-pane").show();
-              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 468, "top" : 200});
-              $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
+              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 436, "top" : 200});
+              $(".ui-dialog-content.ui-widget-content").css({"height" : 463});
               $(".friends-join .scroll-pane").mCustomScrollbar("update");
            }, 
         });  
@@ -511,33 +547,49 @@ function loadFindEvents(offset, limit) {
            url: '/events/find',
            data: {"offset": offset, "limit": limit},
            success : function (data, textStatus, jqXHR) {
-                $('.friends-join .show_more').remove();
+                $('#find-events-wrapper .show_more').remove();
                 
-                if ($(".friends-join div.scroll-pane.mCustomScrollbar").length) {
+                if ($("#find-events-wrapper .scroll-pane.mCustomScrollbar").length) {
                     if (offset != 0) {
-                      $('.friends-join .mCSB_container').append(data);
+                      $('#find-events-wrapper .mCSB_container table').append(data);
                     }
                 } else {
-                    $('.friends-join .scroll-pane').append(data);
-                    $(".friends-join div.scroll-pane").mCustomScrollbar({
+                    $("#find-events-wrapper" ).dialog({
+                      autoOpen: false,
+                      width: 600,
+                      height: 470,
+                      modal: true,
+                      close: function() {
+                       $(".scroll-pane").hide();
+                      }
+                    });
+                    $('#find-events-wrapper .scroll-pane table').append(data);
+                    $("#find-events-wrapper .scroll-pane").mCustomScrollbar({
                         scrollButtons:{
                         	enable:true
                         }
                     });    
                 }                
                 
-                $(".friends-join .scroll-pane").hide();
+                $("#find-events-wrapper .scroll-pane").hide();
            }, 
            complete : function (jqXHR, textStatus) {  
               if (offset == 0) {
-                  $( "#invite-friends-form" ).dialog( "open" );
-                  $('.invite-friend-search').val('')
+                  $( "#find-events-wrapper" ).dialog( "open" );
+                  $('#find-events-wrapper .invite-friend-search').val('')
               }  
-              $(".friends-join .scroll-pane").show();
-              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 468, "top" : 200});
-              $(".ui-dialog-content.ui-widget-content").css({"height" : 495});
-              $(".friends-join .scroll-pane").mCustomScrollbar("update");
+              $("#find-events-wrapper .going-users-link").unbind('click');
+              $("#find-events-wrapper .going-users-link")
+                .click(function(e) {
+                e.preventDefault();
+                loadEventUsers('going', e.target.id);
+              });
+              
+              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 482});
+              
+              $("#find-events-wrapper .scroll-pane").show();
+              $("#find-events-wrapper #search-friends").show();
+              $("#find-events-wrapper .scroll-pane").mCustomScrollbar("update");
            }, 
         });  
-    $("#invite-friends-form #search-friends").show();
 }
