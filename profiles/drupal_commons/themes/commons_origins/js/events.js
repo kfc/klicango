@@ -64,7 +64,7 @@ $(function() {
   
    $("#create-event-form.private-event" ).dialog({
     autoOpen: false,
-    height: 378,
+    height: 410,
     width: 484,
     modal: true,
     close: function() {
@@ -229,15 +229,15 @@ $(function() {
            var newMonth = $(".view-content-event-calendar .attachment-after .calendar-calendar:eq(1)");   
            if(id == 'prev-month-button'){
               newMonth.css({'position': 'absolute','right': '100%','top':'0', 'width':'100%'}); 
-              $('.view-content-event-calendar .attachment-after').height(newMonth.outerHeight());
-              oldMonth.fadeOut().animate({right: '-100%'},'normal', function(){oldMonth.remove();});
-              newMonth.animate({right: '0'});  
+              $('.view-content-event-calendar .attachment-after').height(newMonth.outerHeight()); 
+              oldMonth.fadeOut().animate({'right': '-100%'},'slow','easeInOutCubic', function(){oldMonth.remove();});
+              newMonth.animate({'right': '0'},'slow','easeInOutCubic');  
            }
            else{                                                                
               newMonth.css({'position': 'absolute','left': '100%','top':'0', 'width':'100%'});                                                                             
               $('.view-content-event-calendar .attachment-after').height(newMonth.outerHeight());
-              oldMonth.fadeOut().animate({'left': '-100%'},'normal', function(){oldMonth.remove();});
-              newMonth.animate({'left': '0'});
+              oldMonth.fadeOut().animate({'left': '-100%'},'slow','easeInOutCubic', function(){oldMonth.remove();});
+              newMonth.animate({'left': '0'},'slow','easeInOutCubic');
            } 
            
             bindAddEventLinks();
