@@ -116,7 +116,9 @@ function klicango_friends_load_facebook_friends() {
         foreach($friends['local'] as $id => $match) {
             $result = db_query('SELECT picture FROM users WHERE uid = %d', $id);
             $picture = db_result($result);
-            
+             if(empty($picture) && variable_get('user_picture_default','') != ''){
+              $picture = variable_get('user_picture_default','');
+             }
             $friends_count = sizeof(klicango_friends_all_friends($id));
             
             $html .= '<div class="person-item">';
@@ -446,6 +448,10 @@ function klicango_friends_find() {
     foreach($matches as $id => $match) {
         $result = db_query('SELECT picture FROM users WHERE uid = %d', $id);
         $picture = db_result($result);
+        
+         if(empty($picture) && variable_get('user_picture_default','') != ''){
+          $picture = variable_get('user_picture_default','');
+          }
         
         $friends_count = sizeof(klicango_friends_all_friends($id));
         
@@ -868,6 +874,9 @@ function klicango_friends_get_friends_intersections($friends) {
                      GROUP BY users.uid', $user->uid);
   while ($_user = db_fetch_array($result)) {
     $other_user = user_load(array('uid' => $_user['uid']));
+    if(empty($_user['picture']) && variable_get('user_picture_default','') != ''){
+      $_user['picture'] = variable_get('user_picture_default','');
+    }
     if (in_array('individual', $other_user->roles, true)) {
       $common[$_user['uid']]['common'] = $_user['common'];
       $common[$_user['uid']]['id'] = $_user['uid'];
@@ -885,6 +894,9 @@ function klicango_friends_get_friends_intersections($friends) {
       $common[$_user['uid']]['common'] += $_user['common'];
     } else {
       $other_user = user_load(array('uid' => $_user['uid']));
+      if(empty($_user['picture']) && variable_get('user_picture_default','') != ''){
+       $_user['picture'] = variable_get('user_picture_default','');
+      }
       if (in_array('individual', $other_user->roles, true)) {
         $common[$_user['uid']]['common'] = $_user['common'];
         $common[$_user['uid']]['id'] = $_user['uid'];
@@ -926,6 +938,9 @@ function klicango_friends_show_friends() {
     
     foreach ($friends as $friend) {
       $_user = user_load($friend);
+      if(empty($_user->picture) && variable_get('user_picture_default','') != ''){
+        $_user->picture = variable_get('user_picture_default','');
+      }
       if (in_array('individual', $_user->roles)) {
         //profile_load_profile($_user);
         $_user->picture_url = imagecache_create_url('facebook_image_size', $_user->picture);
@@ -992,6 +1007,9 @@ function klicango_friends_show_friends_in_common() {
     
     foreach ($friends as $friend) {
       $_user = user_load($friend);
+      if(empty($_user->picture) && variable_get('user_picture_default','') != ''){
+        $_user->picture = variable_get('user_picture_default','');
+      }
       if (in_array('individual', $_user->roles)) {
         //profile_load_profile($_user);
         $_user->picture_url = imagecache_create_url('facebook_image_size', $_user->picture);
