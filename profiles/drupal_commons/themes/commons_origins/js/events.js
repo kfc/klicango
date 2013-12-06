@@ -17,6 +17,7 @@ $(function() {
       dateFormat : 'yy-mm-dd',
       changeMonth: true,
       changeYear: true,
+      minDate: new Date(2013, 1 - 1, 1),
       showButtonPanel: true,
       numberOfMonths: 2,
       onChangeMonthYear : function(year, month, inst) {
@@ -228,13 +229,13 @@ $(function() {
            $(".view-content-event-calendar .attachment-after").append(data.calendar);
            var newMonth = $(".view-content-event-calendar .attachment-after .calendar-calendar:eq(1)");   
            if(id == 'prev-month-button'){
-              newMonth.css({'position': 'absolute','left': '100%','top':'0', 'width':'100%'}); 
+              newMonth.css({'position': 'absolute','left': '-100%','top':'0', 'width':'100%'}); 
               $('.view-content-event-calendar .attachment-after').height(newMonth.outerHeight()); 
               oldMonth.fadeOut('slow', function(){oldMonth.remove();});
               newMonth.animate({'left': '0'},'slow','easeInOutCubic');  
            }
            else{                                                                
-              newMonth.css({'position': 'absolute','left': '-100%','top':'0', 'width':'100%'});                                                                             
+              newMonth.css({'position': 'absolute','left': '100%','top':'0', 'width':'100%'});                                                                             
               $('.view-content-event-calendar .attachment-after').height(newMonth.outerHeight());
               oldMonth.fadeOut('slow', function(){oldMonth.remove();});
               newMonth.animate({'left': '0'},'slow','easeInOutCubic');

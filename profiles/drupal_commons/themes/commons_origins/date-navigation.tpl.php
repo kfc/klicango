@@ -43,7 +43,7 @@ $prev_options['attributes']['id'] = 'prev-month-button';
     <?php endif; ?>
   </div>
   <div class="date-heading">
-    <h3><?php print $nav_title ?></h3>
+    <h3 title="<?php echo t('Click to select month and year')?>"><?php print $nav_title ?></h3>
     <input type="text" id="date-heading-date-input">
   </div>
   <div class="date-next">

@@ -695,6 +695,11 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
 
 .date-heading h3{
   font-size: 14px;
+  text-decoration: underline; 
+}
+.date-heading h3:hover{
+  cursor: pointer; 
+  text-decoration: none;
 }
 
 .ui-dialog form input[type="text"], .ui-dialog form input[type="password"], .ui-dialog form textarea{

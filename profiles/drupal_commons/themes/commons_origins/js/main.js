@@ -35,12 +35,12 @@ $(function() {
                     $('.banner-upload').styler({browseText: 'Add banner photo'});
                     $('.banner-upload-update').styler({browseText: 'Add more photos'});
 
-                    
                     $("#datepicker-user").datepicker({
                       changeMonth: true,
                       changeYear: true,
                       dateFormat : 'dd/mm/yy',
-                      showAnim : 'slideDown'
+                      showAnim : 'slideDown',
+                      yearRange: "-85:+0",
                     });
                      
                     var dialog_id = e.target.id;
@@ -254,12 +254,14 @@ function showDialog(dialog_id) {
                   height: 'auto',
         		  modal: true
         		});
-                
+                 
                 $("#datepicker-user").datepicker({
                   changeMonth: true,
                   changeYear: true,
                   dateFormat : 'dd/mm/yy',
-                  showAnim : 'slideDown'
+                  showAnim : 'slideDown',
+                  defaultDate: new Date(1993, 1 - 1, 1),
+                  yearRange: "-85:+0",
                 });
                 
                 $("select").styler();
