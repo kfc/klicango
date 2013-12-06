@@ -1014,9 +1014,13 @@ function events_get_event_attenders($nid){
   $people = $persons = $profiles = array();
 
   while ($row = db_fetch_array($res)) {
-    $persons[] = $row;
-    if(!empty($row['user_id']))
+    if(empty($row['picture']) && variable_get('user_picture_default','') != ''){
+      $row['picture'] = variable_get('user_picture_default','');
+    }
+    $persons[] = $row;  
+    if(!empty($row['user_id'])){
       $profiles[$row['user_id']] = array();    
+    }
   }
   
   $result = db_query('SELECT f.name, f.type, v.value,uid FROM {profile_fields} f INNER JOIN {profile_values} v ON f.fid = v.fid WHERE uid in (%s)', implode(',',array_keys($profiles)));

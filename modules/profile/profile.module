@@ -231,6 +231,9 @@ function profile_load_profile(&$user) {
       $user->{$field->name} = _profile_field_serialize($field->type) ? unserialize($field->value) : $field->value;
     }
   }
+  if(empty($user->picture) && variable_get('user_picture_default','') != ''){
+    $user->picture = variable_get('user_picture_default','');
+  }
 }
 
 function profile_save_profile(&$edit, &$user, $category, $register = FALSE) {

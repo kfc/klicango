@@ -664,6 +664,9 @@ function customization_user($type, &$edit, &$account){
   switch ($type) {
     case 'load':
       //$account->advanced_profile = advanced_profile_load($account->uid);
+      if(empty($account->picture) && variable_get('user_picture_default','') != ''){
+        $account->picture = variable_get('user_picture_default','');
+      }
       break;
     case 'view':
       $account->advanced_profile = advanced_profile_load($account->uid);

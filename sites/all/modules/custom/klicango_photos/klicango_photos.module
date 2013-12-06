@@ -64,6 +64,9 @@ function klicango_photos_event_photo($event_id, $photo_id){
  $res = db_query("SELECT pc.*,u.picture from photo_comments pc INNER JOIN users u on u.uid = pc.uid WHERE pc.fid = %d ORDER BY pc.timestamp ASC",$photo_id);
  $profiles = array();
   while ($comment = db_fetch_object($res)) {
+    if(empty($comment->picture) && variable_get('user_picture_default','') != ''){
+      $comment->picture = variable_get('user_picture_default','');
+    }
     $profiles[$comment->uid] = array();
     $comments[$comment->cid] = $comment;
   }
@@ -125,6 +128,9 @@ function klicango_photos_comment_photo($user_id, $photo_id){
  $res = db_query("SELECT pc.*,u.picture from photo_comments pc INNER JOIN users u on u.uid = pc.uid WHERE pc.fid = %d ORDER BY pc.timestamp ASC",$photo_id);
  $profiles = array();
   while ($comment = db_fetch_object($res)) {
+    if(empty($comment->picture) && variable_get('user_picture_default','') != ''){
+      $comment->picture = variable_get('user_picture_default','');
+    }
     $profiles[$comment->uid] = array();
     $comments[$comment->cid] = $comment;
   }
@@ -136,9 +142,12 @@ function klicango_photos_comment_photo($user_id, $photo_id){
   foreach($comments as &$_comment){
     $_comment->profile = $profiles[$_comment->uid];  
   }
-   
+ 
  if(!empty($info)){    
   $author = user_load($info->uid);
+  if(empty($author->picture) && variable_get('user_picture_default','') != ''){
+    $author->picture = variable_get('user_picture_default','');
+  }
   $return['image'] = array('src'=> imagecache_create_url('comment_image_big', $info->filepath, FALSE, $absolute));  
   $return['author'] = theme('photo_author_info',$author, $info);
   $return['comments'] = theme('photo_comments',$comments, $info->fid, $info->event_id);
@@ -184,6 +193,9 @@ function theme_photo_author_info($author, $info){
 
 function theme_photo_comments($comments, $fid, $event_id){
   global $user;
+  if(empty($user->picture) && variable_get('user_picture_default','') != ''){
+    $user->picture = variable_get('user_picture_default','');
+  }
   $output = '
   <div id="comment-form">
     <div id="comment-table-wrapper">';
@@ -233,8 +245,12 @@ function klicango_photos_add_photo_comment(){
         );
       $res = drupal_write_record('photo_comments', $data);  
       $return['result'] = ($res == SAVED_NEW);
-      if($res == SAVED_NEW){
+      if($res == SAVED_NEW){ 
         $comment = new stdClass();
+        profile_load_profile($user);
+        if(empty($user->picture) && variable_get('user_picture_default','') != ''){
+          $user->picture = variable_get('user_picture_default','');
+        }
         $comment->picture = $user->picture;
         $comment->timestamp = $data['timestamp'];
         $comment->comment = $data['comment'];

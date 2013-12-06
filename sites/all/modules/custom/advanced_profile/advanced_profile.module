@@ -152,6 +152,9 @@ function advanced_profile_load ($uid) {
   while ($row = db_fetch_array($result)) {
     $photos[] = $row;
   }
+  if(empty($photos) && variable_get('user_picture_default','') != ''){
+    $photos[] = variable_get('user_picture_default','');
+  }
   return $photos;
 }
 
