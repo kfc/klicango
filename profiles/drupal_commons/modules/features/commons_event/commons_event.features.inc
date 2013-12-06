@@ -79,7 +79,7 @@ function commons_event_imagecache_default_presets() {
           'action' => 'imagecache_crop',
           'data' => array(
             'width' => '830',
-            'height' => '350',
+            'height' => '300',
             'xoffset' => 'center',
             'yoffset' => 'center',
           ),
