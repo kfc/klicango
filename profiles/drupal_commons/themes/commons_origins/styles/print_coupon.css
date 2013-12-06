@@ -1,5 +1,5 @@
 .public-event-coupon-print, .public-event-top-banner, .remove-event-link, .going-status-button, .event-people-block, .event-comment-box, aside, header, footer{
-  display:none;
+  display:none !important;
 }
 
 #middle {
@@ -8,6 +8,7 @@
 }
 
 .public-event-coupon{
+  zoom: 1.5;
   background: #FFF !important;
   padding:15px !important;
   border: 2px solid black !important;
