@@ -228,15 +228,15 @@ $(function() {
            $(".view-content-event-calendar .attachment-after").append(data.calendar);
            var newMonth = $(".view-content-event-calendar .attachment-after .calendar-calendar:eq(1)");   
            if(id == 'prev-month-button'){
-              newMonth.css({'position': 'absolute','right': '100%','top':'0', 'width':'100%'}); 
+              newMonth.css({'position': 'absolute','left': '100%','top':'0', 'width':'100%'}); 
               $('.view-content-event-calendar .attachment-after').height(newMonth.outerHeight()); 
-              oldMonth.fadeOut().animate({'right': '-100%'},'slow','easeInOutCubic', function(){oldMonth.remove();});
-              newMonth.animate({'right': '0'},'slow','easeInOutCubic');  
+              oldMonth.fadeOut('slow', function(){oldMonth.remove();});
+              newMonth.animate({'left': '0'},'slow','easeInOutCubic');  
            }
            else{                                                                
-              newMonth.css({'position': 'absolute','left': '100%','top':'0', 'width':'100%'});                                                                             
+              newMonth.css({'position': 'absolute','left': '-100%','top':'0', 'width':'100%'});                                                                             
               $('.view-content-event-calendar .attachment-after').height(newMonth.outerHeight());
-              oldMonth.fadeOut().animate({'left': '-100%'},'slow','easeInOutCubic', function(){oldMonth.remove();});
+              oldMonth.fadeOut('slow', function(){oldMonth.remove();});
               newMonth.animate({'left': '0'},'slow','easeInOutCubic');
            } 
            
