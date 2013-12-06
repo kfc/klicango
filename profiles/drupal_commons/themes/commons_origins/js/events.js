@@ -408,6 +408,17 @@ $(function() {
   });
  
  
+ $(".public-event-coupon-print").click(function(e){
+   /*e.preventDefault();
+   var DocumentContainer = $('#public-event-coupon-wrapper');
+   var WindowObject = window.open('', "PrintWindow", "width=750,height=650,top=50,left=50,toolbars=no,scrollbars=yes,status=no,resizable=yes");
+   WindowObject.document.writeln(DocumentContainer.html());
+   WindowObject.document.close();
+   WindowObject.focus();
+   WindowObject.print();
+   WindowObject.close();*/
+ });
+ 
   function bindShowEventsLink(){
     $("a.show-events-link").on('click',function(e){  
       e.preventDefault();

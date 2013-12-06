@@ -1104,3 +1104,7 @@ div.person-item .person-thumbnail {
 #dialog-end_user_register, #dialog-professional_user_register {
   padding-bottom: 20px;
 }
+
+.public-event-coupon {
+  margin-top: 30px;
+}

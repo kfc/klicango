@@ -101,6 +101,13 @@ function events_menu(){
       'access callback' => true
     ),
     
+     'print_coupon/%' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_print_coupon',
+      'page arguments' => array(1),
+      'access callback' => true
+    ),
+    
   );
   return $items;
   
@@ -1306,4 +1313,9 @@ function get_private_calendar_events_viewed_by_user($viewed_user_id ,$user_id, $
 
   return $events_ids;
   
+}
+
+function events_print_coupon($event_id){
+  drupal_add_js('jQuery(document).ready(function(){ window.print(); });','inline');
+  return node_view(node_load($event_id));    
 }

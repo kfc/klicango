@@ -1,0 +1,17 @@
+.public-event-coupon-print, .public-event-top-banner, .remove-event-link, .going-status-button, .event-people-block, .event-comment-box, aside, header, footer{
+  display:none;
+}
+
+#middle {
+  background: none;
+  padding-top: 10px !important;
+}
+
+.public-event-coupon{
+  background: #FFF !important;
+  padding:15px !important;
+  border: 2px solid black !important;
+  border-radius: 15px !important;
+  -webkit-border-radius: 15px !important;
+}
+

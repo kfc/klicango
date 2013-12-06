@@ -80,7 +80,7 @@
           </div>
         <?php endif;?>
         <?php if ($node->field_event_type[0]['value'] == 'public') : ?>
-            <div class="public-event-coupon">
+            <div class="public-event-coupon" id="public-event-coupon-wrapper">
               <div class="event-coupon">
               <div class="first-column public-event-col">
                 <div class="profile-info">
@@ -137,7 +137,9 @@
               <div class="third-column public-event-col">
                 <div class="public-event-title"><?php echo $title?></div>
                 <div class="public-event-description"><?php echo nl2br($node->field_event_details[0]['safe'])?></div>
-                <div class="public-event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']?></div>
+                <div class="public-event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']?>
+                <a href="/print_coupon/<?php echo $node->nid?>" target="_blank" class="public-event-coupon-print"><?php echo t('[print]')?></a>
+                </div>
               </div>
               </div>
             </div>
