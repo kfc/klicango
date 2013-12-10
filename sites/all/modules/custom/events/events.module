@@ -1014,7 +1014,7 @@ function event_accept_event_invitation() {
       $data = array('event_id' => $event_id, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => $event_status);      
       drupal_write_record('events_users', $data); 
     }
-    drupal_json(array('status' => 'success'));
+    drupal_json(array('status' => 'success'));       
     exit;
 }
 
@@ -1023,7 +1023,7 @@ function events_get_event_attenders($nid){
   while ($field = db_fetch_array($f)) {
     $profile_fields[$field['name']] = $field['fid'];
   }
-  $res = db_query("SELECT eu.*, u.picture, u.name, fbu.name as fb_name 
+  $res = db_query("SELECT eu.*, u.picture, u.name, u.data, fbu.name as fb_name 
                     from events_users eu
                    LEFT JOIN users u on u.uid = eu.user_id
                    LEFT JOIN friends_facebook_invited fbu on fbu.facebook_id = eu.facebook_id
@@ -1031,13 +1031,14 @@ function events_get_event_attenders($nid){
                    
   $people = $persons = $profiles = array();
 
-  while ($row = db_fetch_array($res)) {
-    if(empty($row['picture']) && variable_get('user_picture_default','') != ''){
-      $row['picture'] = variable_get('user_picture_default','');
+  while ($row = db_fetch_object($res)) {
+    if(empty($row->picture) && variable_get('user_picture_default','') != ''){
+      $row->picture = variable_get('user_picture_default','');
     }
-    $persons[] = $row;  
-    if(!empty($row['user_id'])){
-      $profiles[$row['user_id']] = array();    
+    drupal_unpack($row);
+    $persons[] = (array)$row;  
+    if(!empty($row->user_id)){
+      $profiles[$row->user_id] = array();    
     }
   }
   
