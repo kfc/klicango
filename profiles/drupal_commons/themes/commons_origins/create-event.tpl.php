@@ -2,10 +2,12 @@
 global $user;
 
 $values = array();
+$is_owner = false;
 if(arg(0) == 'node'){
   $nid = arg(1);
   $node = node_load($nid);
   if($node->type == 'event' && $node->uid == $user->uid){
+    $is_owner = true;
     $values = (array)$node;
     $date = strtotime($node->field_date);
     drupal_add_js("var form_data = ".events_get_event_form_data($node).";",'inline');
@@ -78,8 +80,12 @@ drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'
         }
     ?>
   
-  <div class="form-submit">   
+  <div class="form-submit"> 
     <input type="submit" value="<?php echo t('Create')?>"/>
+    <?php if($is_owner):?>
+      <a href="/delete_event/<?php echo $nid;?>" onclick="return confirm(Drupal.t('Are you sure you want to delete this event?'));" class="event-delete-link"><?php echo t('Delete event');?></a>
+    <?php endif;?>
+    
   </div>
   </form>
 </div>

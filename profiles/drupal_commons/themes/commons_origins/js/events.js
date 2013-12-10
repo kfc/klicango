@@ -148,6 +148,7 @@ $(function() {
 
        // $( "#create-event-form" ).dialog( {title:'Create Event'} );
         $( "#create-event-form" ).dialog( "open" );
+        $(".event-delete-link").hide();
     });
   }
   
@@ -169,6 +170,7 @@ $(function() {
     $('#create-event-form .profile-upload').styler({browseText: 'Change event photo'});
     $( "#create-event-form" ).dialog( {title:'Modify Event'} );
     $( "#create-event-form" ).dialog( "open" );
+    $(".event-delete-link").show();
   });
   
   function bindShowEventsDialog(){

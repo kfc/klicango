@@ -108,6 +108,13 @@ function events_menu(){
       'access callback' => true
     ),
     
+     'delete_event/%' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_delete_event',
+      'page arguments' => array(1),
+      'access callback' => 'user_is_logged_in'
+    ),
+    
   );
   return $items;
   
@@ -1319,4 +1326,20 @@ function get_private_calendar_events_viewed_by_user($viewed_user_id ,$user_id, $
 function events_print_coupon($event_id){
   drupal_add_js('jQuery(document).ready(function(){ window.print(); });','inline');
   return node_view(node_load($event_id));    
+}
+
+function events_delete_event($event_id = null){
+  global $user;
+  if(!empty($event_id)){
+    $event = node_load($event_id);
+    if($user->uid == $event->uid){
+      db_query("DELETE FROM events_users where event_id = %d", $event_id);
+      db_query("DELETE FROM photo_comments where fid IN (SELECT field_comment_photo_fid from content_field_comment_photo WHERE field_comment_photo_fid IS NOT NULL AND nid in (SELECT cid from node_comments WHERE nid = %d))", $event_id);
+      db_query("DELETE FROM content_field_comment_photo WHERE nid in (SELECT cid from node_comments WHERE nid = %d)", $event_id);
+      node_delete($event_id);
+      drupal_goto('user');
+    }
+  }
+  
+  
 }
