@@ -1117,3 +1117,64 @@ div.person-item .person-thumbnail {
   text-decoration: none;
   font: 12px/18px Arial, Tahoma, Verdana, sans-serif;
 }
+
+
+.search-results-page{  }
+
+.search-results-page h1{ 
+  font: 24px/24px Arial;
+  color: #808285;
+  margin-bottom: 25px;
+}
+
+.search-results-page h2{ 
+  line-height: 20px;
+  font: 15px Arial;
+  color: #808285;
+  margin-bottom: 10px;
+}
+
+.search-result-group{
+  
+  margin-bottom: 30px;
+}
+
+.search-result-group-line hr{
+  color: #808285;
+  
+}
+
+ul.search-items {
+  list-style: none;
+  margin:0px;
+  padding: 0px;
+  
+}
+
+ul.search-items li {
+  font: 14px/16px 'Arial';
+  color: #6d6e71;
+  height: 100px;
+}
+  
+.search-items li img{
+  float: left;
+  margin-right: 20px;
+}
+
+.search-result-text {
+  float: left;
+}
+
+.search-result-buttons{ float: right;}
+
+.search-results-page div.i-like-this-place a {
+  background: none;
+  color: #000 !important;
+}
+
+.search-results-page a.white-button {
+  background: none;
+  color: #000 !important;
+  font:12px/34px Arial;
+}

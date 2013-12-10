@@ -19,13 +19,15 @@
     foreach($field_comment_photo as $_photo){  
       if(!empty($_photo['filepath']) && $i++ < $max_photos_num){
         $photos_html .= '<a class="klicango-popup" href="/comment_photo/'.$_photo['uid'].'/'.$_photo['fid'].'" rel="lightbox">'.theme_imagecache($preset,$_photo['filepath']).'</a>';
-        //$photos_num++;
+        $photos_num++;
       }
     }
   }
-  $photos_num = count($field_comment_photo);
+  
+  //$photos_num = count($field_comment_photo);
   $options = array();
-  $comment_status = (events_get_event_status_for_user($node->comment_target_nid, $node->uid) == EVENT_STATUS_ACCEPTED ? t('is going') : t('posted a new comment'));
+  $system_status = false;
+  $comment_status = t('posted a new comment');
   if($photos_num > 0){
     $comment_status = t('added').' '.$photos_num.' '.($photos_num > 1 ? t('photos') : t('photo'));
   }
@@ -40,6 +42,7 @@
   if(!empty($author->first_name) && !empty($author->first_name))
     $name = l($author->first_name.' '.$author->surname,'user/'.$author->uid,array('attributes'=>array('class'=>(in_array('professional',$author->roles) ? 'publicContent' : ''))));  
   if($node->title == '<EventCreated>'){
+    $system_status = true;
     $comment_status = 'created new event '.l($target_node->title,'node/'.$node->comment_target_nid,$options);  
   }
 ?>
@@ -48,7 +51,7 @@
   <div class="person-thumbnail"><?php echo theme_imagecache('user_picture_40x40',$author->picture);?></div>
   <div class="stream-item-content">
     <div class="person-name"><?php echo $name;?> <span class="activity_status"><?php echo $comment_status?></span> 
-    <?php if( check_comment_delete($node->nid, $node)) : ?>
+    <?php if( !$system_status && check_comment_delete($node->nid, $node)) : ?>
       <span class="comment-delete-button"><?php echo l('&nbsp;&nbsp;','comment_delete/'.$node->nid,array('html'=>true, 'query'=>drupal_get_destination(), 'attributes'=>array('class'=>'comment-delete-link','onclick'=>'javascript:return confirm("'.t('Delete this comment?\nThis action cannot be undone.').'");')));?></span>
     <?php endif;?>
     </div>

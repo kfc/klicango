@@ -25,8 +25,10 @@
     $active_user_uid = arg(2);
   }
   $day_events_count = 0;
+  if(!empty($items[$date])){
   foreach($items[$date] as $_time => $_time_events)
     $day_events_count += count($_time_events);
+  }
 ?>                       
 <div class="<?php print $granularity ?> <?php print $class; ?>"> <?php print strtolower($day_of_week).' '.$day; ?> </div>
 <?php if($day_events_count > 1):?>

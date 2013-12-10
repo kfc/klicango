@@ -92,8 +92,8 @@
                 
           <!-- Форма поиска -->
             <div id="search-form">
-              <form action="" method="post">
-                <input type="text" value="Search for events, friends..." class="search_input" onfocus="javascript: if(this.value == 'Search for events, friends...') this.value = '';" onblur="javascript: if(this.value == '') { this.value = 'Search for events, friends...';}" />
+              <form action="/klicando_search" method="get">
+                <input type="text" name="term" value="<?php echo t('Search for events, friends...')?>" class="search_input" onfocus="javascript: if(this.value == 'Search for events, friends...') this.value = '';" onblur="javascript: if(this.value == '') { this.value = 'Search for events, friends...';}" />
               </form>
             </div>
           <!-- Форма поиска -->

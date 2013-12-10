@@ -45,6 +45,12 @@ function customization_menu(){
     'access callback' => 'check_comment_delete',
     'access arguments' => array(1),
   );
+  
+  $items['klicando_search'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'customization_klicando_search',
+    'access callback' => true,
+  );
    
   return $items;
   
@@ -543,6 +549,11 @@ function customization_theme(){
             ),
 
         ),
+        'search_results' => array(
+            'template' => 'search-results',
+            'path' => drupal_get_path('theme',variable_get('theme_default','')),
+            'arguments' => array('search_results' => NULL),
+        ),
     );
 }
 
@@ -675,4 +686,190 @@ function customization_user($type, &$edit, &$account){
     default:
       break;
   }  
+}
+
+function customization_klicando_search(){
+  global $user;
+  $results = array();
+  
+  $term = $_REQUEST['term'];
+  if(!empty($term)){
+    $events = events_search_results($term);
+    $places = places_search_results($term);
+    $users = users_search_results($term);
+    $uids = array();
+    foreach($events as $_event){
+      $uids[] = $_event['user_id'];
+    }
+    $uids = array_merge($uids,  array_keys($places),  array_keys($users));
+    $profiles = array();
+    if(!empty($uids)){
+      $result = db_query('SELECT f.name, f.type, v.value,uid FROM {profile_fields} f INNER JOIN {profile_values} v ON f.fid = v.fid WHERE uid in (%s)', implode(',',$uids));
+      while ($field = db_fetch_object($result)) {
+        $profiles[$field->uid][$field->name] = _profile_field_serialize($field->type) ? unserialize($field->value) : $field->value;
+      }
+        
+      $result = db_query('SELECT u.picture,u.uid FROM {users} u WHERE uid in (%s)', implode(',',$uids));
+      while ($field = db_fetch_object($result)) {
+        if(!empty($field->picture))
+          $profiles[$field->uid]['picture'] = $field->picture;
+        else
+          $profiles[$field->uid]['picture'] = variable_get('user_picture_default','');   
+      }
+      
+    }
+    
+    // Events results
+    $user_events = events_get_user_events_with_status(); 
+    foreach($events as $_event){
+      $start_date = strtotime($_event['field_date_value']);
+      $results['events'][$_event['nid']] = array();
+      if(!empty($_event['picture']))
+        $results['events'][$_event['nid']]['picture'] = theme_imagecache('search_result_image', $_event['picture']);
+       
+           
+      $results['events'][$_event['nid']]['text'] = l($_event['title'], 'node/'.$_event['nid'])
+      .' '.t('organized by').' '
+      .l($profiles[$_event['user_id']]['first_name'].(!empty($profiles[$_event['user_id']]['last_name']) ? ' '. $profiles[$_event['user_id']]['last_name'] : ''), 'user/'.$_event['user_id'])
+      .'<br>'.
+      date('l F dS, H:i',$start_date);
+      
+      $results['events'][$_event['nid']]['event'] = $_event;  
+      $results['events'][$_event['nid']]['accepted'] = in_array($_event['nid'],$user_events);  
+      
+    }
+                                                                     
+    // Places results
+    $followed_places = klicango_friends_get_all_followed_places($user->uid);
+    foreach($places as $_place){
+      $results['places'][$_place['uid']]['picture'] = theme_imagecache('search_result_image', $profiles[$_place['uid']]['picture']);
+      $results['places'][$_place['uid']]['text'] = l($_place['value'],'user/'.$_place['uid']).', '.$profiles[$_place['uid']]['address'].' '
+                                                  .$profiles[$_place['uid']]['zip'].' '.$profiles[$_place['uid']]['city']
+                                                  .'<br>'.$profiles[$_place['uid']]['category'];
+      $results['places'][$_place['uid']]['title'] = $_place['value'];
+      $results['places'][$_place['uid']]['followed'] = in_array($_place['uid'],$followed_places);
+    }
+    
+    // Users results
+    $friends = klicango_friends_get_all_friends();
+    foreach($users as $_user){
+      $results['users'][$_user->uid]['picture'] = theme_imagecache('search_result_image', $_user->picture);
+      $results['users'][$_user->uid]['text'] = l($_user->first_name.' '.$_user->surname,'user/'.$_user->uid).', '.$profiles[$_user->uid]['city'].' '.$profiles[$_user->uid]['country'].' ';
+      $results['users'][$_user->uid]['title'] = $_user->first_name.' '.$_user->surname;
+      $results['users'][$_user->uid]['is_friend'] = in_array($_user->uid, array_keys($friends['local']));
+    }
+    
+    //dpm($uids);
+    //dpm($profiles);
+  }
+  
+  
+  return theme('search_results',$results); 
+  
+}
+
+function events_search_results($term='') {
+  global $user;
+  $number = 20;
+  $events = array();
+  if(!empty($term)){
+    $result = db_query('SELECT ev.*, n.title, n.uid as user_id, COUNT(eu.user_id) AS attenders, f.filepath as picture 
+                        FROM content_type_event AS ev
+                        INNER JOIN node n on n.nid = ev.nid
+                        LEFT JOIN content_field_content_images img on n.nid = img.nid
+                        LEFT JOIN files f on f.fid = img.field_content_images_fid
+                        LEFT JOIN events_users AS eu ON (ev.nid = eu.event_id AND eu.user_id in (SELECT uid FROM users_roles WHERE rid = 6) AND eu.status = 3)
+                        WHERE ev.field_event_type_value = \'public\'
+                        AND n.title LIKE "%%%s%%"
+                        GROUP BY ev.nid 
+                        ORDER BY attenders DESC
+                        LIMIT 0, %d', $term, $number);
+    
+    while($event = db_fetch_array($result)) {
+        $events[] = $event;
+    }
+  }
+  return $events;
+}
+
+function users_search_results($term){
+  global $_user;
+  $number = 20;
+  $users = array();
+  if(!empty($term)){
+    $result = db_query('
+      SELECT uid from (
+        SELECT uid from profile_values where (fid=16 OR fid = 17) and value like \'%s\'
+        
+      UNION
+    
+        (SELECT  uid
+        FROM `users`
+        WHERE
+          uid in (SELECT uid from users_roles WHERE rid = 6) AND 
+          SUBSTRING(data FROM LOCATE(\'s:10:"first_name"\',data) + 18 FOR (LOCATE(\'s:7:"surname"\',data) - LOCATE(\'s:10:"first_name"\',data) -19 )) LIKE \'s:%d:"%s"\'
+          OR 
+          SUBSTRING(data FROM LOCATE(\'s:7:"surname"\',data) + 14 FOR (LOCATE(\'s:4:"city"\',data) - LOCATE(\'s:7:"surname"\',data) -15 )) LIKE \'s:%d:"%s"\' 
+        )
+      ) t  
+      LIMIT %d
+        ', $term, strlen($term), $term, strlen($term), $term, $number);
+    
+    while($row = db_fetch_array($result)) {      
+        $_user = user_load($row['uid']);
+        $_user->friends_in_common = count(klicango_friends_get_friends_in_common($_user->uid));
+        $_user->friends_total = count(klicango_friends_all_friends($_user->uid));
+        if(!empty($_user->uid))
+          $users[$_user->uid] = $_user;
+    }  
+    uksort($users,'users_sort_by_friends');
+  }
+  return $users;  
+}
+
+function users_sort_by_friends($a, $b){
+  $val = 0;
+  if ($a->friends_in_common > $b->friends_in_common) {
+    $val = -1;
+  }
+  elseif($a->friends_in_common < $b->friends_in_common){
+    $val = 1;
+  }
+  else{
+    if ($a->friends_total > $b->friends_total) {
+      $val = -1;
+    }
+    elseif($a->friends_total < $b->friends_total){
+      $val = 1;
+    }
+    else{
+      $val = strcasecmp($a->first_name.' '.$a->surname, $b->first_name.' '.$b->surname);
+    }
+  }
+  return $val;
+}
+
+
+function places_search_results($term){
+  global $_user;
+  $number = 20;
+  $places = array();
+  if(!empty($term)){
+    $result = db_query('
+      select u.uid, Count(u.uid) as followers, pv.value
+      FROM users u
+      INNER JOIN profile_values pv on pv.uid = u.uid AND pv.fid = 17
+      INNER JOIN users_roles ur ON ur.uid = u.uid AND rid = 7
+      LEFT JOIN friends f on f.uid = u.uid OR f.fid = u.uid
+      WHERE pv.value like \'%%%s%%%\'
+      group by u.uid, pv.value
+      ORDER BY followers DESC
+      LIMIT 0, %d', $term, $number);
+    
+    while($row = db_fetch_array($result)) {
+        $places[$row['uid']] = $row;
+    }
+    
+  }
+  return $places;  
 }

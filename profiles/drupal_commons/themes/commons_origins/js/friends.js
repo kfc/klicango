@@ -16,6 +16,9 @@ $(".follow-place-action").click(function(e){
               $(link).parent().removeClass('i-like-this-place');    
               $(link).parent().addClass('add-to-calendar');  
               $(link).attr('href', $(link).attr('href').replace('unfollow','follow'));
+              $(link).removeClass('white-button');
+              $(link).addClass('black-button');
+              
               $(link).html(Drupal.t('Follow this place'));  
               $(link).attr('id', 'follow-place-calendar');
             } 
@@ -24,6 +27,8 @@ $(".follow-place-action").click(function(e){
                $(link).parent().removeClass('add-to-calendar');  
                $(link).attr('href', $(link).attr('href').replace('follow','unfollow'));
                $(link).html(Drupal.t('I like this place'));  
+               $(link).removeClass('black-button');
+               $(link).addClass('white-button');
                $(link).attr('id', 'unfollow-place-calendar');
             }
           }

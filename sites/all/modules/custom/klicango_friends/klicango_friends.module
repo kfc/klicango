@@ -1032,3 +1032,12 @@ function klicango_friends_get_all_users($type = 'individual'){
   }
   return $users;  
 }
+
+function klicango_friends_get_all_followed_places($user_id){ 
+  $users = array();
+  $result = db_query('SELECT id from (SELECT uid AS id FROM friends WHERE fid = %d UNION SELECT fid AS id FROM friends WHERE uid = %d) t INNER JOIN users_roles r on r.uid = t.id AND r.rid = 7', $user_id, $user_id);
+  while ($_user = db_fetch_array($result)) {
+    $users[] = $_user['id'];
+  }
+  return $users;  
+}
