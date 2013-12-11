@@ -756,6 +756,18 @@ function klicango_friends_get_friends($type, $limit = false, $only_individual = 
     global $user;
     $users = array();
     switch($type) {
+      
+        case 'all' : 
+            $result = db_query('SELECT sender_id as uid,status FROM friends_invitations WHERE user_id = %d', $user->uid);
+            while ($row = db_fetch_array($result)) {
+                $users[$row['uid']] = $row;
+            }
+            $result = db_query('SELECT user_id as uid,status FROM friends_invitations WHERE sender_id = %d', $user->uid);
+            while ($row = db_fetch_array($result)) {
+                $users[$row['uid']] = $row;
+            }
+            break; 
+      
         case 'invitations_received' : 
             $result = db_query('SELECT sender_id FROM friends_invitations WHERE user_id = %d AND status = 1', $user->uid);
             while ($row = db_fetch_array($result)) {

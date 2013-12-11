@@ -158,7 +158,9 @@
               if(filesCount == 1)
 							  name.text(el.val().replace(/.+[\\\/]/, ''));
               else
-                name.text('('+ filesCount + ' '+ opt.multipleFilesText + ')');    
+                name.text('('+ filesCount + ' '+ opt.multipleFilesText + ')');  
+                
+              el.parents('form#comment-post-form').submit();    
 							//name.append("<img src='images/" + el.val().replace(/.+[\\\/]/, '') + "' /><div class='del-photo'><a href='' class='del-item'>Delete</a></div>");
 						})
 						.focus(function() {

@@ -119,6 +119,50 @@ $(".action-friend-user-page").click(function(e){
 });
 
 
+$(".action-friend-search-page").click(function(e){
+  e.preventDefault();
+  var href=$(this).attr('href');  
+  var link=$(this);  
+  var rel=$(this).attr('rel');  
+  var name=$(this).attr('title');
+                                                
+  if((rel == 'remove-friend-user-page' && confirm("Are you sure you don't want to be friend with  "+name+" anymore")) || (rel == 'add-friend-user-page')){
+    $.ajax({
+          type: "POST",
+          url: href,
+          dataType: 'json',
+          success: function(data){
+            if(data.success == true){
+              if(rel == 'remove-friend-user-page'){
+                $(link).attr('href',$(link).attr('href').replace('/removefriend','/addfriend'));
+                $(link).parent().removeClass('i-like-this-place'); 
+                $(link).addClass('black-button');
+                $(link).removeClass('white-button');
+                $(link).text(Drupal.t('Add friend'));
+                $(link).attr('rel','add-friend-user-page');
+                
+              } 
+              else if(rel == 'add-friend-user-page'){
+                $(link).attr('href',$(link).attr('href').replace('/addfriend','/removefriend'));
+                $(link).parent().addClass('i-like-this-place');
+                $(link).addClass('white-button');
+                $(link).removeClass('black-button');
+                $(link).text(Drupal.t('Invitation sent'));
+                $(link).attr('rel','remove-friend-user-page');
+                
+              } 
+              
+              
+            }
+          }
+    });
+  }
+  //addfriend/%  
+    
+  
+});
+
+
 
 
 });

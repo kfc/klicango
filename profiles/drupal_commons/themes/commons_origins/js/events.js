@@ -563,18 +563,23 @@ function declineEvent(event_id) {
 }
 
 function acceptEvent(event_id) {
-    var status;
+    var status = false;
     $('.add-event-link#event_' + event_id).toggleClass('already-accepted');
     if($('.add-event-link#event_' + event_id).hasClass('already-accepted')) {
        $('.add-event-link#event_' + event_id).text('I am going'); 
+       $('.search-result-buttons .add-event-link#event_' + event_id).removeClass('black-button'); 
+       $('.search-result-buttons .add-event-link#event_' + event_id).addClass('white-button'); 
        status = 'accepted';
     } else {
         var name = $('.add-event-link#event_' + event_id).attr('title');
         if(confirm("Are you sure you won't participate to "+name+" anymore")){
           $('.add-event-link#event_' + event_id).text('Add to my calendar');
+          $('.search-result-buttons .add-event-link#event_' + event_id).removeClass('white-button'); 
+          $('.search-result-buttons .add-event-link#event_' + event_id).addClass('black-button');
           status = 'new';
         }
         else{
+          $('.add-event-link#event_' + event_id).toggleClass('already-accepted');
           status = false;
         }
     }

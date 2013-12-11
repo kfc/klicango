@@ -751,16 +751,13 @@ function customization_klicando_search(){
     }
     
     // Users results
-    $friends = klicango_friends_get_all_friends();
+    $friends = klicango_friends_get_friends('all');
     foreach($users as $_user){
       $results['users'][$_user->uid]['picture'] = theme_imagecache('search_result_image', $_user->picture);
       $results['users'][$_user->uid]['text'] = l($_user->first_name.' '.$_user->surname,'user/'.$_user->uid).', '.$profiles[$_user->uid]['city'].' '.$profiles[$_user->uid]['country'].' ';
       $results['users'][$_user->uid]['title'] = $_user->first_name.' '.$_user->surname;
-      $results['users'][$_user->uid]['is_friend'] = in_array($_user->uid, array_keys($friends['local']));
+      $results['users'][$_user->uid]['friend_status'] =  (in_array($_user->uid, array_keys($friends)) ? $friends[$_user->uid]['status'] : false) ;
     }
-    
-    //dpm($uids);
-    //dpm($profiles);
   }
   
   

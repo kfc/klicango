@@ -1127,15 +1127,33 @@ div.person-item .person-thumbnail {
   margin-bottom: 25px;
 }
 
-.search-results-page h2{ 
+.search-results-page .group-title{ 
   line-height: 20px;
   font: 15px Arial;
   color: #808285;
-  margin-bottom: 10px;
+  clear: both;
+  position:relative
+  
+}
+.search-results-page .group-title span {
+  float: left;
+  position: absolute;
+  top:0;
+  left:0;
+  padding-right: 10px;
+  background: none repeat scroll 0 0 #F6F8F8;
+}
+
+.search-result-group-line {
+  background: url(../images/line-bg.png) right center repeat-x;
+  width: 100%;
+  height: 20px;
+  display: inline;
+  float: right; 
+  margin-left: 10px;  
 }
 
 .search-result-group{
-  
   margin-bottom: 30px;
 }
 
@@ -1145,9 +1163,12 @@ div.person-item .person-thumbnail {
 }
 
 ul.search-items {
+  clear: both;
   list-style: none;
   margin:0px;
   padding: 0px;
+  padding-top: 10px;
+  
   
 }
 
@@ -1174,7 +1195,14 @@ ul.search-items li {
 }
 
 .search-results-page a.white-button {
-  background: none;
+  background: #FFF;
   color: #000 !important;
-  font:12px/34px Arial;
+  font:12px/34px Arial !important;
+  margin-top: 0px !important;
+  width: 139px !important;
+}
+
+.search-results-page a.black-button{
+    margin-top: 0px !important;
+    width: 139px !important;
 }

@@ -7,7 +7,10 @@
 
   <div class="search-result-group">
     <?php if(!empty($search_results['events'])):?>
-      <h2><?php echo t('Events')?></h2>
+      <div class="group-title">
+        <span><?php echo t('Events')?></span>
+        <div class="search-result-group-line"></div>
+      </div>
       <ul class="search-items">
       <?php foreach($search_results['events'] as $_event):?>
         <li>
@@ -17,7 +20,11 @@
           </div>
           <?php if(!$_event['accepted']):?>
             <div class="search-result-buttons">
-              <a href="javascript: void(0);" class="black-button add-event-link" title="<?php echo $_event['event']['title']?>" id="event_<?php echo $_event['event']['nid']?>" onclick="acceptEvent(<?php echo $_event['event']['nid']?>)">Add to my calendar</a>  
+              <a href="javascript: void(0);" class="black-button add-event-link" title="<?php echo $_event['event']['title']?>" id="event_<?php echo $_event['event']['nid']?>" onclick="acceptEvent(<?php echo $_event['event']['nid']?>)"><?php echo t("Add to my calendar")?></a>  
+            </div>
+          <?php else:?>
+            <div class="search-result-buttons">
+              <a href="javascript: void(0);" class="white-button already-accepted add-event-link" title="<?php echo $_event['event']['title']?>" id="event_<?php echo $_event['event']['nid']?>" onclick="acceptEvent(<?php echo $_event['event']['nid']?>)"><?php echo t("I'm going")?></a>  
             </div>
           <?php endif;?>
         </li>
@@ -28,7 +35,10 @@
 
   <div class="search-result-group">
     <?php if(!empty($search_results['places'])):?>
-      <h2><?php echo t('Places')?></h2>
+      <div class="group-title">
+        <span><?php echo t('Places')?></span>
+        <div class="search-result-group-line"></div>
+      </div>
       <ul class="search-items">
       <?php foreach($search_results['places'] as $_uid => $_place):?>
         <li>
@@ -54,7 +64,10 @@
 
   <div class="search-result-group">
     <?php if(!empty($search_results['users'])):?>
-      <h2><?php echo t('People')?></h2>
+      <div class="group-title">
+        <span><?php echo t('People')?></span>
+        <div class="search-result-group-line"></div>
+      </div>
       <ul class="search-items">
       <?php foreach($search_results['users'] as $_uid => $_user):?>
         <li>
@@ -62,13 +75,17 @@
           <div class="search-result-text">
             <?php echo $_user['text'];?>  
           </div>
-          <?php if($_uid != $user->uid  && !$_user['is_friend']):?>
+          <?php if($_uid != $user->uid  && (!$_user['friend_status'] || !$_user['friend_status'] == 4) ):?>
             <div class="search-result-buttons">
-              <a href="/addfriend/<?php echo $_uid?>" class="black-button action-friend-user-page" title="<?php echo $_user['title']?>" id="add-friend-user-page"><?php echo t('Add friend')?></a>  
+              <a href="/addfriend/<?php echo $_uid?>" class="black-button action-friend-search-page" title="<?php echo $_user['title']?>" rel="add-friend-user-page"><?php echo t('Add friend')?></a>  
             </div>  
-          <?php elseif($_uid != $user->uid):?>
+          <?php elseif($_uid != $user->uid  && $_user['friend_status'] == 3):?>
             <div class="search-result-buttons i-like-this-place">        
-              <a href="/removefriend/<?php echo $_uid?>" class="white-button action-friend-user-page" title="<?php echo $_user['title']?>" id="remove-friend-user-page"><?php echo t('Friend')?></a>  
+              <a href="/removefriend/<?php echo $_uid?>" class="white-button action-friend-search-page" title="<?php echo $_user['title']?>" rel="remove-friend-user-page"><?php echo t('Friend')?></a>  
+            </div>  
+          <?php elseif($_uid != $user->uid  && $_user['friend_status'] == 1):?>
+            <div class="search-result-buttons i-like-this-place">        
+              <a href="/removefriend/<?php echo $_uid?>" class="white-button action-friend-search-page" title="<?php echo $_user['title']?>" rel="remove-friend-user-page"><?php echo t('Invitation pending')?></a>  
             </div>  
           <?php endif;?>
           
