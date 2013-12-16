@@ -15,3 +15,9 @@
   -webkit-border-radius: 15px !important;
 }
 
+
+.print-coupon-user-text {
+  display: block !important;
+  margin-top:15px;
+}
+

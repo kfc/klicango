@@ -1209,3 +1209,7 @@ ul.search-items li {
     margin-top: 0px !important;
     width: 139px !important;
 }
+
+.print-coupon-user-text {
+  display: none;
+}

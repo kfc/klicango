@@ -140,6 +140,7 @@
                 <div class="public-event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']?>
                 <a href="/print_coupon/<?php echo $node->nid?>" target="_blank" class="public-event-coupon-print"><?php echo t('[print]')?></a>
                 </div>
+                <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation valid for !user only',array('!user'=>$user->first_name.' '.$user->surname))?></div>
               </div>
               </div>
             </div>
