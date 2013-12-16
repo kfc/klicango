@@ -522,7 +522,7 @@ function customization_fboauth_user_save($account, $fbuser) {
 }
 
 function customization_carousel_contents() {
-    $result = db_query('SELECT user_id, photo FROM advanced_profile ORDER BY RAND() LIMIT 0, 5');
+    $result = db_query('SELECT DISTINCT (p.user_id), photo FROM advanced_profile p GROUP BY p.user_id ORDER BY RAND( )  LIMIT 0 , 5');
     $slides = array();
     while ($place = db_fetch_array($result)) {
         $udata = user_load($place['user_id']);
