@@ -906,7 +906,7 @@ function events_get_latest_events_photos(){
                           .(($user_id != $user->uid) && !empty($accepted_events) ? ' AND nc.nid IN ('.implode(',',$accepted_events).') ' : '').
                           '
                           GROUP BY nc.nid, ph.field_comment_photo_fid
-                          ORDER BY evt.field_date_value DESC, comment_nid.created DESC, fid DESC
+                          ORDER BY comment_nid.created DESC, fid DESC
                           ', $user_id, $user_id, $user_id);
                           
   //$events = events_get_events_created_by_user($user_id);
