@@ -1186,11 +1186,14 @@ ul.search-items li {
 .search-result-text {
   float: left;
 }
+.search-result-text a.private{
+  color: #f54e1f; 
+}
 
 .search-result-buttons{ float: right;}
 
 .search-results-page div.i-like-this-place a {
-  background: none;
+  background: #FFF;
   color: #000 !important;
 }
 

@@ -728,7 +728,7 @@ function customization_klicando_search(){
         $results['events'][$_event['nid']]['picture'] = theme_imagecache('search_result_image', $_event['picture']);
        
            
-      $results['events'][$_event['nid']]['text'] = l($_event['title'], 'node/'.$_event['nid'])
+      $results['events'][$_event['nid']]['text'] = l($_event['title'], 'node/'.$_event['nid'],array('attributes'=>array('class'=>($_event['field_event_type_value'] == 'private' ? 'private' : '' ))))
       .' '.t('organized by').' '
       .l($profiles[$_event['user_id']]['first_name'].(!empty($profiles[$_event['user_id']]['last_name']) ? ' '. $profiles[$_event['user_id']]['last_name'] : ''), 'user/'.$_event['user_id'])
       .'<br>'.
@@ -754,7 +754,9 @@ function customization_klicando_search(){
     $friends = klicango_friends_get_friends('all');
     foreach($users as $_user){
       $results['users'][$_user->uid]['picture'] = theme_imagecache('search_result_image', $_user->picture);
-      $results['users'][$_user->uid]['text'] = l($_user->first_name.' '.$_user->surname,'user/'.$_user->uid).', '.$profiles[$_user->uid]['city'].' '.$profiles[$_user->uid]['country'].' ';
+      $results['users'][$_user->uid]['text'] = l($_user->first_name.' '.$_user->surname,'user/'.$_user->uid);
+      if(!empty($profiles[$_user->uid]['city']) || !empty($profiles[$_user->uid]['country']))
+        $results['users'][$_user->uid]['text'] .= ', '.$profiles[$_user->uid]['city'].' '.$profiles[$_user->uid]['country'].' ';  
       $results['users'][$_user->uid]['title'] = $_user->first_name.' '.$_user->surname;
       $results['users'][$_user->uid]['friend_status'] =  (in_array($_user->uid, array_keys($friends)) ? $friends[$_user->uid]['status'] : false) ;
     }
@@ -769,6 +771,7 @@ function events_search_results($term='') {
   global $user;
   $number = 20;
   $events = array();
+  $available_private_events = get_private_calendar_events_viewed_by_user($user->uid, $user->uid);
   if(!empty($term)){
     $result = db_query('SELECT ev.*, n.title, n.uid as user_id, COUNT(eu.user_id) AS attenders, f.filepath as picture 
                         FROM content_type_event AS ev
@@ -776,7 +779,8 @@ function events_search_results($term='') {
                         LEFT JOIN content_field_content_images img on n.nid = img.nid
                         LEFT JOIN files f on f.fid = img.field_content_images_fid
                         LEFT JOIN events_users AS eu ON (ev.nid = eu.event_id AND eu.user_id in (SELECT uid FROM users_roles WHERE rid = 6) AND eu.status = 3)
-                        WHERE ev.field_event_type_value = \'public\'
+                        WHERE ((ev.field_event_type_value = \'public\' 
+                        '.(!empty($available_private_events) ? ') OR (ev.field_event_type_value = \'private\' AND n.nid IN ('.implode(',',$available_private_events).'))' : '').')
                         AND n.title LIKE "%%%s%%"
                         GROUP BY ev.nid 
                         ORDER BY attenders DESC
@@ -796,7 +800,7 @@ function users_search_results($term){
   if(!empty($term)){
     $result = db_query('
       SELECT uid from (
-        SELECT uid from profile_values where (fid=16 OR fid = 17) and value like \'%s\'
+        SELECT uid from profile_values where (fid=16 OR fid = 17) and uid in (SELECT uid from users_roles WHERE rid = 6) AND value like \'%%%s%%\'
         
       UNION
     
@@ -804,9 +808,9 @@ function users_search_results($term){
         FROM `users`
         WHERE
           uid in (SELECT uid from users_roles WHERE rid = 6) AND 
-          SUBSTRING(data FROM LOCATE(\'s:10:"first_name"\',data) + 18 FOR (LOCATE(\'s:7:"surname"\',data) - LOCATE(\'s:10:"first_name"\',data) -19 )) LIKE \'s:%d:"%s"\'
+          SUBSTRING(data FROM LOCATE(\'s:10:"first_name"\',data) + 18 FOR (LOCATE(\'s:7:"surname"\',data) - LOCATE(\'s:10:"first_name"\',data) -19 )) LIKE \'s:%d:"%%%s%%"\'
           OR 
-          SUBSTRING(data FROM LOCATE(\'s:7:"surname"\',data) + 14 FOR (LOCATE(\'s:4:"city"\',data) - LOCATE(\'s:7:"surname"\',data) -15 )) LIKE \'s:%d:"%s"\' 
+          SUBSTRING(data FROM LOCATE(\'s:7:"surname"\',data) + 14 FOR (LOCATE(\'s:4:"city"\',data) - LOCATE(\'s:7:"surname"\',data) -15 )) LIKE \'s:%d:"%%%s%%"\' 
         )
       ) t  
       LIMIT %d
@@ -858,7 +862,7 @@ function places_search_results($term){
       INNER JOIN profile_values pv on pv.uid = u.uid AND pv.fid = 17
       INNER JOIN users_roles ur ON ur.uid = u.uid AND rid = 7
       LEFT JOIN friends f on f.uid = u.uid OR f.fid = u.uid
-      WHERE pv.value like \'%%%s%%%\'
+      WHERE pv.value like \'%%%s%%\'
       group by u.uid, pv.value
       ORDER BY followers DESC
       LIMIT 0, %d', $term, $number);
