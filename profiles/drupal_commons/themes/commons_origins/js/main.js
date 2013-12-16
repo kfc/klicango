@@ -105,7 +105,7 @@ $(function() {
              complete : function (jqXHR, textStatus) {
                   if(last_search == current_search) {
                       $(".scroll-pane").show();
-          			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 685, 'top' : 50});
+          			$(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 700, 'top' : 50});
           			$(".ui-dialog-content.ui-widget-content").css({"height" : 610});
           			$(".scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
           			$('.search-for-friends').removeClass('loading');
@@ -151,7 +151,7 @@ $(function() {
 function loadFriends(offset, limit) {
     if (offset == 0 && $("#create-event-form div.scroll-pane.mCustomScrollbar").length) {
         $("#create-event-form .scroll-pane").show();
-        $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 685, 'top' : 50});
+        $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 700, 'top' : 50});
         $(".ui-dialog-content.ui-widget-content").css({"height" : 610});    			
     } else {
         $.ajax({
@@ -178,7 +178,7 @@ function loadFriends(offset, limit) {
            complete : function (jqXHR, textStatus) {  
                 $("#create-event-form .scroll-pane").show();
                 $("#create-event-form #search-friends").show();
-	              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 685, 'top' : 50});
+	              $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 700, 'top' : 50});
     			      $(".ui-dialog-content.ui-widget-content").css({"height" : 610});
     			      $("#create-event-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
     			     //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top  

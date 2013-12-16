@@ -514,7 +514,7 @@ $(function() {
               }  
               $("#invite-friends-form .scroll-pane").show();
               $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 438});
-              $(".ui-dialog-content.ui-widget-content").css({"height" : 465});
+              $(".ui-dialog-content.ui-widget-content").css({"height" : 475});
               $("#invite-friends-form .scroll-pane").mCustomScrollbar("update");
            }, 
         }); 

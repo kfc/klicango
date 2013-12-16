@@ -808,13 +808,13 @@ function users_search_results($term){
         FROM `users`
         WHERE
           uid in (SELECT uid from users_roles WHERE rid = 6) AND 
-          SUBSTRING(data FROM LOCATE(\'s:10:"first_name"\',data) + 18 FOR (LOCATE(\'s:7:"surname"\',data) - LOCATE(\'s:10:"first_name"\',data) -19 )) LIKE \'s:%d:"%%%s%%"\'
+          (data REGEXP  \'.*"first_name";s:[0-9]+:".*%s.*".*\')
           OR 
-          SUBSTRING(data FROM LOCATE(\'s:7:"surname"\',data) + 14 FOR (LOCATE(\'s:4:"city"\',data) - LOCATE(\'s:7:"surname"\',data) -15 )) LIKE \'s:%d:"%%%s%%"\' 
+          (data REGEXP  \'.*"surname";s:[0-9]+:".*%s.*".*\')
         )
       ) t  
       LIMIT %d
-        ', $term, strlen($term), $term, strlen($term), $term, $number);
+        ', $term, $term, $term, $number);
     
     while($row = db_fetch_array($result)) {      
         $_user = user_load($row['uid']);

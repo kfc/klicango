@@ -5,6 +5,10 @@
 <div class="search-results-page">
   <h1><?php echo t('Search results for ')?>"<?php echo $_REQUEST['term']?>"</h1>
 
+  <?php if(empty($search_results['events']) && empty($search_results['places']) && empty($search_results['users'])):?>
+    <?php echo t('No result could be found.');?>
+  <?php endif;?>
+  
   <div class="search-result-group">
     <?php if(!empty($search_results['events'])):?>
       <div class="group-title">
