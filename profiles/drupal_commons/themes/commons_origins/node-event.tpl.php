@@ -88,7 +88,13 @@
                   <div class="profile-name"><?php echo $location_info->first_name;?></div>
                   <div class="profile-city"><?php echo $location_info->profile_location;?></div>
                 </div>
-                <div class="powered-by"><img src="/profiles/drupal_commons/themes/commons_origins/images/powered-by.png" alt="" /></div>
+                <div class="powered-by">
+                  <?php if(arg(0) != 'print_coupon'):?>
+                    <img src="/profiles/drupal_commons/themes/commons_origins/images/powered-by.png" alt="" />
+                  <?php else:?>
+                    <img src="/profiles/drupal_commons/themes/commons_origins/images/logo-klicango-bw.png" alt="" />
+                  <?php endif;?>
+                </div>
               </div>
               <div class="second-column public-event-col">
                 <div class="public-event-date-time">
@@ -138,7 +144,9 @@
                 <div class="public-event-title"><?php echo $title?></div>
                 <div class="public-event-description"><?php echo nl2br($node->field_event_details[0]['safe'])?></div>
                 <div class="public-event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']?>
-                <a href="/print_coupon/<?php echo $node->nid?>" target="_blank" class="public-event-coupon-print"><?php echo t('[print]')?></a>
+                <?php if(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
+                  <a href="/print_coupon/<?php echo $node->nid?>" target="_blank" class="public-event-coupon-print"><?php echo t('[print]')?></a>
+                <?php endif;?>
                 </div>
                 <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation valid for !user only',array('!user'=>$user->first_name.' '.$user->surname))?></div>
               </div>
