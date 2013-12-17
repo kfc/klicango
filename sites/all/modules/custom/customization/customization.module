@@ -808,9 +808,9 @@ function users_search_results($term){
         FROM `users`
         WHERE
           uid in (SELECT uid from users_roles WHERE rid = 6) AND 
-          (data REGEXP  \'.*"first_name";s:[0-9]+:".*%s.*".*\')
+          (data REGEXP  \'.*"first_name";s:[0-9]+:"[[:alpha:]]*%s[[:alpha:]]*".*\')
           OR 
-          (data REGEXP  \'.*"surname";s:[0-9]+:".*%s.*".*\')
+          (data REGEXP  \'.*"surname";s:[0-9]+:"[[:alpha:]]*%s[[:alpha:]]*".*\')
         )
       ) t  
       LIMIT %d
