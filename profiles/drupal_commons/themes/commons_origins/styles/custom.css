@@ -1213,3 +1213,11 @@ ul.search-items li {
 .print-coupon-user-text {
   display: none;
 }
+
+#admin-menu, #admin-toolbar {
+  display: none;
+}
+
+.node .inner .title {
+  margin-bottom: 20px;
+}

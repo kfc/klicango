@@ -74,7 +74,7 @@
     
     		<div id="container">
     			<div id="content">
-                    <?php print $messages; ?>
+            <?php print $messages; ?>
     				<?php print $content; ?>
     			</div><!-- #content-->
     		</div><!-- #container-->

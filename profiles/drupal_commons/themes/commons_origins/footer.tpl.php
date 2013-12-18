@@ -18,11 +18,13 @@
 		<span><a href="http://clipby.net" target="_blank">Clipby, partenaire officiel</a></span>
 	</div>
 	<div class="footer-right-block">
-		<ul class="menu">
+		<?php echo theme_menu_tree(menu_tree('menu-footer-links')); ?>
+    
+    <!--<ul class="menu">
 			<li><a href="">mentions légales</a></li>
 			<li><a href="">signaler un abus</a></li>
 			<li><a href="">contact</a></li>
-		</ul>
+		</ul>-->
 		<span class="copyrights">© KLICANGO 2013</span>
 	</div>
 </footer><!-- #footer -->

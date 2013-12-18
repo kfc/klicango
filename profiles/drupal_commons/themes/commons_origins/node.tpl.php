@@ -22,9 +22,7 @@
 
    
     <div class="content clearfix">
-    <?php if ($page == 0): ?>
     <h2 class="title"><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
-    <?php endif; ?>
     <?php if ($terms): ?>
     <div class="terms">
       <?php print $terms; ?>
