@@ -888,7 +888,7 @@ function klicango_send_email($type, $to_uid,  $object){
         $text = '<div style="padding-bottom: 10px;">'.theme_imagecache('search_result_image', $user->picture).'</div><div style="">';
         $text .= l($user->first_name.' '.$user->surname, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('invites you to').' '.l($event->title, 'node/'.$event->nid, array('absolute'=>TRUE));
         $text .= '<br>'.date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
-        $text .= (count($people['going'])+count($people['invited'])).' '.t('people are going');
+        $text .= (count($people['going'])+count($people['invited'])).' '.t('people are invited');
         $text .= '<br><br><div style="font-size: 80%">'.l(t('View invitation on Klicango'),'private',array('absolute'=>TRUE)).'<br>';
         $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
