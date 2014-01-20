@@ -344,10 +344,11 @@ function klicango_friends_invite_local_friends($data = array()) {
             if ($local_uid) {
                 $object->user_id = $local_uid;
                 $is_invited = db_result(db_query('SELECT user_id FROM events_users WHERE event_id = %d AND user_id = %d', $object->event_id, $local_uid));
-                if (!$is_invited) {
+                if (!$is_invited) {    
                     $result = drupal_write_record('events_users', $object);
                     if ($result) {
-                        $rows++;
+                      klicango_send_email('invite_to_event',$local_uid,$object);
+                      $rows++;
                     }
                 } else {
                     $invited++;
@@ -679,6 +680,9 @@ function klicango_friends_add_invitation($fid, $ajax = true, $facebook = false) 
         $return['success'] = drupal_write_record('friends_invitations', $data);
     } else {
         $return['success'] = false;
+    }
+    if($return['success']){
+      klicango_send_email('friend_request', $fid, null );
     }
     
     if ($ajax) {

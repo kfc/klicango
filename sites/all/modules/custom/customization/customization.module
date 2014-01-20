@@ -874,3 +874,64 @@ function places_search_results($term){
   }
   return $places;  
 }
+
+function klicango_send_email($type, $to_uid,  $object){
+  global $user;
+  profile_load_profile($user);
+  $recepient = user_load($to_uid);
+  if(!empty($recepient->mail)){
+    $text = $subject = ''; 
+    switch($type){
+      case 'invite_to_event':
+        $event = node_load($object->event_id);
+        $people = events_get_event_attenders($object->event_id);
+        $text = '<div style="padding-bottom: 10px;">'.theme_imagecache('search_result_image', $user->picture).'</div><div style="">';
+        $text .= l($user->first_name.' '.$user->surname, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('invites you to').' '.l($event->title, 'node/'.$event->nid, array('absolute'=>TRUE));
+        $text .= '<br>'.date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
+        $text .= (count($people['going'])+count($people['invited'])).' '.t('people are going');
+        $text .= '<br><br><div style="font-size: 80%">'.l(t('View invitation on Klicango'),'private',array('absolute'=>TRUE)).'<br>';
+        $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= "</div>";
+        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        
+        $subject = t('Invitation to ').' '.$event->title;
+        break;
+      
+      case 'friend_request':
+        $text = '<div style="padding-right: 10px;">'.theme_imagecache('search_result_image', $user->picture).'</div><div style="">';
+        $text .= l($user->first_name.' '.$user->surname, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('wants to be your friend on Klicango.');
+        $text .= '<br><br><div style="font-size: 80%">'.l(t('View invitation on Klicango'),'friends',array('absolute'=>TRUE)).'<br>';
+        $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= "</div>";
+        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        
+        $subject = t('Friend request from').' '.$user->first_name.' '.$user->surname;
+        break;
+      
+      case 'public_invitation':
+        $event = $object;
+        $text = '<div style="padding-bottom: 10px;">'.theme_imagecache('search_result_image', $user->picture).'</div><div style="">';
+        $text .= l($user->first_name, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('invites you to').' '.l($event->title, 'node/'.$event->nid, array('absolute'=>TRUE));
+        $text .= '<br>'.date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
+        //$text .= (count($people['going'])+count($people['invited'])).' '.t('people are going');
+        $text .= '<br><br><div style="font-size: 80%">'.l(t('View invitation on Klicango'),'public',array('absolute'=>TRUE)).'<br>';
+        $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= "</div>";
+        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        
+        $subject = t('Invitation to ').' '.$event->title;
+        break;
+        
+       case '':
+        break;     
+      
+    }
+    
+    // To send HTML mail, the Content-type header must be set
+    $headers  = 'MIME-Version: 1.0' . "\r\n";
+    $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+    $headers .= 'From: Klicango <no-reply@klicango.fr>' . "\r\n";
+    mail($recepient->mail, $subject, $text, $headers);
+    
+  }
+}
