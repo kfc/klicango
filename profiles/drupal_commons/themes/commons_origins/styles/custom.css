@@ -1213,3 +1213,8 @@ ul.search-items li {
 .print-coupon-user-text {
   display: none;
 }
+
+#main-slider ul li .slider-text{
+  background: url(../images/transparency.png) left top;
+  padding: 5px 5px 0 5px;
+}

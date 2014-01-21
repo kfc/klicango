@@ -7,13 +7,16 @@
         <?php foreach ($slides as $slide) : ?>
             <li>
                 <img src="<?php echo imagecache_create_url('homepage_carousel', $slide['photo']); ?>" />
-    			<div class="slider-text">
-                    <img src="<?php echo imagecache_create_url('user_picture_meta', $slide['profile_picture']); ?>" />
-    				
-    				<div class="profile-name"><?php echo $slide['name']; ?></div>
-    				<div class="profile-address"><?php echo $slide['address']; ?> - <?php echo $slide['zip']; ?> <?php echo $slide['city']; ?></div>
-    				<div class="profile-link"><?php echo l(t('more...'), 'user/' . $slide['uid']); ?></div>
-    			</div>
+                <a href="<?php echo url('user/'. $slide['uid'])?>">
+    			      <div class="slider-text">
+                  
+                          <img src="<?php echo imagecache_create_url('user_picture_meta', $slide['profile_picture']); ?>" />
+    				      
+    				        <div class="profile-name"><?php echo $slide['name']; ?></div>
+    				        <div class="profile-address"><?php echo $slide['address']; ?> - <?php echo $slide['zip']; ?> <?php echo $slide['city']; ?></div>
+    				        <div class="profile-link"><?php echo t('more...') ?></div>
+                  
+    			      </div></a>
             </li>
         <?php endforeach; ?>
 	</ul>
