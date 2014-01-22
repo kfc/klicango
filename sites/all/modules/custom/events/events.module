@@ -364,7 +364,7 @@ function create_event_if_valid(){
     } else{
        $edit_mode = false;
       global $user; 
-      
+
       if(isset($_POST['nid']) && !empty($_POST['nid']) && (int)$_POST['nid'] > 0){
         $edit_mode = true;
         $event = node_load($_POST['nid']);
@@ -441,6 +441,15 @@ function create_event_if_valid(){
            db_query("INSERT INTO events_users(user_id, event_id, sender_id,status) 
                     SELECT DISTINCT(uid),".$event->nid.",".$user->uid.",1 from (SELECT uid FROM friends WHERE (fid = ".$user->uid.") UNION SELECT fid as uid FROM friends WHERE (uid = ".$user->uid.")) t ");
          } */
+         
+         //Send emails to followers
+         $followers = klicango_friends_all_friends($user->uid);
+         if(!empty($followers)){
+           foreach($followers as $_follower){
+            klicango_send_email('public_invitation', $_follower, $event);   
+           }
+         }
+         
       }
       if($event->nid > 0)
         drupal_goto('node/'.$event->nid, $query);
@@ -1018,7 +1027,7 @@ function event_accept_event_invitation() {
     if (db_result($count)) {
       $result = db_query('UPDATE events_users SET status = %d WHERE event_id = %d AND user_id = %d', $event_status, $event_id, $user->uid);
     } else {
-      $data = array('event_id' => $event_id, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => $event_status);      
+      $data = array('event_id' => $event_id, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => $event_status);     
       drupal_write_record('events_users', $data); 
     }
     drupal_json(array('status' => 'success'));       
