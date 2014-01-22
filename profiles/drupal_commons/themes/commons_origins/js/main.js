@@ -516,12 +516,13 @@ function showFriends(user_id) {
              $("#invite-friends-form.user-" + user_id + " #search-friends").hide();
             }
           });
-          $("#invite-friends-form.user-" + user_id +" div.scroll-pane").mCustomScrollbar({
+          $("#invite-friends-form.user-" + user_id).dialog( "open" );
+                    $("#invite-friends-form.user-" + user_id +" div.scroll-pane").mCustomScrollbar({
               scrollButtons:{
               	enable:true
               }
           });
-          $("#invite-friends-form.user-" + user_id).dialog( "open" );
+
      },
   });
 }

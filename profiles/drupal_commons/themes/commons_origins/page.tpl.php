@@ -21,14 +21,14 @@
   <?php //print $scripts; ?>
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/style.css" type="text/css" media="screen, projection, print" />
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/custom.css" type="text/css" media="screen, projection, print" />
-  <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/jquery-ui.css" />
+  <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/jquery-ui.min.css" />
     <!--[if lte IE 6]><link rel="stylesheet" href="styles/style_ie.css" type="text/css" media="screen, projection" /><![endif]-->
   <?php if(strpos($_GET['q'],'print_coupon/') === 0):?>
     <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/print_coupon.css" type="text/css" media="screen, projection, print" />
   <?php endif;?>  
     
-    <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery-1.9.1.js"></script>
-    <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery-ui.js"></script>
+    <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery-1.9.1.min.js"></script>
+    <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery-ui.min.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.carouFredSel-6.2.1-packed.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.formstyler.new.js"></script>
     <script src="/misc/drupal.js"></script>
