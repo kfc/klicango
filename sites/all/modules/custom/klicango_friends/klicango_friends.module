@@ -311,7 +311,9 @@ function klicango_friends_graph_query($id, $access_token = NULL, $parameters = a
 function klicango_friends_preprocess_page(&$variables) {
     if (!empty($_GET['invite']) && !empty($_GET['event_id'])) {
          drupal_add_js('$(document).ready(function(){
-            initRequest("' . $_GET['invite'] . '", ' . $_GET['event_id'] . ');
+            setTimeout(function(){
+              initRequest("' . $_GET['invite'] . '", ' . $_GET['event_id'] . ');
+            }, 1000);
          });', 'inline');         
     }
     

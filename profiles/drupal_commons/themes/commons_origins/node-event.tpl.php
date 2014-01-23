@@ -67,7 +67,7 @@
             <div class="public-event-top-banner">
               <?php echo theme_imagecache('event_image', $node->field_content_images[0]['filepath']);?>
             </div>
-        <?php elseif(!empty($advanced_info[0]['photo']) || !empty($advanced_info['photo'])):?>
+        <?php elseif((!empty($advanced_info[0]['photo'])) || !empty($advanced_info['photo'])):?>
         <div class="public-event-top-banner">
           <?php echo theme_imagecache('event_image',(!empty($advanced_info['photo']) ? $advanced_info['photo'] : $advanced_info[0]['photo']));?>
         </div>

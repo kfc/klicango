@@ -301,8 +301,10 @@ function inviteFriend(object, id, local) {
         
         if (local == 1) {
             title = 'local';
+            $('#' + form_id).append('<input type="hidden" name="local_invite[]" value="' + id + '">');
         } else {
             title = 'facebook';
+            $('#' + form_id).append('<input type="hidden" name="facebook_invite[]" value="' + id + '">');
         }
         
         $('#' + form_id).append('<input type="hidden" title="' + title + '" name="invite[]" id="invite_' + id + '" value="' + id + '">');
@@ -352,6 +354,7 @@ function initRequest(ids, event_id) {
                     ids = data.ids;
                     if (typeof FB == 'object') {
                         FB.ui({method: "apprequests",
+                          title: "Klicango",
                           message: "Dear friend! Please join me on Klicango to always stay in touch and share with me the best parties and places.",
                           display: "iframe",
                           to: ids

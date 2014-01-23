@@ -423,9 +423,15 @@ function create_event_if_valid(){
         }      
         
         $query = '';
-        if (!empty($_POST['invite'])) {
-          $invite_str = implode(',', $_POST['invite']);
+        if (!empty($_POST['facebook_invite'])) {
+          $invite_str = implode(',', $_POST['facebook_invite']);
           $query = 'invite=' . $invite_str . '&event_id=' . $event->nid;
+        }
+        
+        if (!empty($_POST['local_invite'])) {
+          foreach($_POST['local_invite'] as $receiver_id) {
+            klicango_friends_invite_local_friends(array('event_id' => $event->nid, 'to' => $receiver_id));
+          }
         }
       }
       
@@ -451,8 +457,9 @@ function create_event_if_valid(){
          }
          
       }
-      if($event->nid > 0)
+      if($event->nid > 0) {
         drupal_goto('node/'.$event->nid, $query);
+      }
       else drupal_goto('<front>');  
     }
   }
