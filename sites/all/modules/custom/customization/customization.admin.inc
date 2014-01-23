@@ -46,5 +46,12 @@ $form['homepage'] = array(
     '#description' => 'Speed of slides during changing.',
   );
   
+  $form['timeout_before_invite'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Timeout before Facebook invitation init'),
+    '#default_value' => variable_get('timeout_before_invite', '2000'),
+    '#description' => '',
+  );
+  
   return system_settings_form($form);
 }

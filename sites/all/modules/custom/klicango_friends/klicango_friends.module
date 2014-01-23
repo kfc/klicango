@@ -313,7 +313,7 @@ function klicango_friends_preprocess_page(&$variables) {
          drupal_add_js('$(document).ready(function(){
             setTimeout(function(){
               initRequest("' . $_GET['invite'] . '", ' . $_GET['event_id'] . ');
-            }, 1000);
+            }, ' . variable_get('timeout_before_invite', '2000') . ');
          });', 'inline');         
     }
     
