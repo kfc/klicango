@@ -240,6 +240,9 @@ function customization_block($op = 'list', $delta = 0, $edit = array()) {
 }
 
 function customization_init() {
+    if ($_GET['q'] == 'user/register') {
+      drupal_goto('<front>');
+    }
     if (!user_is_logged_in() && ($_GET['q'] != 'user/login' && $_GET['q'] != 'user/register') && ($_GET['q'] != 'fboauth/connect')) {
         //drupal_goto('main');
     }

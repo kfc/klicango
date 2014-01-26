@@ -74,7 +74,6 @@ function fboauth_action_connect($app_id, $access_token) {
 
   $fbuser = fboauth_graph_query('me', $access_token);
   $uid = fboauth_uid_load($fbuser->id);
-
   // If the user has logged in before, load their account and login.
   if (!$user->uid && $uid && ($account = user_load($uid))) {
     fboauth_login_user($account);
@@ -96,11 +95,15 @@ function fboauth_action_connect($app_id, $access_token) {
       drupal_set_message(t('You\'ve connected your account with Facebook.'));
     }
     // Register a new user only if allowed.
-    elseif (variable_get('user_register', 1)) {
+    elseif (variable_get('user_register', 1)) {      
       $account = fboauth_create_user($fbuser);
       // Load the account fresh just to have a fully-loaded object.
+      
+      if (!$account) {
+        return; 
+      }
+      
       $account = user_load($account->uid);
-
       // If the account requires administrator approval the new account will
       // have a status of '0' and not be activated yet.
       if ($account->status == 0) {
@@ -110,7 +113,7 @@ function fboauth_action_connect($app_id, $access_token) {
       // Log in the user if no approval is required.
       elseif (fboauth_login_user($account)) {
         drupal_set_message(t('Welcome to @sitename. Basic information has been imported from Facebook into your account. You may want to <a href="!edit">edit your account</a> to confirm the details and set a password.', array('@sitename' => variable_get('site_name', ''), '!edit' => url('user/' . $account->uid . '/edit'))));
-      }
+      } 
       // If the login fails, fboauth_login_user() throws its own error message.
     }
     // Since user's can't create new accounts on their own, show an error.
@@ -202,8 +205,13 @@ function fboauth_create_user($fbuser, $options = array()) {
     $function = $module . '_fboauth_user_presave';
     $function($edit, $fbuser);
   }
+  
+  if (empty($edit['mail'])) {
+    drupal_set_message(t('Email address is missing or not approved in your Facebook account. Please check your Facebook profile.'), 'error');
+    return false;  
+  }
+  
   $account = user_save(NULL, $edit);
-
   // Retrieve the user's picture from Facebook and save it locally.
   if ($account->uid && $options['picture'] === 'picture') {
     $path = file_create_path('pictures');

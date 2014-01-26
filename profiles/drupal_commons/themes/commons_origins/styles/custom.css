@@ -1237,3 +1237,12 @@ footer{
 .footer-left-block{
   padding-left: 25px;
 }
+
+div.messages {
+  display: none !important;
+}
+
+div.messages.error {
+  color: red !important;
+  display: block !important;
+}
