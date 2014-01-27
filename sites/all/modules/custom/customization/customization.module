@@ -929,11 +929,10 @@ function klicango_send_email($type, $to_uid,  $object){
         break;     
       
     }
-    
     // To send HTML mail, the Content-type header must be set
     $headers  = 'MIME-Version: 1.0' . "\r\n";
     $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-    $headers .= 'From: Klicango <no-reply@klicango.fr>' . "\r\n";
+    $headers .= 'From: '.$user->first_name.' '.$user->surname.' <'.$user->mail.'>' . "\r\n";
     mail($recepient->mail, $subject, $text, $headers);
     
   }

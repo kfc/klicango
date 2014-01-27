@@ -76,6 +76,20 @@ function commons_origins_preprocess_page(&$variables) {
   
 
   $variables['scripts_modified' ] = drupal_get_js('inline' , $scripts_modified);
+  
+  if(arg(0) == 'user'){         
+    $uid = (int)arg(1);
+    if(empty($uid)){
+      global $user;
+      $_user = $user;
+    }
+    else{
+      $_user = user_load($uid);
+    }
+    
+      $variables['head_title'] = $_user->first_name.(!empty($_user->surname) ? $_user->surname : '' )."'s calendar | Klicango";
+  }
+  
 }
 
 function commons_origins_preprocess_node(&$variables) {

@@ -65,12 +65,13 @@ drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'
   
   <div class="form-item profile-links">
     <input type="file" id="field-image-upload" name="files[photo]" class="form-file profile-upload" />
-    <a href="" id="add-friends">Invite friends</a>
+    <?php if(in_array('individual', $user->roles, 'true')) { ?>
+      <a href="" id="add-friends">Invite friends</a>
+    <?php }?>
   </div>
     <?php
-        global $user; 
         if(in_array('individual', $user->roles, 'true')) {
-    ?>
+    ?> 
     <div class="form-item search-for-friends">
     	<input type="text" name="field-search-for-friends" id="search-friends" placeholder="<?php echo t('Type at least 2 symbols to start search');?>"/>
     </div>

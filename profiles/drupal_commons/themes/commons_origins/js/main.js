@@ -242,7 +242,7 @@ function showDialog(dialog_id) {
         $.ajax({
            type: 'GET',
            dataType: 'html',
-           url: 'dialog/open',
+           url: '/dialog/open',
            data: {id: dialog_id},
            success : function (data, textStatus, jqXHR) { 
                 $('body').append(data);
