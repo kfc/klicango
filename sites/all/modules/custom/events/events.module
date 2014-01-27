@@ -430,7 +430,9 @@ function create_event_if_valid(){
         
         if (!empty($_POST['local_invite'])) {
           foreach($_POST['local_invite'] as $receiver_id) {
-            klicango_friends_invite_local_friends(array('event_id' => $event->nid, 'to' => $receiver_id));
+            $result = klicango_friends_invite_local_friends(array('event_id' => $event->nid, 'to' => $receiver_id));
+            $obj = array('event_id' => $event->nid);
+            klicango_send_email('invite_to_event', $receiver_id, $obj);
           }
         }
       }
