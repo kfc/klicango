@@ -70,6 +70,25 @@ function events_update_6001() {
     return $return;
 }
 
+function events_update_6002() {
+    $return = array();
+    $result = db_query('SELECT uid, data FROM users');
+    while ($row = db_fetch_array($result)) {
+      $data = unserialize($row['data']);
+      if (!empty($data['first_name'])) {
+        $full_name = $data['first_name'] . ' ' . $data['surname'];
+      } else {
+        $user = user_load($row['uid']);
+        profile_load_profile($user);
+        $full_name = $user->first_name . ' ' . $user->surname;
+      }
+      db_query('UPDATE users SET full_name = "%s" WHERE uid = %d', $full_name, $row['uid']);
+    }
+    
+    $return[] = array('success' => TRUE, 'query' => 'Full name recorded to users table');
+    return $return;
+}
+
 function events_uninstall() {
   drupal_uninstall_schema('events');
 }

@@ -1245,4 +1245,5 @@ div.messages {
 div.messages.error {
   color: red !important;
   display: block !important;
+  margin-bottom: 15px !important;
 }

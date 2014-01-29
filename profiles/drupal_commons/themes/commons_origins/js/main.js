@@ -380,12 +380,12 @@ function setActiveEvent(event_id) {
     }
 }
 
-function loadJoinFriends(offset, limit) {
+function loadJoinFriends(offset, limit, search) {
         $.ajax({
            type: 'GET',
            dataType: 'html',
            url: '/friends/join',
-           data: {"offset": offset, "limit": limit, "invite" : "true"},
+           data: {"offset": offset, "limit": limit, "invite" : "true", "search" : search},
            success : function (data, textStatus, jqXHR) {
                 $('.friends-join .show_more').remove();
                 

@@ -228,9 +228,24 @@ function klicango_friends_join_friends() {
       }
     }
     
+    if (!empty($_GET['search'])) {
+      $users = klicango_friends_find_users($_GET['search'], $offset, $limit);
+      
+      foreach ($users as $found) {
+        $potential_ids = array_keys($potential_friends);
+        if (!in_array($found['uid'], $local_invites) && !in_array($found['uid'], $potential_ids)) {
+          $html .= '<div class="person-item">';
+          $html .= '<div class="person-thumbnail"><a href="' . url('user/' . $found['uid']) . '"><img src="' . imagecache_create_url('facebook_image_size', $found['picture']) . '"/></a></div>';
+          $html .= '<div class="person-name"><a href="' . url('user/' . $found['uid']) . '">'.$found['full_name'].'</a></div>';
+          $html .= '<a href="javascript: void(0);" class="invite-friend" onclick="inviteJoinFriend(this, ' . $found['uid'] . ', 1)">' . t('Add friend') . '</a>';   
+          $html .= '</div>';
+        }
+      }
+    }
+    
     $new_offset = $offset + $limit;
     if ($html) {
-      $html .= '<div class="show-more-friends"><a class="show_more" href="javascript: void(0);" onclick="loadJoinFriends(' . $new_offset . ', ' . $limit . ')">' . t('Show more friends') . '</a></div>';
+      $html .= '<div class="show-more-friends"><a class="show_more" href="javascript: void(0);" onclick="loadJoinFriends(' . $new_offset . ', ' . $limit . ', \'' . htmlspecialchars($_GET['search']) . '\')">' . t('Show more friends') . '</a></div>';
     } else {
       $html .= '<div class="show-more-friends">' . t('No potential friends found') . '</div>';
     }
@@ -1058,4 +1073,13 @@ function klicango_friends_get_all_followed_places($user_id){
     $users[] = $_user['id'];
   }
   return $users;  
+}
+
+function klicango_friends_find_users($search, $offset, $limit) {
+  $result = db_query('SELECT uid, picture, full_name FROM users WHERE full_name LIKE "%' . mysql_escape_string($search) . '%" ORDER BY full_name ASC LIMIT %d, %d', $offset, $limit);
+  $users = array();
+  while ($row = db_fetch_array($result)) {
+    $users[] = $row;
+  }
+  return $users;
 }

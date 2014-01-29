@@ -104,6 +104,8 @@ function fboauth_action_connect($app_id, $access_token) {
       }
       
       $account = user_load($account->uid);
+      
+      db_query('UPDATE users SET full_name = "%s" WHERE uid = %d', $account->first_name . ' ' . $account->surname, $account->uid);
       // If the account requires administrator approval the new account will
       // have a status of '0' and not be activated yet.
       if ($account->status == 0) {
@@ -207,7 +209,7 @@ function fboauth_create_user($fbuser, $options = array()) {
   }
   
   if (empty($edit['mail'])) {
-    drupal_set_message(t('Email address is missing or not approved in your Facebook account. Please check your Facebook profile.'), 'error');
+    drupal_set_message(t('Facebook registration failed: please check your Facebook profile (error due to missing or unapproved email address).'), 'error');
     return false;  
   }
   

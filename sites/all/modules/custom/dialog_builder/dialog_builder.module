@@ -237,7 +237,10 @@ function dialog_builder_signup_user() {
         );
     
         $account = user_save('', $userinfo);
-    }      
+    }  
+    
+    db_query('UPDATE users SET full_name = "%s" WHERE uid = %d', $variables['first_name'] . ' ' . $variables['surname'], $account->uid);
+            
     //save photo
     dialog_builder_save_profile_photo($account, $variables);
     dialog_builder_delete_profile_photo($account, $variables);
