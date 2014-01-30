@@ -1076,7 +1076,8 @@ function klicango_friends_get_all_followed_places($user_id){
 }
 
 function klicango_friends_find_users($search, $offset, $limit) {
-  $result = db_query('SELECT uid, picture, full_name FROM users WHERE full_name LIKE "%' . mysql_escape_string($search) . '%" ORDER BY full_name ASC LIMIT %d, %d', $offset, $limit);
+  global $user;
+  $result = db_query('SELECT uid, picture, full_name FROM users WHERE full_name LIKE "%' . mysql_escape_string($search) . '%" AND uid IN (SELECT uid FROM users_roles WHERE rid = 6) AND uid != %d ORDER BY full_name ASC LIMIT %d, %d', $user->uid, $offset, $limit);
   $users = array();
   while ($row = db_fetch_array($result)) {
     $users[] = $row;
