@@ -61,7 +61,13 @@
     } else {
         global $user;
         $location_info = user_load($node->uid);   
-        $advanced_info = advanced_profile_load($location_info->uid);         
+        $advanced_info = advanced_profile_load($location_info->uid); 
+        
+        if(isset($_GET['open_photo']) && !empty($_GET['open_photo'])){
+          ?>
+            <a title="" href="<?php echo url('event_photo/'.$node->nid.'/'.$_GET['open_photo'])?>" style="display:none;" id="auto-open-photo"></a>
+          <?php
+        }
         ?>
         <?php if(!empty($node->field_content_images) && !empty($node->field_content_images[0]['filepath'])):?>
             <div class="public-event-top-banner">

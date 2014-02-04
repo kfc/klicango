@@ -258,6 +258,13 @@ function klicango_photos_add_photo_comment(){
         $comment->uid = $user->uid;
         $return['new_comment'] = theme('photo_comment', $comment);  
         
+        $file = klicango_photos_file_load($values['fid']);
+        if($user->uid != $file->uid){
+          $comment->file = $file;
+          $comment->event_id = $values['event_id'];
+          klicango_send_email('photo_comment', $file->uid, $comment);
+        }
+        
       }
     }
   }
@@ -281,4 +288,8 @@ function theme_photo_comment($comment){
         
   $output .= '<td class="col-3">'.$time.'</td></tr>';  
   return $output; 
+}
+
+function klicango_photos_file_load($fid){
+  return db_fetch_object(db_query("SELECT * from {files} WHERE fid = %d", $fid));
 }

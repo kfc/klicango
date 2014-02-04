@@ -41,12 +41,13 @@ jQuery.fn.imgAbsCenter = function(parent) {
     return this;
     }
 
-
+       
 
 $(function() {
   //POPUP HIDE
       $("#photo-overlay").hide();
       $("#photo-box").hide();
+      
 
       function loadPhotoComments(link){
         //$("#comment-wrapper").html('');
@@ -92,6 +93,13 @@ $(function() {
         });  
         
       }
+      
+      $("a#auto-open-photo").bind('click', function(e){   
+        e.preventDefault();
+        loadPhotoComments(this);
+      });
+      $('a#auto-open-photo').trigger('click');
+       
       // POPUP SHOW
       $("a.klicango-popup").bind('click', function(e){
         e.preventDefault();

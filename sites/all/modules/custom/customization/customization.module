@@ -924,6 +924,17 @@ function klicango_send_email($type, $to_uid,  $object){
         
         $subject = t('Invitation to ').' '.$event->title;
         break;
+      
+     case 'photo_comment':
+        $text = '<div style="padding-right: 10px;">'.theme_imagecache('comment_image', $object->file->filepath).'</div><div style="">';
+        $text .= l($user->first_name.' '.$user->surname, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('commented on your photo.');
+        $text .= '<br><br><div style="font-size: 80%">'.l(t('View photo on Klicango'),'node/'.$object->event_id,array('absolute'=>TRUE,'query'=>array('open_photo'=>$object->file->fid))).'<br>';
+        $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= "</div>";
+        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        
+        $subject = t('Comment on your photo');
+        break; 
         
        case '':
         break;     

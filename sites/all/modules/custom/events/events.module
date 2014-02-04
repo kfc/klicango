@@ -268,7 +268,6 @@ function events_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
         $node->comments_view = $view->render('nodecomment_comments_1');
         $node->current_user_status = events_get_event_status_for_user($node->nid, $user->uid);
         $node->people_going = events_get_event_attenders($node->nid);
-        
       }
       if($node->type == 'comment'){
         global $user;
