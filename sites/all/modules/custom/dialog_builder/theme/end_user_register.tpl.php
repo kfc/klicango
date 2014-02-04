@@ -65,7 +65,7 @@
         
     	<div class="form-submit">
             <?php if (!user_is_logged_in()) : ?>
-    		  <label><input type="checkbox" name="conditions" value="agree" class="error"/>J’accepte les <a href="/page/mentions-legales">conditions d’utilisation</a> du service</label>
+    		  <label><input type="checkbox" name="conditions" value="agree" class="error"/>J’accepte les </label><a id="terms-conditions-link" href="/page/mentions-legales" target="_blank">conditions d’utilisation</a> <label>du service</label>
               <input type="submit" value="Sign up"/>
             <?php else : ?>
                 <input type="submit" value="Update"/>
