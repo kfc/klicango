@@ -93,5 +93,12 @@
     
     <?php print $create_event_form; ?>
     <?php echo $scripts_modified; ?>
+    <?php if (!empty($_GET['facebook']) && $_GET['facebook'] == 'true') : ?>
+        <script type="text/javascript">
+          $(document).ready(function() {
+            $('#log_in').click();
+          });
+        </script>
+    <?php endif; ?>
   </body>
 </html>
