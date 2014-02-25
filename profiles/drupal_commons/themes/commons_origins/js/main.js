@@ -146,6 +146,10 @@ $(function() {
       }
   });
   
+  $('.open-profile').click(function(){
+    $('#end_user_register').click();
+  });
+  
 });
 
 function loadFriends(offset, limit) {

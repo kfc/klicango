@@ -1252,3 +1252,12 @@ body .ui-widget-content .form-submit a#terms-conditions-link{
   font: 10px/10px Arial;
   color: #96c12b;
 }
+
+.open-profile {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.open-profile:hover {
+  text-decoration: none;
+}

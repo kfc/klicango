@@ -209,11 +209,18 @@ function fboauth_create_user($fbuser, $options = array()) {
   }
   
   if (empty($edit['mail'])) {
-    drupal_set_message(t('Facebook registration failed: please check your Facebook profile (error due to missing or unapproved email address).'), 'error');
-    return false;  
+    if (!empty($fbuser->username)) {
+      $edit['mail'] = $edit['name'] = $fbuser->username . '@facebook.com';
+      drupal_set_message(t('Klicango could not retrieve your personal email address as it was not provided by Facebook. Please check your <span class="open-profile">profile information</span> and enter your personal email address so that Klicango can work properly for you.'), 'error');
+    } else {
+      drupal_set_message(t('Facebook registration failed: please check your Facebook profile (error due to missing or unapproved email address).'), 'error');
+      return false;  
+    }
+      
   }
   
   $account = user_save(NULL, $edit);
+  
   // Retrieve the user's picture from Facebook and save it locally.
   if ($account->uid && $options['picture'] === 'picture') {
     $path = file_create_path('pictures');
@@ -254,6 +261,9 @@ function fboauth_create_user($fbuser, $options = array()) {
  *   A Drupal user account or UID.
  */
 function fboauth_login_user($account) {
+  if (strstr($account->mail, '@facebook.com')) {
+    drupal_set_message(t('Klicango could not retrieve your personal email address as it was not provided by Facebook. Please check your <span class="open-profile">profile information</span> and enter your personal email address so that Klicango can work properly for you.'), 'error'); 
+  }
   return user_external_login($account);
 }
 
