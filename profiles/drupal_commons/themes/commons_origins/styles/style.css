@@ -561,6 +561,9 @@ body .ui-widget-content .form-item.profile-links #add-prof-photo,
 	float: none !important;
 	white-space: normal !important;
 }
+
+body .ui-widget-content .form-item .checkbox-label {float: none; font-weight: normal; color: #858586; width: auto; }
+#event-sell-tickets-styler {margin-top: 6px;}
 body .ui-widget-content .form-item.profile-links #add-friends{
 	background: url(../images/add-friend.png) left center no-repeat;
 }
@@ -1648,3 +1651,24 @@ div.event-gratuity{
 	overflow: auto;
 	margin-top: 30px;
 }
+
+.clearfix:after,
+.buy-tickets-wrapper:after,
+.buy-tickets-form-wrapper:after {content: "."; display: block; height: 0; clear: both; visibility: hidden; line-height: 0; font-size: 0;}
+
+.buy-tickets-wrapper {margin-bottom: 16px;}
+ .buy-tickets-wrapper form {float: left;}
+ .buy-tickets-wrapper .going-status-button {float: right; width: auto; clear: none;}
+ .buy-tickets-wrapper .buy-tickets-form-wrapper {}
+  .buy-tickets-wrapper .buy-tickets-form-wrapper .form-item {float: left; margin-right: 10px;}
+   .buy-tickets-wrapper .buy-tickets-form-wrapper .form-item .wide-item {width: 252px;}
+    .buy-tickets-wrapper .buy-tickets-form-wrapper .form-item .wide-item.jqselect div.jq-selectbox__select {width: 250px !important;}
+    .buy-tickets-wrapper .buy-tickets-form-wrapper .form-item .wide-item.jqselect .jq-selectbox__dropdown {width: 240px;}
+   .buy-tickets-wrapper .buy-tickets-form-wrapper .form-item .narrow-item {width: 55px;}
+    .buy-tickets-wrapper .buy-tickets-form-wrapper .form-item .narrow-item.jqselect div.jq-selectbox__select {width: 53px !important;}
+    .buy-tickets-wrapper .buy-tickets-form-wrapper .form-item .narrow-item.jqselect .jq-selectbox__dropdown {width: 43px;}
+   
+    .buy-tickets-wrapper .buy-tickets-form-wrapper .form-item .jq-selectbox.jqselect div.jq-selectbox__select-text {width: auto;}
+  
+  .buy-tickets-wrapper .buy-tickets-form-wrapper .form-submit {float: left;}
+   .buy-tickets-wrapper .buy-tickets-form-wrapper .form-submit input[type="submit"] {background: #f54e1f; border: solid 1px #f6b3a1; border-radius: 5px; color: #fff; cursor: pointer; font: bold 12px Arial; height: 30px; outline: none; padding: 0 12px; min-width: 116px;}

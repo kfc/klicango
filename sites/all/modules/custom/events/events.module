@@ -390,7 +390,16 @@ function create_event_if_valid(){
       $event->field_event_email[0]['value']= $_POST['email'];
       $event->field_event_contact_phone[0]['value']= $_POST['phone'];
       if(in_array('professional', $user->roles)){
-         $event->field_event_gratuity[0]['value']= $_POST['gratuity'];  
+        $event->field_tickets_per_user[0]['value']= trim($_POST['tickets_per_user']);
+        $ticket_date_arr = explode('/',trim($_POST['tickets_date']));
+        $event->field_tickets_date[0]['value'] = date('c', mktime(0,0,0,$ticket_date_arr[1],$ticket_date_arr[0],$ticket_date_arr[2]));
+        //var_dump($event->field_tickets_date[0]['value'], $event->field_date[0]['value'], $_POST); exit;
+         $event->field_event_gratuity[0]['value']= $_POST['gratuity'];
+         if(!empty($_POST['tickets'])) {
+          $event->field_event_tickets[0]['value']= 1;
+         } else {
+          $event->field_event_tickets[0]['value']= 0;
+         }
         
       }
       $event->field_event_type[0]['value']= (in_array('individual', $user->roles) ? 'private' : 'public');
@@ -421,6 +430,21 @@ function create_event_if_valid(){
            nodecomment_save($comment);
         }      
         
+        //add ticket types to event
+        if(in_array('professional', $user->roles) && !empty($event->nid)){
+          if(!empty($_POST['ticket_title_1']) && !empty($_POST['ticket_price_1'])) {
+            db_query('INSERT INTO events_tickets (event_id, title, price, quantity) VALUES(%d, "%s", %f, %d)', $event->nid, $_POST['ticket_title_1'], $_POST['ticket_price_1'], $_POST['ticket_quantity_1']);
+          }
+          
+          if(!empty($_POST['ticket_title_2']) && !empty($_POST['ticket_price_2'])) {
+            db_query('INSERT INTO events_tickets (event_id, title, price, quantity) VALUES(%d, "%s", %f, %d)', $event->nid, $_POST['ticket_title_2'], $_POST['ticket_price_2'], $_POST['ticket_quantity_2']);
+          }
+          
+          if(!empty($_POST['ticket_title_3']) && !empty($_POST['ticket_price_3'])) {
+            db_query('INSERT INTO events_tickets (event_id, title, price, quantity) VALUES(%d, "%s", %f, %d)', $event->nid, $_POST['ticket_title_3'], $_POST['ticket_price_3'], $_POST['ticket_quantity_3']);
+          }
+        }
+          
         $query = '';
         if (!empty($_POST['facebook_invite'])) {
           $invite_str = implode(',', $_POST['facebook_invite']);
@@ -1358,4 +1382,14 @@ function events_delete_event($event_id = null){
   }
   
   
+}
+
+
+function events_tickets_load(&$event) {
+  if ($event->field_event_tickets[0]['value'] && (strtotime($event->field_tickets_date[0]['value']) > time())) {
+    $result = db_query('SELECT * FROM events_tickets WHERE event_id = %d ORDER BY id ASC', $event->nid);
+    while($row = db_fetch_array($result)) {
+      $event->ticket_types[$row['id']] = array('title' => $row['title'], 'price' => $row['price'], 'quantity' => $row['quantity']);
+    }
+  }
 }

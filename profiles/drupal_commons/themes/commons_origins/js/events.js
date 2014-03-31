@@ -1,4 +1,6 @@
 $(function() {   
+  //style button dropdowns
+  $('.buy-tickets-form-wrapper select').styler();  
   
   function bindDatepicker(){
     $("#datepicker").datepicker({
@@ -10,6 +12,16 @@ $(function() {
     });
     $("#datepicker").datepicker("option", "showAnim", 'slideDown');
     $("#datepicker").datepicker("option", "dateFormat", 'dd/mm/yy');
+    
+    $("#datepicker-tickets").datepicker({
+      changeMonth: true,
+      changeYear: true,
+      beforeShow : function(){  
+
+      }
+    });
+    $("#datepicker-tickets").datepicker("option", "showAnim", 'slideDown');
+    $("#datepicker-tickets").datepicker("option", "dateFormat", 'dd/mm/yy');
   }
   
   var cur_date = '';
@@ -63,6 +75,13 @@ $(function() {
       }
   });
   
+  $("#event-tickets-form" ).dialog({
+    autoOpen: false,
+    height: 640,
+    width: 484,
+    modal: true
+  });
+ 
    $("#create-event-form.private-event" ).dialog({
     autoOpen: false,
     height: 410,
@@ -145,14 +164,26 @@ $(function() {
         $("#create-event-form textarea").each(function(){
           $(this).val('');
         });
-
+		
        // $( "#create-event-form" ).dialog( {title:'Create Event'} );
         $( "#create-event-form" ).dialog( "open" );
+		$('#create-event-form input[type="checkbox"]').styler();
         $(".event-delete-link").hide();
     });
   }
   
   bindCreateEventLink();
+  
+  function bindTicketsCheckbox(){
+    $("#event-sell-tickets")
+      .change(function(e) {
+        var checked = $(e.target).prop('checked');
+        if(checked) {
+          $( "#event-tickets-form" ).dialog( "open" );
+        }
+    });
+  }
+  bindTicketsCheckbox();
   
   $("#modify-event-link")
     .click(function(e) {
@@ -189,6 +220,9 @@ $(function() {
   
   $("#form_create_event input[type='submit']").click(function(e){  
     e.preventDefault();
+    if ($('#datepicker-tickets')) {
+      $('#tickets_date_check').val($('#datepicker-tickets').val());
+    }
     var form = $("#form_create_event");
     var is_submitted = false;
     $.ajax({
@@ -198,6 +232,7 @@ $(function() {
       dataType: 'json',
       success: function(data){
         if(data.isValid){  
+          $(form).append($('#event-tickets-form'));
           $(form).submit();  
         }
         else{ 

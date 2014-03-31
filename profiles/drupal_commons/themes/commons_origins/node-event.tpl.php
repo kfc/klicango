@@ -159,14 +159,50 @@
               </div>
             </div>
             
-            <?php if(events_event_is_available_to_add($node)):?>
-              <div class="going-status-button" id="event-action-button"><a class="add-event-link" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t('Add to my calendar')?></a></div>
+            <div class="buy-tickets-wrapper">
+              <?php
+                events_tickets_load($node);
+                if (!empty($node->ticket_types)) {
+              ?>
+                <form>
+                  <div class="buy-tickets-form-wrapper">
+                   <div class="form-item">
+                    <select class="wide-item" name="ticket_type" id="items-option">
+                      <?php
+                        foreach($node->ticket_types as $key => $val) {
+                          echo '<option value="' . htmlspecialchars($key) .  '">' . htmlspecialchars($val['title']) . ', ' . $val['price'] . '&euro;' . '</option>';
+                        }
+                      ?>
+                    </select>
+                   </div>
+                   <div class="form-item">
+                    <select class="narrow-item" name="quantity" id="items-quantity">
+                      <?php
+                        for($i = 1; $i <= $node->field_tickets_per_user[0]['value']; $i++) {
+                          echo '<option value="' . $i . '">' . $i . '</option>';
+                        }
+                      ?>
+                    </select>
+                   </div>
+                   <input type="hidden" name="event_nid" value="<?php echo $node->nid; ?>" />
+                   <div class="form-submit"><input type="submit" value="<?php echo t('Buy tickets'); ?>"></div>
+                  </div>
+                 </form>
+              <?php 
+                }
+              ?>
+               
+               <?php if(events_event_is_available_to_add($node)):?>
+                <div class="going-status-button" id="event-action-button"><a class="add-event-link" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t('Add to my calendar')?></a></div>
+              
+              <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
+                <div class="going-status-button" id="event-action-button">
+                  <a class="remove-event-link" title="<?php echo $title?>" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
+                </div>
+              <?php endif;?>
+            </div>
             
-            <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
-              <div class="going-status-button" id="event-action-button">
-                <a class="remove-event-link" title="<?php echo $title?>" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
-              </div>
-            <?php endif;?>
+           
         <?php else : ?>
             <div id="private-event-description">
         		<div id="private-event-profile-info">

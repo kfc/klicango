@@ -75,16 +75,12 @@ function commons_event_strongarm() {
   $strongarm->name = 'content_extra_weights_event';
   $strongarm->value = array(
     'title' => '-5',
-    'body_field' => '-3',
     'revision_information' => '3',
     'author' => '7',
     'options' => '8',
     'comment_settings' => '5',
     'menu' => '4',
-    'taxonomy' => '-1',
     'path' => '6',
-    'flag' => '1',
-    'og_nodeapi' => '2',
   );
   $export['content_extra_weights_event'] = $strongarm;
 

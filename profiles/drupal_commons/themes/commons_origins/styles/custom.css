@@ -1261,3 +1261,8 @@ body .ui-widget-content .form-submit a#terms-conditions-link{
 .open-profile:hover {
   text-decoration: none;
 }
+
+.buy-tickets-form-wrapper .has-value {
+  font: 11px/25px Arial !important;
+  color: #858586 !important;
+}

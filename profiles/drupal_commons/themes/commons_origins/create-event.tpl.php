@@ -51,6 +51,12 @@ drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'
   </div>
   <?php if(in_array('professional', $user->roles)):?>
     <div class="form-item">
+      <label><?php echo t('Ticket')?></label>
+      <input type="checkbox" id="event-sell-tickets" name="tickets" value="1" class="form-checkbox" />
+      <label class="checkbox-label"><?php echo t('I want to sell tickets online')?></label>
+    </div>
+    
+    <div class="form-item">
       <label><?php echo t('Gratuity')?></label>
       <input type="text" name="gratuity" style="width: 294px;" placeholder="<?php echo t('')?>" />
     </div>  
@@ -88,5 +94,67 @@ drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'
     <?php endif;?>
     
   </div>
+  
+  <input type="hidden" id="tickets_date_check" name="tickets_date_check"/>
+  
   </form>
 </div>
+
+<?php if(in_array('professional', $user->roles)):?>
+  <div id="event-tickets-form" class="<?php echo $class;?>" title="Event Tickets">
+    <div class="form-item">
+      <label><?php echo t('Ticket 1 title')?></label>
+      <input type="text" name="ticket_title_1" style="width: 294px;" />
+    </div>
+    <div class="form-item">
+      <label><?php echo t('Ticket 1 price')?></label>
+      <input type="text" name="ticket_price_1" style="width: 294px;" />
+    </div>
+    <div class="form-item">
+      <label><?php echo t('Ticket 1 quantity')?></label>
+      <input type="text" name="ticket_quantity_1" style="width: 294px;" />
+    </div>
+    <div class="form-item">
+      <label><?php echo t('Ticket 2 title')?></label>
+      <input type="text" name="ticket_title_2" style="width: 294px;" />
+    </div>
+    <div class="form-item">
+      <label><?php echo t('Ticket 2 price')?></label>
+      <input type="text" name="ticket_price_2" style="width: 294px;" />
+    </div>
+    <div class="form-item">
+      <label><?php echo t('Ticket 2 quantity')?></label>
+      <input type="text" name="ticket_quantity_2" style="width: 294px;" />
+    </div>
+    <div class="form-item">
+      <label><?php echo t('Ticket 3 title')?></label>
+      <input type="text" name="ticket_title_3" style="width: 294px;" />
+    </div>
+    <div class="form-item">
+      <label><?php echo t('Ticket 3 price')?></label>
+      <input type="text" name="ticket_price_3" style="width: 294px;" />
+    </div>
+    <div class="form-item">
+      <label><?php echo t('Ticket 3 quantity')?></label>
+      <input type="text" name="ticket_quantity_3" style="width: 294px;" />
+    </div>
+    <div class="form-item">
+      <label><?php echo t('Tickets on sale until')?></label>
+      <input type="text" name="tickets_date" id="datepicker-tickets"  style="width: 294px;" />
+    </div>
+    <div class="form-item">
+      <label><?php echo t('Max number of tickets / user')?></label>
+      <select name="tickets_per_user">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+      </select>
+    </div>
+  </div>
+<?php endif;?>
