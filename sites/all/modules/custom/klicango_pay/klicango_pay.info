@@ -1,0 +1,5 @@
+name = Paybox klicango
+description = paybox payment system
+core = 6.x
+package = Custom
+version = 1.0

@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function klicango_pay_schema() {
+  $schema['events_payment'] = array(
+    'fields' => array(
+      'pid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'ticket_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'customer_uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'quantity' => array(
+        'type' => 'int',
+        'size' => 'small',
+        'default' => 0,
+        'not null' => TRUE,
+      ),
+      'cents' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'request_time' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'response_time' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'is_red' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'status' => array(
+        'type' => 'varchar',
+        'length' => '4',
+        'not null' => TRUE,
+        'default' => 'init'
+      ),
+    ),
+    'primary key' => array('pid'),
+  );
+  return $schema; 
+}
+
+/**
+ * Set the initial database schema ID.
+ */
+function klicango_pay_update_6100() {
+  // No-op.
+}
+
+
+/**
+ * Implements hook_install().
+ */
+function klicango_pay_install() {
+    drupal_install_schema('klicango_pay');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function klicango_pay_uninstall() {
+    drupal_uninstall_schema('klicango_pay');
+}

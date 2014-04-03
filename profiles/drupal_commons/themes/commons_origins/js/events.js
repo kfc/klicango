@@ -111,6 +111,13 @@ $(function() {
       }
   });
   
+  $("#paybox-message" ).dialog({
+    autoOpen: true,
+    width: 484,
+    height: 175,
+    modal: true,
+  });  
+  
   
   $("#add-friends-form-user-page").dialog({
     autoOpen: true,
