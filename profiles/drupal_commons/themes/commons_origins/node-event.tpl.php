@@ -69,6 +69,23 @@
           <?php
         }
         ?>
+        <?php if(!empty($_GET['paybox'])):?>
+        <div id="paybox-message">
+        <?php
+        switch ($_GET['paybox']) {
+            case 'effectue' :
+                print(variable_get('paybox_effectue_message', t('Payment completed. Thank you.')));
+                break;
+            case 'refuse' :
+                print(variable_get('paybox_refuse_message', t('Payment refused. Sorry.')));
+                break;
+            case 'annule' :
+                print(variable_get('paybox_annule_message', t('Payment canceled.')));
+                break;
+        }
+        ?>
+        </div>
+        <?php endif;?>
         <?php if(!empty($node->field_content_images) && !empty($node->field_content_images[0]['filepath'])):?>
             <div class="public-event-top-banner">
               <?php echo theme_imagecache('event_image', $node->field_content_images[0]['filepath']);?>
@@ -164,7 +181,7 @@
                 events_tickets_load($node);
                 if (!empty($node->ticket_types)) {
               ?>
-                <form>
+                <form action="<?php print url('paybox_process_page');?>" method="post">
                   <div class="buy-tickets-form-wrapper">
                    <div class="form-item">
                     <select class="wide-item" name="ticket_type" id="items-option">
