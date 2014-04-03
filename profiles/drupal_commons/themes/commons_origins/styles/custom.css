@@ -1266,3 +1266,45 @@ body .ui-widget-content .form-submit a#terms-conditions-link{
   font: 11px/25px Arial !important;
   color: #858586 !important;
 }
+
+#accaunt-menu.professional{
+	background: url(../images/profile-dropdown-professional.png) 0 0 no-repeat;
+	width: 150px;
+	height: 90px;
+}
+
+#dialog-professional_banking_details label {
+  width: 140px !important;
+}
+#dialog-professional_banking_details input {
+  margin-right: 0px !important;
+}
+#create-event-form #event-tickets-form {
+  display: none;
+}
+
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('http://i.stack.imgur.com/FhHRx.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .modal {
+    display: block;
+}

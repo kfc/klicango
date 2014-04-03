@@ -14,14 +14,16 @@
       				</td>
       				<td class="col-2">
       					<a href="/user/<?php echo $friend->uid; ?>" class="person-name"><?php echo $friend->first_name . ' ' . $friend->surname ?></a> 
-                <?php if (in_array('individual', $user->roles)) : ?>
+                <?php if (in_array('individual', $user->roles) && empty($friend->accepted)) : ?>
                   <?php echo t('wants to be your friend'); ?>
+                <?php elseif (in_array('individual', $user->roles) && !empty($friend->accepted)) : ?>
+                  <?php echo t('accepted your friend request'); ?>
                 <?php else : ?>
                   <?php echo t('is a new follower'); ?>
                 <?php endif; ?>
       				</td>
       				<td class="col-3">
-                <?php if (in_array('individual', $user->roles)) : ?>
+                <?php if (in_array('individual', $user->roles) && empty($friend->accepted)) : ?>
         					<div class="decline"><a href="javascript:void(0);" id="user_<?php echo $friend->uid;?>" onclick="declineFriend(<?php echo $friend->uid; ?>)"><?php echo t('Decline'); ?></a></div>
         					<div class="accept"><a href="javascript:void(0);" class="add-user-link" title="<?php echo $friend->first_name . ' ' . $friend->surname ?>" id="user_<?php echo $friend->uid;?>" onclick="acceptFriend(<?php echo $friend->uid; ?>)"><?php echo t('Accept'); ?></a></div>
                 <?php endif; ?>

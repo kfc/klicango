@@ -47,9 +47,12 @@
 		<div class="accaunt-thumbnail"><a href=""><img src="<?php echo imagecache_create_url('profile_picture_small', $user->picture); ?>" /></a></div>
 		<div class="accaunt-name">
 			<a href=""><?php echo $user->first_name; ?></a>
-			<div id="accaunt-menu">
+			<div id="accaunt-menu" class="<?php if(in_array('professional', $user->roles, true)) : echo 'professional'; endif; ?>">
 				<ul>
 					<li><a href="" class="popup" id="<?php echo (in_array('professional', $user->roles, true)) ? 'professional_user_register' : 'end_user_register' ?>">My profile</a></li>
+          <?php if(in_array('professional', $user->roles, true)) : ?>
+            <li><a href="" class="popup" id="professional_banking_details">My banking details</a></li>
+          <?php endif; ?>
 					<li><a href="/user?q=logout">Log out</a></li>
 				</ul>
 			</div>

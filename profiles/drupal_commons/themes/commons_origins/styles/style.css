@@ -1652,9 +1652,11 @@ div.event-gratuity{
 	margin-top: 30px;
 }
 
+/* Klicango 1.1 */
 .clearfix:after,
 .buy-tickets-wrapper:after,
-.buy-tickets-form-wrapper:after {content: "."; display: block; height: 0; clear: both; visibility: hidden; line-height: 0; font-size: 0;}
+.buy-tickets-form-wrapper:after,
+.form-item-headers:after {content: "."; display: block; height: 0; clear: both; visibility: hidden; line-height: 0; font-size: 0;}
 
 .buy-tickets-wrapper {margin-bottom: 16px;}
  .buy-tickets-wrapper form {float: left;}
@@ -1672,3 +1674,19 @@ div.event-gratuity{
   
   .buy-tickets-wrapper .buy-tickets-form-wrapper .form-submit {float: left;}
    .buy-tickets-wrapper .buy-tickets-form-wrapper .form-submit input[type="submit"] {background: #f54e1f; border: solid 1px #f6b3a1; border-radius: 5px; color: #fff; cursor: pointer; font: bold 12px Arial; height: 30px; outline: none; padding: 0 12px; min-width: 116px;}
+
+
+.italic-disclamer-spaced-button {margin-top: 15px;}
+ body .ui-widget-content .form-submit.italic-disclamer-spaced-button label {font-style: italic; line-height: 1.6em; display: block;}
+  .italic-disclamer-spaced-button label a {text-decoration: none;}
+ .italic-disclamer-spaced-button input[type="submit"] {margin-left: 10px;}
+ 
+ .form-text {font-family: Arial, Helvetica, sans-serif; color: #858586; margin-bottom: 15px; font-size: 12px;}
+ body .ui-widget-content .form-item .long-label {width: 212px;}
+ body .ui-widget-content input[type="text"].price-input,
+ body .ui-widget-content input[type="password"].price-input,
+ .jq-selectbox.jqselect div.jq-selectbox__select.price-input {width: 42px; margin-right: 5px;}
+ body .ui-widget-content .form-item label.afterprice-label {width: 45px; margin-right: 5px; text-align: left; color: #858586; font-weight: normal;}
+ .form-item-headers {font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; margin-bottom: 8px;}
+  .form-item-headers-title {float: left; margin-left: 10px; width: 90px;}
+  .form-item-headers-title:first-child {margin-left: 80px; width: 142px;}

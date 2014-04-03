@@ -170,7 +170,7 @@
                     <select class="wide-item" name="ticket_type" id="items-option">
                       <?php
                         foreach($node->ticket_types as $key => $val) {
-                          echo '<option value="' . htmlspecialchars($key) .  '">' . htmlspecialchars($val['title']) . ', ' . $val['price'] . '&euro;' . '</option>';
+                          echo '<option value="' . htmlspecialchars($val['id']) .  '">' . htmlspecialchars($val['title']) . ', ' . $val['price'] . '&euro;' . '</option>';
                         }
                       ?>
                     </select>

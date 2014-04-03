@@ -238,6 +238,8 @@ function redirectPage(url) {
 }
 
 function submitForm(dialog_id) {
+    $("body").addClass("loading");
+    loader = true;
     $('#dialog-' + dialog_id + ' form').submit();
 }
 
@@ -445,7 +447,7 @@ function inviteJoinFriend(object, id, local) {
     }
 }
 
-function processJoinInvitation(response) {
+function processJoinInvitation(object, response) {
     if($(response).length && $(response.to).length) {
         $.ajax({
            type: 'GET',
@@ -453,7 +455,10 @@ function processJoinInvitation(response) {
            url: '/friends/invite',
            data: {"to": response.to},
            success : function (data, textStatus, jqXHR) { 
-               //alert('success');
+            $(object).removeClass('invite-friend');
+            $(object).addClass('already-invited');
+            $(object).removeAttr('onclick');
+            $(object).text(Drupal.t('Friend request sent'));
            },
         });
     }
@@ -473,14 +478,14 @@ function initLocalJoinRequest(ids) {
     }
 }
 
-function initJoinRequest(ids) {
-    if (ids.length) {
+function initJoinRequest(object, ids) {
+    if ($(ids).length) {
         $.ajax({
            type: 'GET',
            dataType: 'json',
            url: '/friends/check_facebook_invite',
            data: {"to": ids},
-           success : function (data, textStatus, jqXHR) { 
+           success : function (data, textStatus, jqXHR) {
                if(data.success == true && data.ids.length) {
                     ids = data.ids;
                     if (typeof FB == 'object') {
@@ -489,7 +494,7 @@ function initJoinRequest(ids) {
                           display: "iframe",
                           to: ids
                         }, function(response){
-                            processJoinInvitation(response);   
+                            processJoinInvitation(object, response);   
                         });
                     } else {
                         setTimeout(function(){
@@ -603,3 +608,8 @@ function loadFindEvents(offset, limit) {
            }, 
         });  
 }
+
+$(document).on({
+    ajaxStart: function() { $("body").addClass("loading"); },
+    ajaxStop: function() { if (!loader) $("body").removeClass("loading"); }    
+});

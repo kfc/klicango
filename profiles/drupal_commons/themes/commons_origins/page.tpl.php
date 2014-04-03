@@ -31,6 +31,7 @@
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery-ui.min.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.carouFredSel-6.2.1-packed.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.formstyler.new.js"></script>
+    <script src="/profiles/drupal_commons/themes/commons_origins/js/spin.min.js"></script>
     <script src="/misc/drupal.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/events.js"></script>
     <script src="/profiles/drupal_commons/themes/commons_origins/js/friends.js"></script>
@@ -61,7 +62,7 @@
                 
     			<!-- Форма поиска -->
     				<div id="search-form">
-    					<form action="/klicando_search" method="get">
+    					<form action="/klicango_search" method="get">
                 <input type="text" name="term" value="<?php echo t('Search for events, friends...')?>" class="search_input" onfocus="javascript: if(this.value == 'Search for events, friends...') this.value = '';" onblur="javascript: if(this.value == '') { this.value = 'Search for events, friends...';}" />
               </form> 
     				</div>
@@ -92,4 +93,6 @@
     <?php print $closure; ?>
     <?php print $create_event_form; ?>
     <?php echo $scripts_modified; ?>
+    <div class="modal"></div>
+  </body>
 </html>

@@ -6,6 +6,7 @@ $is_owner = false;
 if(arg(0) == 'node'){
   $nid = arg(1);
   $node = node_load($nid);
+  events_tickets_load($node);
   if($node->type == 'event' && $node->uid == $user->uid){
     $is_owner = true;
     $values = (array)$node;
@@ -53,7 +54,7 @@ drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'
     <div class="form-item">
       <label><?php echo t('Ticket')?></label>
       <input type="checkbox" id="event-sell-tickets" name="tickets" value="1" class="form-checkbox" />
-      <label class="checkbox-label"><?php echo t('I want to sell tickets online')?></label>
+      <label class="checkbox-label"><?php echo t('I want to sell tickets online '); ?><a href="javascript: void(0);" id="edit-tickets-link" onclick="$( '#event-tickets-form' ).dialog( 'open' );" style="color: green;">edit</a></label>
     </div>
     
     <div class="form-item">
@@ -101,60 +102,63 @@ drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'
 </div>
 
 <?php if(in_array('professional', $user->roles)):?>
-  <div id="event-tickets-form" class="<?php echo $class;?>" title="Event Tickets">
-    <div class="form-item">
-      <label><?php echo t('Ticket 1 title')?></label>
-      <input type="text" name="ticket_title_1" style="width: 294px;" />
+  <div id="event-tickets-form" title="EVENT TICKETS">
+    <div class="form-text">You can propose up to 3 different tickets. For each type of ticket, please provide a title, a price and a maximum number of tickets available (optional).</div>
+    <div class="form-item-headers">
+     <div class="form-item-headers-title">Ticket title*</div>
+     <div class="form-item-headers-title">Price*</div>
+     <div class="form-item-headers-title">Ticket available</div>
     </div>
     <div class="form-item">
-      <label><?php echo t('Ticket 1 price')?></label>
-      <input type="text" name="ticket_price_1" style="width: 294px;" />
+     <label>Ticket 1</label>
+     <input type="hidden" name="ticket_id_1" />
+     <input type="text" name="ticket_title_1" class="static" placeholder="ex: entrée simple">
+     <input type="text" class="price-input static" name="ticket_price_1" placeholder="ex: 15">
+     <label class="afterprice-label">€**</label>
+     <input type="text" class="price-input" name="ticket_quantity_1" placeholder="ex: 45">
+     <label class="afterprice-label">max</label>
     </div>
     <div class="form-item">
-      <label><?php echo t('Ticket 1 quantity')?></label>
-      <input type="text" name="ticket_quantity_1" style="width: 294px;" />
+     <label>Ticket 2</label>
+     <input type="hidden" name="ticket_id_2" />
+     <input type="text" name="ticket_title_2" class="static" placeholder="ex: entrée avec boisson">
+     <input type="text" class="price-input static" name="ticket_price_2" placeholder="ex: 20">
+     <label class="afterprice-label">€**</label>
+     <input type="text" class="price-input" name="ticket_quantity_2" placeholder="ex: 60">
+     <label class="afterprice-label">max</label>
     </div>
     <div class="form-item">
-      <label><?php echo t('Ticket 2 title')?></label>
-      <input type="text" name="ticket_title_2" style="width: 294px;" />
+     <label>Ticket 3</label>
+     <input type="hidden" name="ticket_id_3" />
+     <input type="text" name="ticket_title_3" class="static">
+     <input type="text" class="price-input static" name="ticket_price_3">
+     <label class="afterprice-label">€**</label>
+     <input type="text" class="price-input" name="ticket_quantity_3">
+     <label class="afterprice-label">max</label>
+    </div>
+    <div class="form-text">** A sale commission of 3% (min. 0,5 €) is applied by Klicango. Ex: for a ticket sold 5 €, you will earn 4,50 €; for a ticket sold 30 € you will earn 29,10 €.</div>
+    <div class="form-item">
+     <label class="long-label">Tickets on sale until</label>
+     
+     <input type="text" name="tickets_date" id="datepicker-tickets" value="<?php echo ((!empty($node) && !empty($node->field_tickets_date)) ? date('d/m/Y', strtotime($node->field_tickets_date[0]['value'])) : ''); ?>">
     </div>
     <div class="form-item">
-      <label><?php echo t('Ticket 2 price')?></label>
-      <input type="text" name="ticket_price_2" style="width: 294px;" />
+     <label class="long-label">Max number of tickets / user</label>
+     <select name="tickets_per_user">
+      <option value="1" <?php echo ((!empty($node) && !empty($node->field_tickets_per_user) && $node->field_tickets_per_user[0]['value'] == 1) ? 'selected="selected"' : ''); ?>>1</option>
+      <option value="2" <?php echo ((!empty($node) && !empty($node->field_tickets_per_user) && $node->field_tickets_per_user[0]['value'] == 2) ? 'selected="selected"' : ''); ?>>2</option>
+      <option value="3" <?php echo ((!empty($node) && !empty($node->field_tickets_per_user) && $node->field_tickets_per_user[0]['value'] == 3) ? 'selected="selected"' : ''); ?>>3</option>
+      <option value="4" <?php echo ((!empty($node) && !empty($node->field_tickets_per_user) && $node->field_tickets_per_user[0]['value'] == 4) ? 'selected="selected"' : ''); ?>>4</option>
+      <option value="5" <?php echo (((!empty($node) && !empty($node->field_tickets_per_user) && $node->field_tickets_per_user[0]['value'] == 5) || empty($node)) ? 'selected="selected"' : ''); ?>>5</option>
+      <option value="6" <?php echo ((!empty($node) && !empty($node->field_tickets_per_user) && $node->field_tickets_per_user[0]['value'] == 6) ? 'selected="selected"' : ''); ?>>6</option>
+      <option value="7" <?php echo ((!empty($node) && !empty($node->field_tickets_per_user) && $node->field_tickets_per_user[0]['value'] == 7) ? 'selected="selected"' : ''); ?>>7</option>
+      <option value="8" <?php echo ((!empty($node) && !empty($node->field_tickets_per_user) && $node->field_tickets_per_user[0]['value'] == 8) ? 'selected="selected"' : ''); ?>>8</option>
+      <option value="9" <?php echo ((!empty($node) && !empty($node->field_tickets_per_user) && $node->field_tickets_per_user[0]['value'] == 9) ? 'selected="selected"' : ''); ?>>9</option>
+     </select>
     </div>
-    <div class="form-item">
-      <label><?php echo t('Ticket 2 quantity')?></label>
-      <input type="text" name="ticket_quantity_2" style="width: 294px;" />
-    </div>
-    <div class="form-item">
-      <label><?php echo t('Ticket 3 title')?></label>
-      <input type="text" name="ticket_title_3" style="width: 294px;" />
-    </div>
-    <div class="form-item">
-      <label><?php echo t('Ticket 3 price')?></label>
-      <input type="text" name="ticket_price_3" style="width: 294px;" />
-    </div>
-    <div class="form-item">
-      <label><?php echo t('Ticket 3 quantity')?></label>
-      <input type="text" name="ticket_quantity_3" style="width: 294px;" />
-    </div>
-    <div class="form-item">
-      <label><?php echo t('Tickets on sale until')?></label>
-      <input type="text" name="tickets_date" id="datepicker-tickets"  style="width: 294px;" />
-    </div>
-    <div class="form-item">
-      <label><?php echo t('Max number of tickets / user')?></label>
-      <select name="tickets_per_user">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-      </select>
+    <div class="form-submit italic-disclamer-spaced-button">
+     <input type="submit" value="Save" id="event-tickets-close">
+     <label>By clicking on "Create", I agree to the <a href="/page/conditions-ventes" target="_blank">conditions de ventes</a> for online sales within Klicango</label>
     </div>
   </div>
 <?php endif;?>

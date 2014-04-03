@@ -5,8 +5,10 @@
         </div>
         <div class="scroll-pane" id="event_<?php echo $event_id; ?>">
         </div>
-        <div class="form-submit">   
-            <input type="button" value="<?php echo t('Invite')?>" onclick="preprocessRequest(<?php echo $event_id; ?>);"/>
-        </div>
+        <?php if($event_id != 0) : ?>
+          <div class="form-submit">   
+              <input type="button" value="<?php echo t('Invite')?>" onclick="preprocessRequest(<?php echo $event_id; ?>);"/>
+          </div>
+        <?php endif; ?>
     </form>
 </div>

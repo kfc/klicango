@@ -316,6 +316,19 @@ function check_event_fields($values, &$errors){
     }
   }
   
+  if(!empty($values['tickets_date_check']) && !empty($values['date'])) {
+    $date_arr = explode('/',trim($values['date']));
+    $event_date =mktime(0,0,0,$date_arr[1],$date_arr[0],$date_arr[2]);
+      
+    $tickets_date_arr = explode('/',trim($values['tickets_date_check']));
+    $tickets_date = mktime(0,0,0,$tickets_date_arr[1],$tickets_date_arr[0],$tickets_date_arr[2]);
+      
+    if ($tickets_date > $event_date) {
+      $errors['date'] = t('Tickets sell date cannot be later than event date'); 
+      $is_valid = false;
+    }
+  }
+  
   if(!isset($values['time']) || empty($values['time'])){
     $errors['time'] = t('Enter event time'); 
     $is_valid = false;
@@ -405,9 +418,31 @@ function create_event_if_valid(){
       $event->field_event_type[0]['value']= (in_array('individual', $user->roles) ? 'private' : 'public');
       if ($file = file_save_upload('photo')) {
         $event->field_content_images[0] = (array)$file;  
-      }
+      }     
       
       node_save($event);
+      
+      if ($edit_mode) {
+        //save changes in tickets
+        if (!empty($_POST['ticket_id_1'])) {
+          db_query('UPDATE events_tickets SET quantity = %d WHERE id = %d AND event_id = %d', $_POST['ticket_quantity_1'], $_POST['ticket_id_1'], $event->nid);
+        } else if(!empty($_POST['ticket_title_1']) && !empty($_POST['ticket_price_1'])) {
+          db_query('INSERT INTO events_tickets (event_id, title, price, quantity) VALUES(%d, "%s", %f, %d)', $event->nid, $_POST['ticket_title_1'], $_POST['ticket_price_1'], $_POST['ticket_quantity_1']);
+        }
+        
+        if (!empty($_POST['ticket_id_2'])) {
+          db_query('UPDATE events_tickets SET quantity = %d WHERE id = %d AND event_id = %d', $_POST['ticket_quantity_2'], $_POST['ticket_id_2'], $event->nid);
+        } else if(!empty($_POST['ticket_title_2']) && !empty($_POST['ticket_price_2'])) {
+          db_query('INSERT INTO events_tickets (event_id, title, price, quantity) VALUES(%d, "%s", %f, %d)', $event->nid, $_POST['ticket_title_2'], $_POST['ticket_price_2'], $_POST['ticket_quantity_2']);
+        }
+        
+        if (!empty($_POST['ticket_id_3'])) {
+          db_query('UPDATE events_tickets SET quantity = %d WHERE id = %d AND event_id = %d', $_POST['ticket_quantity_3'], $_POST['ticket_id_3'], $event->nid);
+        } else if(!empty($_POST['ticket_title_3']) && !empty($_POST['ticket_price_3'])) {
+          db_query('INSERT INTO events_tickets (event_id, title, price, quantity) VALUES(%d, "%s", %f, %d)', $event->nid, $_POST['ticket_title_3'], $_POST['ticket_price_3'], $_POST['ticket_quantity_3']);
+        }
+      } 
+      
       if(!$edit_mode){
         if(!empty($event->nid)){
           $data = array('event_id' => $event->nid, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => EVENT_STATUS_ACCEPTED);
@@ -1135,6 +1170,22 @@ function events_get_event_form_data($node){
   $data['email'] = $node->field_event_email[0]['value'];
   $data['phone'] = $node->field_event_contact_phone[0]['value'];
   
+  $tickets_date = strtotime($node->field_tickets_date[0]['value']);
+  
+  $data['tickets_date'] = date('d/m/Y', $tickets_date);
+  $data['tickets_per_user'] = $node->field_tickets_per_user[0]['value'];
+  $data['tickets'] = !empty($node->field_event_tickets) ? $node->field_event_tickets[0]['value'] : 0;
+  
+  events_tickets_load($node);
+  $i = 1;
+  foreach ($node->ticket_types as $val) {
+    $data['ticket_id_' . $i] = $val['id'];
+    $data['ticket_title_' . $i] = $val['title'];
+    $data['ticket_price_' . $i] = $val['price'];
+    $data['ticket_quantity_' . $i] = $val['quantity'];
+    $i++;
+  }
+
   return json_encode(array('data'=>$data));
   //exit;
 }  
@@ -1268,8 +1319,8 @@ function events_closest($number, $exclude = array(), $offset = 0, $search = '') 
                       LEFT JOIN node ON ev.nid = node.nid
                       WHERE (ev.field_event_type_value = "public" AND (ev.field_date_value > NOW() OR ev.field_date_value2 > NOW()))
                       ' . (!empty($exclude_str) ? ' AND ev.nid NOT IN (' . $exclude_str . ') ' : '') . '
-                      AND node.title LIKE "%%%s%%"
-                      ORDER BY ev.field_date_value ASC', $search);
+                      AND (node.title LIKE "%%%s%%" OR ev.field_location_value LIKE "%%%s%%")
+                      ORDER BY ev.field_date_value ASC', $search, $search);
     
   } else {
     $result = db_query('SELECT ev.nid AS event_id, 0 AS friends FROM content_type_event AS ev
@@ -1386,10 +1437,12 @@ function events_delete_event($event_id = null){
 
 
 function events_tickets_load(&$event) {
-  if ($event->field_event_tickets[0]['value'] && (strtotime($event->field_tickets_date[0]['value']) > time())) {
-    $result = db_query('SELECT * FROM events_tickets WHERE event_id = %d ORDER BY id ASC', $event->nid);
-    while($row = db_fetch_array($result)) {
-      $event->ticket_types[$row['id']] = array('title' => $row['title'], 'price' => $row['price'], 'quantity' => $row['quantity']);
+  if (empty($event->ticket_types)){
+    if ($event->field_event_tickets[0]['value'] && (strtotime($event->field_tickets_date[0]['value']) > time())) {
+      $result = db_query('SELECT * FROM events_tickets WHERE event_id = %d ORDER BY id ASC', $event->nid);
+      while($row = db_fetch_array($result)) {
+        $event->ticket_types[] = array('id' => $row['id'], 'title' => $row['title'], 'price' => $row['price'], 'quantity' => $row['quantity']);
+      }
     }
   }
 }

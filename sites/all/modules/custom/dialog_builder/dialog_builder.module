@@ -34,12 +34,20 @@ function dialog_builder_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
+  
+  $items['user/banking'] = array(
+    'title' => 'Register banking details',
+    'description' => 'Register banking details',
+    'page callback' => 'dialog_builder_banking_details',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
     
   return $items;
 }
 
 function dialog_builder_forms_list() {
-    return array('professional_user_register', 'end_user_register', 'log_in');
+    return array('professional_user_register', 'end_user_register', 'log_in', 'professional_banking_details');
 }
 
 function dialog_builder_content() {
@@ -56,6 +64,9 @@ function dialog_builder_load_data($dialog_id) {
         case 'end_user_register':
         case 'professional_user_register':
             $data = dialog_builder_user_data();
+            break;
+        case 'professional_banking_details':
+            $data = dialog_builder_banking_data();
             break;
     }
     return $data;
@@ -79,6 +90,10 @@ function dialog_builder_log_in_validate($variables) {
         drupal_json(array('success' => false, 'message' => t('Incorrect login or password'), 'id' => array('name', 'pass')));
     }
     exit;    
+}
+
+function dialog_builder_professional_banking_details_validate($variables, $server_check = false) {
+  drupal_json(array('success' => true, 'action' => 'submit'));
 }
 
 function dialog_builder_end_user_register_validate($variables, $server_check = false) {    
@@ -343,6 +358,12 @@ function dialog_builder_theme(){
         	),
         	'template' => 'theme/professional_user_register',
         ),
+        'professional_banking_details' => array(
+        	'arguments' => array(
+        		'data' => NULL,
+        	),
+        	'template' => 'theme/professional_banking_details',
+        ),
         'end_user_register' => array(
         	'arguments' => array(
         		'data' => NULL,
@@ -367,4 +388,27 @@ function dialog_builder_user_data() {
     profile_load_profile($user);
     $user->banners = advanced_profile_load($user->uid);
     return $user;
+}
+
+function dialog_builder_banking_details() {
+  if(user_is_logged_in()) {
+    global $user;
+    db_query('DELETE FROM users_banking WHERE uid = %d', $user->uid);
+    db_query('INSERT INTO users_banking VALUES (%d, "%s", "%s", "%s", "%s", "%s")', $user->uid, @$_POST['country'], @$_POST['owner'], @$_POST['agency'], @$_POST['iban'], @$_POST['bic']);
+  }
+  drupal_goto('<front>');
+}
+
+function dialog_builder_banking_data($uid = null) {
+  if(empty($uid)) {
+    global $user;
+    $uid = $user->uid;
+  }
+  
+  $result = db_query('SELECT * FROM users_banking WHERE uid = %d', $uid);
+  if ($result) {
+    return db_fetch_array($result);
+  } else {
+    return array();
+  }
 }

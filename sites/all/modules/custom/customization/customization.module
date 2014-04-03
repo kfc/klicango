@@ -46,9 +46,9 @@ function customization_menu(){
     'access arguments' => array(1),
   );
   
-  $items['klicando_search'] = array(
+  $items['klicango_search'] = array(
     'type' => MENU_CALLBACK,
-    'page callback' => 'customization_klicando_search',
+    'page callback' => 'customization_klicango_search',
     'access callback' => true,
   );
    
@@ -694,7 +694,7 @@ function customization_user($type, &$edit, &$account){
   }  
 }
 
-function customization_klicando_search(){
+function customization_klicango_search(){
   global $user;
   $results = array();
   
@@ -787,11 +787,11 @@ function events_search_results($term='') {
                         LEFT JOIN events_users AS eu ON (ev.nid = eu.event_id AND eu.user_id in (SELECT uid FROM users_roles WHERE rid = 6) AND eu.status = 3)
                         WHERE ((ev.field_event_type_value = \'public\' 
                         '.(!empty($available_private_events) ? ') OR (ev.field_event_type_value = \'private\' AND n.nid IN ('.implode(',',$available_private_events).'))' : '').')
-                        AND n.title LIKE "%%%s%%"
+                        AND (n.title LIKE "%%%s%%" OR ev.field_location_value LIKE "%%%s%%")
                         GROUP BY ev.nid 
                         ORDER BY attenders DESC
-                        LIMIT 0, %d', $term, $number);
-    
+                        LIMIT 0, %d', $term, $term, $number);
+
     while($event = db_fetch_array($result)) {
         $events[] = $event;
     }
@@ -806,7 +806,7 @@ function users_search_results($term){
   if(!empty($term)){
     $result = db_query('
       SELECT uid from (
-        SELECT uid from profile_values where (fid=16 OR fid = 17) and uid in (SELECT uid from users_roles WHERE rid = 6) AND value like \'%%%s%%\'
+        SELECT uid from profile_values where (fid=16 OR fid = 17 OR fid = 21) and uid in (SELECT uid from users_roles WHERE rid = 6) AND value like \'%%%s%%\'
         
       UNION
     
@@ -817,10 +817,12 @@ function users_search_results($term){
           (data REGEXP  \'.*"first_name";s:[0-9]+:"[[:alpha:]]*%s[[:alpha:]]*".*\')
           OR 
           (data REGEXP  \'.*"surname";s:[0-9]+:"[[:alpha:]]*%s[[:alpha:]]*".*\')
+          OR
+          (data REGEXP  \'.*"city";s:[0-9]+:"[[:alpha:]]*%s[[:alpha:]]*".*\')
         )
       ) t  
       LIMIT %d
-        ', $term, $term, $term, $number);
+        ', $term, $term, $term, $term, $number);
     
     while($row = db_fetch_array($result)) {      
         $_user = user_load($row['uid']);
@@ -866,12 +868,13 @@ function places_search_results($term){
       select u.uid, Count(u.uid) as followers, pv.value
       FROM users u
       INNER JOIN profile_values pv on pv.uid = u.uid AND pv.fid = 17
+      INNER JOIN profile_values pv2 on pv2.uid = u.uid AND pv2.fid = 21
       INNER JOIN users_roles ur ON ur.uid = u.uid AND rid = 7
       LEFT JOIN friends f on f.uid = u.uid OR f.fid = u.uid
-      WHERE pv.value like \'%%%s%%\'
+      WHERE (pv.value like \'%%%s%%\' OR pv2.value like \'%%%s%%\')
       group by u.uid, pv.value
       ORDER BY followers DESC
-      LIMIT 0, %d', $term, $number);
+      LIMIT 0, %d', $term, $term, $number);
     
     while($row = db_fetch_array($result)) {
         $places[$row['uid']] = $row;

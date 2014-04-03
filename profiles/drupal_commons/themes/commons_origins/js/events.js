@@ -1,3 +1,5 @@
+var loader = false;
+
 $(function() {   
   //style button dropdowns
   $('.buy-tickets-form-wrapper select').styler();  
@@ -66,7 +68,7 @@ $(function() {
   
   $("#create-event-form.public-event" ).dialog({
     autoOpen: false,
-    height: 440,
+    height: 455,
     width: 484,
     modal: true,
     close: function() {
@@ -77,11 +79,17 @@ $(function() {
   
   $("#event-tickets-form" ).dialog({
     autoOpen: false,
-    height: 640,
+    height: 570,
     width: 484,
     modal: true
   });
- 
+  $('#event-tickets-form select').styler();
+  
+  $('#event-tickets-close').click(function(e) {
+    e.preventDefault();
+    $("#event-tickets-form" ).dialog("close");
+  });
+  
    $("#create-event-form.private-event" ).dialog({
     autoOpen: false,
     height: 410,
@@ -161,13 +169,23 @@ $(function() {
           $(this).val(user_data[$(this).attr('name')]);
          // $(this).val('');
         });
+        $("#event-tickets-form input[type='text'], #event-tickets-form input[type='hidden']").each(function(){
+          $(this).val('');
+        });
+        $("#event-tickets-form select").each(function(){
+          $(this).val(5);
+        });
+
+        $("#event-tickets-form input[type='text']").each(function(){
+          $(this).removeAttr('disabled');
+        });
         $("#create-event-form textarea").each(function(){
           $(this).val('');
         });
 		
        // $( "#create-event-form" ).dialog( {title:'Create Event'} );
         $( "#create-event-form" ).dialog( "open" );
-		$('#create-event-form input[type="checkbox"]').styler();
+		    $('#create-event-form input[type="checkbox"]').styler();
         $(".event-delete-link").hide();
     });
   }
@@ -201,7 +219,22 @@ $(function() {
     $('#create-event-form .profile-upload').styler({browseText: 'Change event photo'});
     $( "#create-event-form" ).dialog( {title:'Modify Event'} );
     $( "#create-event-form" ).dialog( "open" );
+    $('#create-event-form input[type="checkbox"]').each(function(){
+      if(form_data.data[$(this).attr('name')] == 1) {
+        $(this).prop('checked', 'checked');
+      }
+    })
+    $('#create-event-form input[type="checkbox"]').styler();
+    // refresh select box
+    $("#event-tickets-form select, #event-tickets-form input[type='text'], #event-tickets-form input[type='hidden']").each(function(){
+      $(this).val(form_data.data[$(this).attr('name')]);
+      if(form_data.data[$(this).attr('name')] && $(this).hasClass('static')) {
+        $(this).attr('disabled', 'disabled');
+      }
+    });
+    
     $(".event-delete-link").show();
+    $("#edit-tickets-link").show();
   });
   
   function bindShowEventsDialog(){
@@ -233,6 +266,7 @@ $(function() {
       success: function(data){
         if(data.isValid){  
           $(form).append($('#event-tickets-form'));
+          loader = true;
           $(form).submit();  
         }
         else{ 
@@ -308,8 +342,9 @@ $(function() {
  $("#comment-post-submit").click(function(e){
    e.preventDefault();
    
-   if($(this).attr('disabled') != 'disabled')
+   if($(this).attr('disabled') != 'disabled') {
     $("#comment-post-form").submit();
+   }
    $(this).attr('disabled','disabled');
    $('#comment-post-form').attr("disabled", "disabled"); 
    
@@ -323,7 +358,9 @@ $(function() {
       return false;  
     }
     $('#comment-post-form').attr("disabled", "disabled");
-    $("#comment-post-submit").attr('disabled','disabled');   
+    $("#comment-post-submit").attr('disabled','disabled'); 
+    loader = true;
+    $("body").addClass("loading");  
  });
  
  
