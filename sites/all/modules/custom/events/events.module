@@ -114,6 +114,13 @@ function events_menu(){
       'page arguments' => array(1),
       'access callback' => 'user_is_logged_in'
     ),
+        
+     'event-ticket-list/%node' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'event_ticket_list',
+      'page arguments' => array(1),
+      'access callback' => 'user_is_logged_in'
+    ),
     
   );
   return $items;
@@ -241,9 +248,12 @@ function events_theme() {
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
       
-      
-      
-      
+      'event_ticket_list' => array(
+        'template' => 'event-ticket-list',
+        'arguments' => array('event' => NULL, 'total' => NULL, 'tickets_sold' => NULL,  'tickets' => NULL, 'pager' => NULL),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),
+    
     );
 }
 
@@ -1445,4 +1455,45 @@ function events_tickets_load(&$event) {
       }
     }
   }
+}              
+
+
+function event_ticket_list($event){
+    $tickets = NULL;
+    $page = isset($_GET['page']) ? $_GET['page'] : 0;
+    $total = 0;
+    $c = variable_get('events_min_commission', 0.5);
+    $tickets_sold = array();
+    $per_page =  variable_get('events_tickets_list_count', 1);
+    
+    $result = db_query("SELECT payment.ticket_id, ticket.title, ticket.price, SUM(payment.quantity) AS qty_total 
+                        FROM events_payment AS payment
+                        INNER JOIN events_tickets AS ticket ON (ticket.id = payment.ticket_id AND ticket.event_id = %d )
+                        WHERE payment.status = 'succ' 
+                        GROUP BY payment.ticket_id
+                        ORDER BY ticket.id", $event->nid);
+    while($row = db_fetch_array($result)) {
+      $tickets_sold[] = $row;
+      $total += $row['qty_total'] * ($row['price'] - max(0.03 * $row['price'], $c));
+    }
+    
+    
+    $sql = "SELECT
+            tickets.id AS ticket_id, tickets.title, tickets.price,
+            payment.pid AS payment_id, payment.customer_uid, payment.quantity, payment.cents, payment.response_time
+            FROM events_tickets AS tickets
+            INNER JOIN events_payment AS payment 
+            ON (payment.ticket_id = tickets.id AND payment.status = 'succ')
+            WHERE tickets.event_id = %d
+            ORDER BY payment.response_time";
+    $result = pager_query($sql, $per_page, 0, NULL, array($event->nid));
+    while($row = db_fetch_array($result)) {
+      $row['customer'] =  user_load($row['customer_uid']);
+      $tickets[] = $row;
+    }
+      
+    $pager = theme('pager', $per_page, NULL);
+          
+    return theme('event_ticket_list', $event, $total, $tickets_sold,  $tickets, $pager);  
 }
+    

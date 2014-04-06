@@ -1656,7 +1656,11 @@ div.event-gratuity{
 .clearfix:after,
 .buy-tickets-wrapper:after,
 .buy-tickets-form-wrapper:after,
-.form-item-headers:after {content: "."; display: block; height: 0; clear: both; visibility: hidden; line-height: 0; font-size: 0;}
+.form-item-headers:after,
+.tickets-list-top:after,
+.price-block:after,
+.tickets-table-head:after,
+.tickets-table li:after {content: "."; display: block; height: 0; clear: both; visibility: hidden; line-height: 0; font-size: 0;}
 
 .buy-tickets-wrapper {margin-bottom: 16px;}
  .buy-tickets-wrapper form {float: left;}
@@ -1690,3 +1694,60 @@ div.event-gratuity{
  .form-item-headers {font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; margin-bottom: 8px;}
   .form-item-headers-title {float: left; margin-left: 10px; width: 90px;}
   .form-item-headers-title:first-child {margin-left: 80px; width: 142px;}
+  
+/*Content global styles*/
+.content-no-sb {padding: 59px 190px 50px 80px;}
+.red-button {background: #f54e1f; border: solid 1px #f6b3a1; border-radius: 5px; color: #fff; cursor: pointer; font: bold 12px Arial; height: 30px; line-height: 30px; outline: none; padding: 0 12px; min-width: 116px; display: inline-block; text-align: center; text-decoration: none;}
+/*End content global styles*/
+  
+
+/*Tickets list styles*/
+.tickets-list-top {margin-bottom: 25px;}
+ .col {width: 25%; float: left;}
+  .col-content {margin-right: 15px;}
+ .col-double {width: 50%;}
+  .col-double .col {width: 50%;}
+  
+  .image-section {margin-bottom: 20px;}
+   .image-section .image {display: table-cell;}
+    .image-section .image img {vertical-align: top; margin-right: 8px;}
+   .image-section .text {display: table-cell; vertical-align: bottom; width: 100%;}
+   
+  .col h2 {font-weight: normal; font-size: 1.5em; margin-bottom: 20px;}
+   .tickets-top-time {color: #808285; font-size: 1.167em; margin-bottom: 20px;}
+   .tickets-top-address {font-size: 0.917em; line-height: 1.455em;}
+    .tickets-top-address .contact-info {color: #808285;}
+     .tickets-top-address .contact-info a {color: #808285; text-decoration: none;}
+   
+  .t-price {color: #808285;}
+  .t-people {color: #96C12B;}
+  .t-tickets-sold {color: #F34921;}
+  .t-tickets-sold-bus {color: #F34921;}
+  .result-link {margin-top: 20px;}
+
+.tickets-table-wrapper {}
+ .tickets-table-head {border-bottom: solid 1px #000000; border-top: solid 1px #c5c6c6; color: #808285; padding: 10px 10px 10px 10px; position: relative;}
+ .tickets-table-head .borders {position: absolute; left: 0; top: 0; right: 0; bottom: 0; border-bottom: solid 1px #c5c6c6; border-top: solid 1px #000000;}
+
+ .tickets-table {list-style: none outside; margin: 0 0 20px 0; font-size: 0.917em; padding: 10px 10px 10px 10px;}
+  
+
+ .tickets-table-wrapper .table-column {float: left; margin-left: 1%;}
+ .tickets-table-wrapper .table-column:first-child {margin-left: 0;}
+ .tickets-table-wrapper .table-column.last-name {width: 18%;}
+ .tickets-table-wrapper .table-column.first-name {width: 18%;}
+ .tickets-table-wrapper .table-column.email {width: 25%;}
+ .tickets-table-wrapper .table-column.ticket {width: 20%;}
+ .tickets-table-wrapper .table-column.anchor {width: 4%;}
+ .tickets-table-wrapper .table-column.sale-date {width: 10%;}
+
+.pager {text-align: center; font-size: 1.167em; color: #96C12B;}
+ .pager li {display: inline-block;}
+ .pager li.tofirst,
+ .pager li.toprev,
+ .pager li.tonext,
+ .pager li.tolast {margin: 0 2px;}
+ .pager li.tonext {margin-left: 4px;}
+ .pager li.toprev {margin-right: 4px;}
+  .pager li a {color: #808285; text-decoration: none;}
+/*End tickets list styles*/

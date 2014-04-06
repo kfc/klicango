@@ -1239,7 +1239,7 @@ footer{
 }
 
 div.messages {
-  display: none !important;
+  /*display: none !important;*/
 }
 
 div.messages.error {
