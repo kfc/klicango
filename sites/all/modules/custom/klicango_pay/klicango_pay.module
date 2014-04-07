@@ -55,7 +55,8 @@ function klicango_pay_menu() {
   $items['paybox_process_auto'] = array(
     'type' =>  MENU_CALLBACK,
     'page callback' => 'klicango_pay_offsite_auto',
-    'access callback' => 'klicango_pay_is_paybox_server',
+    //'access callback' => 'klicango_pay_is_paybox_server',
+    'access callback' => TRUE,
   );  
      
   return $items;
@@ -81,7 +82,7 @@ function _klicango_pay_back_page(){
     switch ($result) {
         case 'effectue' :
             $order = klicango_pay_order_load($_GET['order']);
-            $order->status = PAYBOX_LOCK;
+            $order->status = ($order->status == PAYBOX_SUCCESS) ? PAYBOX_SUCCESS : PAYBOX_LOCK;
             klicango_pay_order_save($order);       
             break;
         case 'refuse' :
@@ -390,6 +391,12 @@ function klicango_pay_offsite_auto(){
             // Check payment is accepted.
             if ($_GET['error'] === '00000') {
               $order->status = PAYBOX_SUCCESS;
+              // Log: failed to load the transaction.
+              $log = 'Success. $_GET array: %get';
+              $log_vars = array(
+                      '%get' => '<pre>' . print_r($_GET, true) . '</pre>',
+                    );
+              watchdog('klicango_pay', $log, $log_vars, WATCHDOG_INFO);
             }
             else {
               // Log paybox signature errors.
@@ -416,8 +423,10 @@ function klicango_pay_offsite_auto(){
     }
     else {
         // Log: failed to load the transaction.
-        $log = 'Paybox module cannot load the transaction returned by the Paybox server.';
-        $log_vars = array();
+        $log = 'Paybox module cannot load the transaction returned by the Paybox server. $_GET array: %get';
+        $log_vars = array(
+              '%get' => '<pre>' . print_r($_GET, true) . '</pre>',
+            );
         watchdog('klicango_pay', $log, $log_vars, WATCHDOG_ERROR);
     }
 
