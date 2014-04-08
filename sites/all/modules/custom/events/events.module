@@ -73,6 +73,12 @@ function events_menu(){
       'page callback' => 'events_private_page',
       'access callback' => 'user_is_logged_in'
     ),
+    'myevents' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'events_list',
+      'access callback' => 'user_is_logged_in'
+    ),
+    
     
     'show_events/%/%' => array(
       'type' => MENU_CALLBACK,
@@ -119,12 +125,21 @@ function events_menu(){
       'type' => MENU_CALLBACK,
       'page callback' => 'event_ticket_list',
       'page arguments' => array(1),
-      'access callback' => 'user_is_logged_in'
+      'access callback' => 'user_is_event_author',
+      'access arguments' => array(1),
     ),
     
   );
-  return $items;
-  
+  return $items; 
+}
+
+function user_is_event_author($node){
+   global $user;
+   if( $user->uid == $node->uid || user_access('access administration pages')){
+        return TRUE;
+   }else{
+        return FALSE;        
+   }
 }
 
 function events_block($op = 'list', $delta = 0, $edit = array()) {
@@ -245,6 +260,12 @@ function events_theme() {
       'event_for_day' => array(
         'template' => 'event-for-day',
         'arguments' => array('event' => NULL, 'viewed_user_id' => NULL),
+        'path' => drupal_get_path('theme',variable_get('theme_default',''))
+      ),
+           
+      'events_list' => array(
+        'template' => 'events-list',
+        'arguments' => array('events' => NULL, 'account' => NULL),
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
       
@@ -1512,4 +1533,38 @@ function event_ticket_list($event){
           
     return theme('event_ticket_list', $event, $total, $tickets_sold,  $tickets, $pager);  
 }
+ 
+ 
+function events_list(){
+    global $user;
+    $events =  array();
+    $fields = drupal_schema_fields_sql('node', 'n');
+    $fields = array_merge($fields, drupal_schema_fields_sql('node_revisions', 'r'));
+    $fields = array_merge($fields, array('u.name', 'u.picture', 'u.data'));
+    $fields = array_diff($fields, array('n.vid', 'n.title', 'r.nid'));
+    $fields = implode(', ', $fields);
+    $fields = str_replace('r.timestamp', 'r.timestamp AS revision_timestamp', $fields);
+    $fields = str_replace('r.uid', 'r.uid AS revision_uid', $fields);
+
+    $query = db_query('SELECT ' . $fields . ' FROM {node} n INNER JOIN {users} u ON u.uid = n.uid INNER JOIN {node_revisions} r ON r.vid = n.vid WHERE u.uid = %d AND n.type = "event"', $user->uid);
+
+      while ($node = db_fetch_object($query)) {
+        if ($node->nid) {
+          if ($extra = node_invoke($node, 'load')) {
+            foreach ($extra as $key => $value) {
+              $node->$key = $value;
+            }
+          }
+
+          if ($extra = node_invoke_nodeapi($node, 'load')) {
+            foreach ($extra as $key => $value) {
+              $node->$key = $value;
+            }
+          }
+
+          $events[$node->nid] = drupal_clone($node);
+        }
+      }    
     
+    return theme('events_list', $events, $user);    
+}    
