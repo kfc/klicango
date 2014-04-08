@@ -1283,6 +1283,10 @@ body .ui-widget-content .form-submit a#terms-conditions-link{
   display: none;
 }
 
+.ticket-type {
+  display: none;
+}
+
 .modal {
     display:    none;
     position:   fixed;

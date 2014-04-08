@@ -666,6 +666,22 @@ function events_get_events_created_by_user($user_id = null, $load_full_node = fa
   return $events;
 }
 
+function events_get_user_tickets(&$node) {
+  global $user;
+  $result = db_query('SELECT ep.pid, tt.title, tt.price, ep.quantity, ep.status FROM events_tickets AS tt, events_payment AS ep 
+                      WHERE ep.ticket_id = tt.id AND ep.customer_uid = %d AND ep.status = "succ" 
+                      AND ticket_id IN (
+                        SELECT id FROM events_tickets WHERE event_id = %d
+                      )', $user->uid, $node->nid);
+  $node->tickets_number = 0;
+  while($row = db_fetch_array($result)) {
+    $node->tickets[] = $row;
+    $node->tickets_number += $row['quantity'];
+  }
+  
+  return !empty($node->tickets);
+}
+
 function events_get_event_status_for_user($event_id = null, $user_id = null){
   $status = '';                       
   if(empty($user_id)){
@@ -1595,7 +1611,6 @@ function events_list(){
                 SET eu.is_read = 1
                 WHERE  eu.event_id IN ('. implode(",", $nids) .') AND eu.status = 3');                
           
-    
     return theme('events_list',$updated_events, $events, $user);    
 }  
 
@@ -1634,8 +1649,7 @@ function events_get_changes_on_status($user){
 function events_change_event_user_set_accept_status($user, $event_id){
     $data = array('event_id' => $event_id, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => EVENT_STATUS_ACCEPTED);
       if(events_get_event_status_for_user($event_id, $user->uid) != EVENT_STATUS_UNDEFINED){
-        $res = drupal_write_record('events_users', $data, array('event_id', 'user_id'));
-        dpm($res);            
+        $res = drupal_write_record('events_users', $data, array('event_id', 'user_id'));           
       }
       else{
         $res = drupal_write_record('events_users', $data);          
