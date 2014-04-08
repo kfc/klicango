@@ -1696,7 +1696,7 @@ div.event-gratuity{
   .form-item-headers-title:first-child {margin-left: 80px; width: 142px;}
   
 /*Content global styles*/
-.content-no-sb {padding: 59px 190px 50px 80px;}
+.content-no-sb {padding: 59px 190px 50px 80px; width: 100%;}
 .red-button {background: #f54e1f; border: solid 1px #f6b3a1; border-radius: 5px; color: #fff; cursor: pointer; font: bold 12px Arial; height: 30px; line-height: 30px; outline: none; padding: 0 12px; min-width: 116px; display: inline-block; text-align: center; text-decoration: none;}
 /*End content global styles*/
   
