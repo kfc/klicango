@@ -71,7 +71,7 @@
             </div>
             <div class="col">
                <div class="col-content">
-                  @todo count of people
+                  <?php echo count($people_going['going']); ?>
                </div>
             </div>
          </div>

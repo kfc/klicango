@@ -1,5 +1,5 @@
 <?php
-
+              events_change_event_user_set_accept_status(1201, 722);
     if ($teaser) {
         global $user;
         if(!empty($node->event_data['sender_id']))

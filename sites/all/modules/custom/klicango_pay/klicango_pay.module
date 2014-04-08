@@ -391,6 +391,8 @@ function klicango_pay_offsite_auto(){
             // Check payment is accepted.
             if ($_GET['error'] === '00000') {
               $order->status = PAYBOX_SUCCESS;
+              $event_id = db_result(db_query('SELECT et.event_id FROM events_tickets AS et INNER JOIN events_payment AS ep ON ep.ticket_id = et.id AND ep.pid =%d', $order->pid));
+              events_change_event_user_set_accept_status($order->customer_uid, $event_id);
               // Log: failed to load the transaction.
               $log = 'Success. $_GET array: %get';
               $log_vars = array(
