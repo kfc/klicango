@@ -166,12 +166,20 @@
               <div class="third-column public-event-col">
                 <div class="public-event-title"><?php echo $title?></div>
                 <div class="public-event-description"><?php echo nl2br($node->field_event_details[0]['safe'])?></div>
-                <div class="public-event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']?>
-                <?php if(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
-                  <a href="/print_coupon/<?php echo $node->nid?>" target="_blank" class="public-event-coupon-print"><?php echo t('[print]')?></a>
+                <div class="public-event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']?></div>
+                <?php if(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED && events_get_user_tickets($node)):?>
+                  <?php foreach ($node->tickets as $ticket) : ?>
+                    <div class="public-event-ticket"><?php echo $ticket['quantity']; ?> x <?php echo $ticket['title'];?> (<?php echo $ticket['price'];?>&euro;) <a href="/print_coupon/<?php echo $node->nid; ?>?type=<?php echo $ticket['pid']?>" target="_blank" class="public-event-coupon-print"><?php echo t('[print]')?></a></div>
+                    <?php if(!empty($_GET['type']) && $_GET['type'] == $ticket['pid']) : ?>
+                      <span class="ticket-type"><?php echo strtoupper($ticket['title']);?></span>
+                      <?php if ($ticket['quantity'] == 1) : ?>
+                        <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation is valid for !user only',array('!user'=>$user->first_name.' '.$user->surname))?></div>
+                      <?php elseif ($ticket['quantity'] > 1) : ?>
+                        <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation is valid for !user and !x more guests only',array('!user'=>$user->first_name.' '.$user->surname, '!x' => ($ticket['quantity'] - 1)))?></div>
+                      <?php endif; ?>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
                 <?php endif;?>
-                </div>
-                <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation valid for !user only',array('!user'=>$user->first_name.' '.$user->surname))?></div>
               </div>
               </div>
             </div>
@@ -179,7 +187,12 @@
             <div class="buy-tickets-wrapper">
               <?php
                 events_tickets_load($node);
-                if (!empty($node->ticket_types)) {
+                global $user;
+                $max_tickets = $node->field_tickets_per_user[0]['value'];
+                if (!empty($node->tickets_number)) {
+                  $max_tickets -= $node->tickets_number;
+                }
+                if (!empty($node->ticket_types) && in_array('individual', $user->roles, true) && $max_tickets > 0) {
               ?>
                 <form action="<?php print url('paybox_process_page');?>" method="post">
                   <div class="buy-tickets-form-wrapper">
@@ -195,14 +208,14 @@
                    <div class="form-item">
                     <select class="narrow-item" name="quantity" id="items-quantity">
                       <?php
-                        for($i = 1; $i <= $node->field_tickets_per_user[0]['value']; $i++) {
+                        for($i = 1; $i <= $max_tickets; $i++) {
                           echo '<option value="' . $i . '">' . $i . '</option>';
                         }
                       ?>
                     </select>
                    </div>
                    <input type="hidden" name="event_nid" value="<?php echo $node->nid; ?>" />
-                   <div class="form-submit"><input type="submit" value="<?php echo t('Buy tickets'); ?>"></div>
+                   <div class="form-submit"><input type="submit" value="<?php echo (!empty($node->tickets_number) ? t('Buy more tickets') : t('Buy tickets')); ?>"></div>
                   </div>
                  </form>
               <?php 

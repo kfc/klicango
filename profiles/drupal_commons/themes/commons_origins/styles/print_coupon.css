@@ -1,4 +1,4 @@
-.public-event-coupon-print, .public-event-top-banner, .remove-event-link, .going-status-button, .event-people-block, .event-comment-box, aside, header, footer{
+.public-event-coupon-print, .buy-tickets-wrapper, .public-event-ticket, .public-event-top-banner, .remove-event-link, .going-status-button, .event-people-block, .event-comment-box, aside, header, footer{
   display:none !important;
 }
 
@@ -16,6 +16,10 @@
   background-color: #FFF !important;
 }
 
+.ticket-type {
+  display: block;
+  font-weight: bold;
+}
 
 .print-coupon-user-text {
   display: block !important;
