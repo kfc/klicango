@@ -666,13 +666,59 @@ function events_get_events_created_by_user($user_id = null, $load_full_node = fa
   return $events;
 }
 
-function events_get_user_tickets(&$node) {
+function events_generate_pdf_ticket($nid, $ticket_type) {
+  global $base_url;
   global $user;
-  $result = db_query('SELECT ep.pid, tt.title, tt.price, ep.quantity, ep.status FROM events_tickets AS tt, events_payment AS ep 
+  $print_pdf_pdf_tool = variable_get('pdf_tool_path', 'sites/all/libraries/wkhtmltopdf/bin/wkhtmltopdf-i386');
+  
+  $descriptor = array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'a'));
+  $check = rand(111111111, 999999999);
+  variable_set('ticket_' . $user->uid, $check);
+  $cmd = '"'. realpath($print_pdf_pdf_tool) ."\" --page-size A4 --orientation portrait --dpi 96 --disallow-local-file-access --footer-font-size 7 \"" . $base_url . "/print_coupon/" . $nid . "?type=" . $ticket_type . "&uid=" . $user->uid . "&check=" . $check . "\" -";
+  $process = proc_open($cmd, $descriptor, $pipes, NULL, NULL);
+  if (is_resource($process)) {
+    $pdf = stream_get_contents($pipes[1]);
+    fclose($pipes[1]);
+
+    stream_set_blocking($pipes[2], 0);
+    $error = stream_get_contents($pipes[2]);
+    fclose($pipes[2]);
+
+    $retval = proc_close($process);
+    if (!empty($error) || ($retval != 0)) {
+      if (empty($error)) {
+        $error = 'No stderr output available.';
+      }
+      watchdog('print_pdf', 'wkhtmltopdf [%cmd] (returned %ret): %error', array('%cmd' => $cmd, '%ret' => $retval, '%error' => $error));
+    }
+  }
+
+  if (!empty($pdf)) {
+    $path = variable_get('file_public_path', conf_path() . '/files') . '/klicango_ticket_' . $user->uid . '_' . $nid . '_' . $ticket_type . '.pdf';
+    if(file_put_contents($path, $pdf)) {
+      return $path;
+    } else {
+      return false;
+    }
+  }
+  else {
+    return false;
+  }
+}
+
+function events_get_user_tickets(&$node, $uid = 0, $check = 0) {
+  if (!$uid || ($uid && $check && $check != variable_get('ticket_' . $uid))) {
+    global $user;
+    $uid = $user->uid;
+  } 
+  $result = db_query('SELECT ep.pid, ep.ticket_id, tt.title, tt.price, SUM(ep.quantity) AS quantity, ep.status 
+                      FROM events_tickets AS tt, events_payment AS ep 
                       WHERE ep.ticket_id = tt.id AND ep.customer_uid = %d AND ep.status = "succ" 
                       AND ticket_id IN (
                         SELECT id FROM events_tickets WHERE event_id = %d
-                      )', $user->uid, $node->nid);
+                      )
+                      GROUP BY ep.ticket_id
+                      ', $uid, $node->nid);
   $node->tickets_number = 0;
   while($row = db_fetch_array($result)) {
     $node->tickets[] = $row;
