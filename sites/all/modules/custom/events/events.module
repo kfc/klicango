@@ -265,13 +265,13 @@ function events_theme() {
            
       'events_list' => array(
         'template' => 'events-list',
-        'arguments' => array('events' => NULL, 'account' => NULL),
+        'arguments' => array('updated_events' => NULL, 'events' => NULL, 'account' => NULL),
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
       
       'event_ticket_list' => array(
         'template' => 'event-ticket-list',
-        'arguments' => array('event' => NULL, 'total' => NULL, 'tickets_sold' => NULL,  'tickets' => NULL, 'pager' => NULL),
+        'arguments' => array('event' => NULL, 'total' => NULL, 'people_going' => NULL, 'tickets_sold' => NULL,  'tickets' => NULL, 'pager' => NULL),
         'path' => drupal_get_path('theme',variable_get('theme_default',''))
       ),
     
@@ -811,8 +811,11 @@ function remove_event_for_user(){
 function events_preprocess_page(&$variables) {    
     $variables['menu_stats']['public_pending'] = events_get_count(EVENT_STATUS_NEW, true);
     $variables['menu_stats']['private_pending'] = events_get_count(EVENT_STATUS_NEW, false);
-        
+     
     global $user;
+    if(in_array('professional', $user->roles, true)){
+        $variables['menu_stats']['my_events_pending'] = events_get_changes_on_status($user);    
+    }
     if(arg(0) == 'user' && arg(1) > 1 && !in_array('site admin',$user->roles)){
       $viewed_uid = arg(1);
       if($viewed_uid != $user->uid){ //check if a place or friends
@@ -1547,7 +1550,7 @@ function event_ticket_list($event){
     $total = 0;
     $c = variable_get('events_min_commission', 0.5);
     $tickets_sold = array();
-    $per_page =  variable_get('events_tickets_list_count', 1);
+    $per_page =  variable_get('events_tickets_list_count', 5);
     
     $result = db_query("SELECT payment.ticket_id, ticket.title, ticket.price, SUM(payment.quantity) AS qty_total 
                         FROM events_payment AS payment
@@ -1574,16 +1577,21 @@ function event_ticket_list($event){
       $row['customer'] =  user_load($row['customer_uid']);
       $tickets[] = $row;
     }
+    
+     $people_going = events_get_event_attenders($event->nid);
+     unset($people_going['going'][$event->uid]);
       
     $pager = theme('pager', $per_page, NULL);
           
-    return theme('event_ticket_list', $event, $total, $tickets_sold,  $tickets, $pager);  
+    return theme('event_ticket_list', $event, $total, $people_going, $tickets_sold,  $tickets, $pager);  
 }
  
  
 function events_list(){
     global $user;
     $events =  array();
+    $all_events =  array();
+    $updated_events =  array();
     $fields = drupal_schema_fields_sql('node', 'n');
     $fields = array_merge($fields, drupal_schema_fields_sql('node_revisions', 'r'));
     $fields = array_merge($fields, array('u.name', 'u.picture', 'u.data'));
@@ -1593,7 +1601,7 @@ function events_list(){
     $fields = str_replace('r.uid', 'r.uid AS revision_uid', $fields);
 
     $query = db_query('SELECT ' . $fields . ' FROM {node} n INNER JOIN {users} u ON u.uid = n.uid INNER JOIN {node_revisions} r ON r.vid = n.vid WHERE u.uid = %d AND n.type = "event"', $user->uid);
-
+    
       while ($node = db_fetch_object($query)) {
         if ($node->nid) {
           if ($extra = node_invoke($node, 'load')) {
@@ -1607,10 +1615,89 @@ function events_list(){
               $node->$key = $value;
             }
           }
+          
+          $node->tickets_sold_total = 0;
+          $result = db_query("SELECT payment.ticket_id, ticket.title, ticket.price, SUM(payment.quantity) AS qty_total 
+                            FROM events_payment AS payment
+                            INNER JOIN events_tickets AS ticket ON (ticket.id = payment.ticket_id AND ticket.event_id = %d )
+                            WHERE payment.status = 'succ' 
+                            GROUP BY payment.ticket_id
+                            ORDER BY ticket.id", $node->nid);
+          while($row = db_fetch_array($result)) {
+              $node->tickets_sold[$row['ticket_id']] = $row;
+              $node->tickets_sold_total += $row['qty_total'];
+          }
+          
+          $people_going = events_get_event_attenders($node->nid);
+          unset($people_going['going'][$user->uid]);
+          $node->people_going = $people_going;
 
-          $events[$node->nid] = drupal_clone($node);
+          $all_events[$node->nid] = drupal_clone($node);
         }
-      }    
+      }
+      
+      $updated_events = events_get_changes_on_status($user);
+      
+      foreach ($updated_events as $key => $value){
+          $all_events[$key]->update_data =  $updated_events[$key];
+          $updated_events[$key] = $all_events[$key];
+          $nids[] =  $key;
+      }
+      
+      $events = array_diff_key($all_events, $updated_events);
+      
+      
+      
+      db_query('UPDATE events_payment AS ep
+                INNER JOIN events_tickets AS et ON (et.id = ep.ticket_id)
+                SET ep.is_red = 1
+                WHERE  et.event_id IN ('. implode(",", $nids) .') AND ep.status = "succ"');
+                
+      db_query('UPDATE events_users AS eu
+                SET eu.is_read = 1
+                WHERE  eu.event_id IN ('. implode(",", $nids) .') AND eu.status = 3');                
+          
+    return theme('events_list',$updated_events, $events, $user);    
+}  
+
+
+function events_get_changes_on_status($user){
+    $data = array();
+            
+    $result = db_query('SELECT  et.event_id, SUM(ep.quantity) AS new_tickets_count FROM events_payment AS ep
+                        INNER JOIN events_tickets AS et ON et.id = ep.ticket_id
+                        WHERE ep.is_red = 0 AND ep.status = "succ" AND
+                        et.event_id IN (SELECT n.nid FROM node AS n WHERE n.type = "event" AND n.uid = %d)
+                        GROUP BY et.event_id', $user->uid);
+
+    while($row = db_fetch_array($result)) {
+        $data[$row['event_id']] = $row;
+    }
+
     
-    return theme('events_list', $events, $user);    
-}    
+    $result = db_query('SELECT eu.event_id, COUNT(eu.id)-1 AS going_people 
+                        FROM events_users AS eu
+                        WHERE eu.is_read = 0 AND eu.status = %d AND
+                        eu.event_id IN (SELECT n.nid FROM node AS n WHERE n.type = "event" AND n.uid = %d)
+                        GROUP BY eu.event_id', EVENT_STATUS_ACCEPTED, $user->uid);                 
+    
+    while($row = db_fetch_array($result)) {
+        if($row['going_people'] > 0){
+            $data[$row['event_id']]['going_people'] = $row['going_people'];            
+        }
+    }                        
+                        
+    return $data;                    
+                    
+}
+
+
+function events_change_event_user_set_accept_status($user, $event_id){
+    $data = array('event_id' => $event_id, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => EVENT_STATUS_ACCEPTED);
+      if(events_get_event_status_for_user($event_id, $user->uid) != EVENT_STATUS_UNDEFINED){
+        $res = drupal_write_record('events_users', $data, array('event_id', 'user_id'));           
+      }
+      else{
+        $res = drupal_write_record('events_users', $data);          
+      }                      
+}
