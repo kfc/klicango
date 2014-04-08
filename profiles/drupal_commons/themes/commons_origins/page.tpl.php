@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/custom.css" type="text/css" media="screen, projection, print" />
   <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/jquery-ui.min.css" />
     <!--[if lte IE 6]><link rel="stylesheet" href="styles/style_ie.css" type="text/css" media="screen, projection" /><![endif]-->
-  <?php if(strpos($_GET['q'],'print_coupon/') === 0):?>
+  <?php if(strpos($_GET['q'],'print_coupon/') === 0 || strpos($_GET['q'],'printpdf/') === 0):?>
     <link rel="stylesheet" href="/profiles/drupal_commons/themes/commons_origins/styles/print_coupon.css" type="text/css" media="screen, projection, print" />
   <?php endif;?>  
     

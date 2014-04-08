@@ -1312,3 +1312,19 @@ body.loading {
 body.loading .modal {
     display: block;
 }
+
+.event-coupon {
+  position: relative;
+}
+
+.public-event-ticket-wrapper {
+   text-align:  right; 
+   margin-top: 40px; 
+}
+
+.public-event-ticket, 
+.public-event-ticket a {
+  color: #fff;
+  font: 14px/18px Arial;
+}
+
