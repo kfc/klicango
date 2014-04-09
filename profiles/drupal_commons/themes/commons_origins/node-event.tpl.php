@@ -166,13 +166,16 @@
                 <div class="public-event-title"><?php echo $title?></div>
                 <div class="public-event-description"><?php echo nl2br($node->field_event_details[0]['safe'])?></div>
                 <div class="public-event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']?></div>
-                <?php if((events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED && events_get_user_tickets($node)) || (!empty($_GET['uid']) && !empty($_GET['type']) && events_get_user_tickets($node, $_GET['uid'], $_GET['check']))):?>
+                <?php if((events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED && events_get_user_tickets($node)) || (!empty($_GET['uid']) && !empty($_GET['type']) && events_get_user_tickets($node, $_GET['uid'], $_GET['check'], $_GET['type']))):?>
                   <div class="public-event-ticket-wrapper">
                   <?php foreach ($node->tickets as $ticket) : ?>
                     <div class="public-event-ticket"><?php echo $ticket['quantity']; ?> x <?php echo $ticket['title'];?> (<?php echo $ticket['price'];?>&euro;) <a href="/print_coupon/<?php echo $node->nid; ?>?type=<?php echo $ticket['ticket_id']?>" target="_blank" class="public-event-coupon-print"><?php echo t('[print]')?></a></div>
                     <?php if(!empty($_GET['type']) && $_GET['type'] == $ticket['ticket_id']) : ?>
                       <?php if (!empty($_GET['uid'])) : ?>
-                        <?php $user = user_load($_GET['uid']); ?>
+                        <?php $user_anon = user_load($_GET['uid']);
+                              $user->first_name = $user_anon->first_name;
+                              $user->surname = $user_anon->surname;
+                        ?>
                       <?php endif; ?>
                       <span class="ticket-type"><?php echo strtoupper($ticket['title']);?></span>
                       <?php if ($ticket['quantity'] == 1) : ?>

@@ -891,6 +891,45 @@ function klicango_send_email($type, $to_uid,  $object){
   if(!empty($recepient->mail)){
     $text = $subject = ''; 
     switch($type){
+      case 'ticket_notification':
+        $event = node_load($object->event_id);
+        $venue = user_load($event->uid);
+        profile_load_profile($venue);
+        $pdf = events_generate_pdf_ticket($object->event_id, $object->ticket_type, $to_uid);
+        
+        $text = '<div style="padding-bottom: 10px;">'.theme_imagecache('search_result_image', $venue->picture).'</div><div style="">';
+        $text .= t('You have bought a ticket to').' '.l($event->title, 'node/'.$event->nid, array('absolute'=>TRUE)) . '(' . l($venue->first_name, 'user/'.$venue->uid, array('absolute'=>TRUE)) . ')';
+        $text .= '<br>'.date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
+        //$text .= (count($people['going'])+count($people['invited'])).' '.t('people are going');
+        $text .= '<br><br><div style="font-size: 80%">'.l(t('View event on Klicango'),'node/'.$event->nid,array('absolute'=>TRUE)).'<br>';
+        $text .= '<br><br><div style="font-size: 80%">'.l(t('Print ticket'),'print_coupon/'.$event->nid,array('absolute'=>TRUE, 'target' => '_blank', 'query' => array('uid' => $recepient->uid, 'type' => $object->ticket_type, 'check' => variable_get('ticket_' . $object->event_id . '_' . $object->ticket_type . '_' . $to_uid)))).'<br>';
+        $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= "</div>";
+        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        
+        $subject = t('Ticket to ').' '.$event->title;
+        
+        $random_hash = md5(date('r', time())); 
+        $attach_pdf_multipart = chunk_split( base64_encode( file_get_contents($path) ) );
+        if ($pdf && $attach_pdf_multipart) {
+          $headers = "\r\nContent-Type: multipart/mixed; boundary=\"PHP-mixed-".$random_hash."\"";       
+  
+          $msg .= "Content-Type: application/octet-stream; name=\"klicango-ticket.pdf\"\r\n";
+          $msg .= "Content-Transfer-Encoding: base64\r\n";
+          $msg .= "Content-Disposition: attachment\r\n";
+          $msg .= $attach_pdf_multipart . "\r\n";
+          $msg .= "Content-Type: text/html; charset=\"utf-8\"\r\n";
+          $msg .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+        } else {
+          $headers = "Content-Type: text/html; charset=\"utf-8\"\r\n";
+          $headers .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+        }
+        
+        $msg .= $text . "\r\n\r\n";
+        mail($recepient->mail, $subject, $msg, $headers);
+        return;
+        break;
+        
       case 'invite_to_event':
         $event = node_load($object->event_id);
         $people = events_get_event_attenders($object->event_id);

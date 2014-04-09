@@ -393,6 +393,13 @@ function klicango_pay_offsite_auto(){
               $order->status = PAYBOX_SUCCESS;
               $event_id = db_result(db_query('SELECT et.event_id FROM events_tickets AS et INNER JOIN events_payment AS ep ON ep.ticket_id = et.id AND ep.pid =%d', $order->pid));
               events_change_event_user_set_accept_status($order->customer_uid, $event_id);
+              
+              //send email with ticket pdf
+              $object = new stdClass();
+              $object->event_id = $event_id;
+              $object->ticket_type = $order->ticket_id;
+              klicango_send_email('ticket_notification', $order->customer_uid, $object);
+              
               // Log: failed to load the transaction.
               $log = 'Success. $_GET array: %get';
               $log_vars = array(

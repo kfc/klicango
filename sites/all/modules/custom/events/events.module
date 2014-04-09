@@ -666,20 +666,22 @@ function events_get_events_created_by_user($user_id = null, $load_full_node = fa
   return $events;
 }
 
-function events_generate_pdf_ticket($nid, $ticket_type) {
+function events_generate_pdf_ticket($nid, $ticket_type, $uid) {
   global $base_url;
   global $user;
   $print_pdf_pdf_tool = variable_get('pdf_tool_path', 'sites/all/libraries/wkhtmltopdf/bin/wkhtmltopdf-i386');
   
   $descriptor = array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'a'));
   $check = rand(111111111, 999999999);
-  variable_set('ticket_' . $user->uid, $check);
-  $cmd = '"'. realpath($print_pdf_pdf_tool) ."\" --page-size A4 --orientation portrait --dpi 96 --disallow-local-file-access --footer-font-size 7 \"" . $base_url . "/print_coupon/" . $nid . "?type=" . $ticket_type . "&uid=" . $user->uid . "&check=" . $check . "\" -";
+  variable_set('ticket_' . $nid . '_' . $ticket_type . '_' . $uid, $check);
+  $cmd = '"'. realpath($print_pdf_pdf_tool) ."\" --page-size A4 --orientation portrait --dpi 96 --disallow-local-file-access --footer-font-size 7 \"" . $base_url . "/print_coupon/" . $nid . "?type=" . $ticket_type . "&uid=" . $uid . "&check=" . $check . "\" -";
   $process = proc_open($cmd, $descriptor, $pipes, NULL, NULL);
+  watchdog('print_pdf', var_export($process, true), array());
   if (is_resource($process)) {
     $pdf = stream_get_contents($pipes[1]);
     fclose($pipes[1]);
-
+    watchdog('print_pdf', var_export($pdf, true), array());
+    
     stream_set_blocking($pipes[2], 0);
     $error = stream_get_contents($pipes[2]);
     fclose($pipes[2]);
@@ -691,6 +693,8 @@ function events_generate_pdf_ticket($nid, $ticket_type) {
       }
       watchdog('print_pdf', 'wkhtmltopdf [%cmd] (returned %ret): %error', array('%cmd' => $cmd, '%ret' => $retval, '%error' => $error));
     }
+  } else {
+    watchdog('print_pdf', 'Is not a process', array());
   }
 
   if (!empty($pdf)) {
@@ -706,8 +710,8 @@ function events_generate_pdf_ticket($nid, $ticket_type) {
   }
 }
 
-function events_get_user_tickets(&$node, $uid = 0, $check = 0) {
-  if (!$uid || ($uid && $check && $check != variable_get('ticket_' . $uid))) {
+function events_get_user_tickets(&$node, $uid = 0, $check = 0, $type = 0) {
+  if (!$uid || ($uid && $check && $check != variable_get('ticket_' . $node->nid . '_' . $type . '_' . $uid))) {
     global $user;
     $uid = $user->uid;
   } 
