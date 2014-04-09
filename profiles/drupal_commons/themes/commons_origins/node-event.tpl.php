@@ -171,17 +171,17 @@
                   <?php foreach ($node->tickets as $ticket) : ?>
                     <div class="public-event-ticket"><?php echo $ticket['quantity']; ?> x <?php echo $ticket['title'];?> (<?php echo $ticket['price'];?>&euro;) <a href="/print_coupon/<?php echo $node->nid; ?>?type=<?php echo $ticket['ticket_id']?>" target="_blank" class="public-event-coupon-print"><?php echo t('[print]')?></a></div>
                     <?php if(!empty($_GET['type']) && $_GET['type'] == $ticket['ticket_id']) : ?>
+                      <?php profile_load_profile($user); ?>
                       <?php if (!empty($_GET['uid'])) : ?>
-                        <?php $user_anon = user_load($_GET['uid']);
-                              $user->first_name = $user_anon->first_name;
-                              $user->surname = $user_anon->surname;
+                        <?php 
+                          $user_anon = user_load($_GET['uid']);
                         ?>
                       <?php endif; ?>
                       <span class="ticket-type"><?php echo strtoupper($ticket['title']);?></span>
                       <?php if ($ticket['quantity'] == 1) : ?>
-                        <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation is valid for !user only',array('!user'=>$user->first_name.' '.$user->surname))?></div>
+                        <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation is valid for !user only',array('!user'=>($user->uid != 0 ? $user->first_name : $user_anon->first_name).' '.($user->uid != 0 ? $user->surname : $user_anon->surname)))?></div>
                       <?php elseif ($ticket['quantity'] > 1) : ?>
-                        <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation is valid for !user and !x more guests only',array('!user'=>$user->first_name.' '.$user->surname, '!x' => ($ticket['quantity'] - 1)))?></div>
+                        <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation is valid for !user and !x more guests only',array('!user'=>($user->uid != 0 ? $user->first_name : $user_anon->first_name).' '.($user->uid != 0 ? $user->surname : $user_anon->surname), '!x' => ($ticket['quantity'] - 1)))?></div>
                       <?php endif; ?>
                     <?php endif; ?>
                   <?php endforeach; ?>
