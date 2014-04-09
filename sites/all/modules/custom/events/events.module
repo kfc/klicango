@@ -1682,7 +1682,8 @@ function events_get_changes_on_status($user){
     $result = db_query('SELECT eu.event_id, COUNT(eu.id) AS going_people 
                         FROM events_users AS eu
                         WHERE eu.is_read = 0 AND eu.status = %d AND
-                        eu.event_id IN (SELECT n.nid FROM node AS n WHERE n.type = "event" AND n.uid = %d)
+                        eu.event_id IN (SELECT n.nid FROM node AS n WHERE n.type = "event" AND n.uid = %d) AND
+                        eu.user_id IN (SELECT uid FROM users_roles WHERE rid = 6)                        
                         GROUP BY eu.event_id', EVENT_STATUS_ACCEPTED, $user->uid);                 
     
     while($row = db_fetch_array($result)) {
