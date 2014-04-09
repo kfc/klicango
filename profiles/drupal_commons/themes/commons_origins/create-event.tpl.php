@@ -54,7 +54,7 @@ drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'
     <div class="form-item">
       <label><?php echo t('Ticket')?></label>
       <input type="checkbox" id="event-sell-tickets" name="tickets" value="1" class="form-checkbox" />
-      <label class="checkbox-label"><?php echo t('I want to sell tickets online '); ?><a href="javascript: void(0);" id="edit-tickets-link" onclick="$( '#event-tickets-form' ).dialog( 'open' );" style="color: green;">edit</a></label>
+      <label class="checkbox-label"><?php echo t('I want to sell tickets online '); ?><!--<a href="javascript: void(0);" id="edit-tickets-link" onclick="$( '#event-tickets-form' ).dialog( 'open' );" style="color: green;">edit</a>--></label>
     </div>
     
     <div class="form-item">
@@ -88,13 +88,18 @@ drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'
         }
     ?>
   
-  <div class="form-submit"> 
-    <input type="submit" value="<?php echo t('Create')?>"/>
+  <div class="form-submit" id="create-event-submit-wrapper"> 
+    <input type="submit" id="create-event-submit" value="<?php echo t('Create')?>"/>
     <?php if($is_owner):?>
       <a href="/delete_event/<?php echo $nid;?>" onclick="return confirm(Drupal.t('Are you sure you want to delete this event?'));" class="event-delete-link"><?php echo t('Delete event');?></a>
     <?php endif;?>
     
   </div>
+  <?php if(in_array('professional', $user->roles, 'true')) : ?>
+    <div id="create-event-tickets-wrapper" class="form-submit" style="display: none;"> 
+      <input type="button" id="create-event-tickets" value="<?php echo t('Next')?>"/>   
+    </div>
+  <?php endif; ?>
   
   <input type="hidden" id="tickets_date_check" name="tickets_date_check"/>
   
@@ -157,7 +162,7 @@ drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'
      </select>
     </div>
     <div class="form-submit italic-disclamer-spaced-button">
-     <input type="submit" value="Save" id="event-tickets-close">
+     <input type="submit" value="Create" id="event-tickets-close">
      <label>By clicking on "Create", I agree to the <a href="/page/conditions-ventes" target="_blank">conditions de ventes</a> for online sales within Klicango</label>
     </div>
   </div>

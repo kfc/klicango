@@ -1554,7 +1554,7 @@ function event_ticket_list($event){
     $total = 0;
     $c = variable_get('events_min_commission', 0.5);
     $tickets_sold = array();
-    $per_page =  variable_get('events_tickets_list_count', 5);
+    $per_page =  variable_get('events_tickets_list_count', 100);
     
     $result = db_query("SELECT payment.ticket_id, ticket.title, ticket.price, SUM(payment.quantity) AS qty_total 
                         FROM events_payment AS payment

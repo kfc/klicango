@@ -87,7 +87,7 @@ $(function() {
   
   $('#event-tickets-close').click(function(e) {
     e.preventDefault();
-    $("#event-tickets-form" ).dialog("close");
+    $("#create-event-submit" ).click();
   });
   
    $("#create-event-form.private-event" ).dialog({
@@ -181,11 +181,22 @@ $(function() {
         });
         $("#event-tickets-form select").each(function(){
           $(this).val(5);
+          $(this).next().find('.jq-selectbox__select-text').text('5');
         });
 
         $("#event-tickets-form input[type='text']").each(function(){
           $(this).removeAttr('disabled');
         });
+        $("#create-event-form input[type='checkbox']").each(function(){
+          $(this).removeAttr('disabled');
+          $(this).next().removeClass('checked');
+          $(this).next().removeClass('disabled');
+          $(this).removeAttr('checked');          
+        });
+        
+        $('#create-event-form #create-event-submit-wrapper').show();
+        $('#create-event-form #create-event-tickets-wrapper').hide(); 
+        
         $("#create-event-form textarea").each(function(){
           $(this).val('');
         });
@@ -204,11 +215,25 @@ $(function() {
       .change(function(e) {
         var checked = $(e.target).prop('checked');
         if(checked) {
-          $( "#event-tickets-form" ).dialog( "open" );
+          //$( "#event-tickets-form" ).dialog( "open" );
+          $('#create-event-form #create-event-submit-wrapper').hide();
+          $('#create-event-form #create-event-tickets-wrapper').show();
+        } else {
+          $('#create-event-form #create-event-submit-wrapper').show();
+          $('#create-event-form #create-event-tickets-wrapper').hide();
         }
     });
   }
   bindTicketsCheckbox();
+  
+  function bindCreateEventWithTickets() {
+    $("#create-event-tickets").unbind('click');
+    $("#create-event-tickets").click(function(e){
+      e.preventDefault();
+      $( "#event-tickets-form" ).dialog( "open" );
+    })
+  }
+  bindCreateEventWithTickets()
   
   $("#modify-event-link")
     .click(function(e) {
@@ -229,14 +254,25 @@ $(function() {
     $('#create-event-form input[type="checkbox"]').each(function(){
       if(form_data.data[$(this).attr('name')] == 1) {
         $(this).prop('checked', 'checked');
+        $(this).prop('disabled', 'disabled');
+        $(this).next().addClass('checked');
+        $(this).next().addClass('disabled');
+        $('#create-event-form #create-event-submit-wrapper').hide();
+        $('#create-event-form #create-event-tickets-wrapper').show();       
+      } else {
+        $('#create-event-form #create-event-submit-wrapper').show();
+        $('#create-event-form #create-event-tickets-wrapper').hide();
       }
-    })
+    });
     $('#create-event-form input[type="checkbox"]').styler();
     // refresh select box
     $("#event-tickets-form select, #event-tickets-form input[type='text'], #event-tickets-form input[type='hidden']").each(function(){
       $(this).val(form_data.data[$(this).attr('name')]);
       if(form_data.data[$(this).attr('name')] && $(this).hasClass('static')) {
         $(this).attr('disabled', 'disabled');
+      }
+      if($(this).next().hasClass('jq-selectbox')) {
+        $(this).next().find('.jq-selectbox__select-text').text(form_data.data[$(this).attr('name')]);
       }
     });
     
@@ -273,10 +309,12 @@ $(function() {
       success: function(data){
         if(data.isValid){  
           $(form).append($('#event-tickets-form'));
+          $('#event-sell-tickets').removeAttr('disabled');
           loader = true;
           $(form).submit();  
         }
         else{ 
+          $('#event-tickets-form').dialog("close");
           $("#form_create_event input").removeClass('error')
           $.each(data.errors, function( key, value){
             $("#form_create_event input[name='"+key+"'], #form_create_event textarea[name='"+key+"']").addClass('error');
