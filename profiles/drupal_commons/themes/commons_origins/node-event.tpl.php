@@ -69,7 +69,7 @@
         }
         ?>
         <?php if(!empty($_GET['paybox'])):?>
-        <div id="paybox-message">
+        <div id="paybox-message"><div class="form-text">
         <?php
         switch ($_GET['paybox']) {
             case 'effectue' :
@@ -83,7 +83,7 @@
                 break;
         }
         ?>
-        </div>
+        </div></div>>
         <?php endif;?>
         <?php if(!empty($node->field_content_images) && !empty($node->field_content_images[0]['filepath'])):?>
             <div class="public-event-top-banner">
