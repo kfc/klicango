@@ -106,9 +106,9 @@
       <ul class="tickets-table">
       <?php foreach($tickets as $ticket): ?>
          <li id="payment-id-<?php echo $ticket['payment_id']; ?>">
-            <span class="table-column last-name"><?php echo $ticket['customer']->surname; ?></span>
-            <span class="table-column first-name"><?php echo $ticket['customer']->first_name; ?></span>
-            <span class="table-column email"><?php echo $ticket['customer']->mail; ?></span>   
+            <span class="table-column last-name"><?php echo (!empty($ticket['customer']->surname)) ? $ticket['customer']->surname : '-'; ?></span>
+            <span class="table-column first-name"><?php echo (!empty($ticket['customer']->first_name)) ? $ticket['customer']->first_name : '-'; ?></span>
+            <span class="table-column email"><?php echo (!empty($ticket['customer']->mail)) ? $ticket['customer']->mail : '-'; ?></span>   
             <span class="table-column ticket"><?php echo $ticket['title']; ?> (<?php echo $ticket['price']; ?>&euro;)</span>
             <span class="table-column anchor"><?php echo $ticket['quantity']; ?></span> 
             <span class="table-column sale-date"><?php echo date('d/m/Y', $ticket['response_time']); ?></span>
