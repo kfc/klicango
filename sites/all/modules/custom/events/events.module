@@ -1692,9 +1692,9 @@ function events_get_changes_on_status($user){
 }
 
 
-function events_change_event_user_set_accept_status($user, $event_id){
-    $data = array('event_id' => $event_id, 'sender_id' => $user->uid, 'user_id' => $user->uid, 'status' => EVENT_STATUS_ACCEPTED);
-      if(events_get_event_status_for_user($event_id, $user->uid) != EVENT_STATUS_UNDEFINED){
+function events_change_event_user_set_accept_status($uid, $event_id){
+    $data = array('event_id' => $event_id, 'sender_id' => $uid, 'user_id' => $uid, 'status' => EVENT_STATUS_ACCEPTED);
+      if(events_get_event_status_for_user($event_id, $uid) != EVENT_STATUS_UNDEFINED){
         $res = drupal_write_record('events_users', $data, array('event_id', 'user_id'));           
       }
       else{
