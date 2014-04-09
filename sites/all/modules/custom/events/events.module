@@ -1651,12 +1651,12 @@ function events_list(){
       $events = array_diff_key($all_events, $updated_events);
       
       
-      
+
       db_query('UPDATE events_payment AS ep
                 INNER JOIN events_tickets AS et ON (et.id = ep.ticket_id)
-                SET ep.is_red = 1
+                SET ep.is_red = 1 
                 WHERE  et.event_id IN ('. implode(",", $nids) .') AND ep.status = "succ"');
-                
+      
       db_query('UPDATE events_users AS eu
                 SET eu.is_read = 1
                 WHERE  eu.event_id IN ('. implode(",", $nids) .') AND eu.status = 3');                
@@ -1679,7 +1679,7 @@ function events_get_changes_on_status($user){
     }
 
     
-    $result = db_query('SELECT eu.event_id, COUNT(eu.id)-1 AS going_people 
+    $result = db_query('SELECT eu.event_id, COUNT(eu.id) AS going_people 
                         FROM events_users AS eu
                         WHERE eu.is_read = 0 AND eu.status = %d AND
                         eu.event_id IN (SELECT n.nid FROM node AS n WHERE n.type = "event" AND n.uid = %d)
@@ -1689,8 +1689,7 @@ function events_get_changes_on_status($user){
         if($row['going_people'] > 0){
             $data[$row['event_id']]['going_people'] = $row['going_people'];            
         }
-    }                        
-                        
+    }                                               
     return $data;                    
                     
 }
