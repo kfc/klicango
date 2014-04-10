@@ -47,7 +47,7 @@ function dialog_builder_menu() {
 }
 
 function dialog_builder_forms_list() {
-    return array('professional_user_register', 'end_user_register', 'log_in', 'professional_banking_details');
+    return array('professional_user_register', 'end_user_register', 'log_in', 'sign_up', 'professional_banking_details');
 }
 
 function dialog_builder_content() {
@@ -375,6 +375,12 @@ function dialog_builder_theme(){
         		'data' => NULL,
         	),
         	'template' => 'theme/log_in',
+        ),
+        'sign_up' => array(
+        	'arguments' => array(
+        		'data' => NULL,
+        	),
+        	'template' => 'theme/sign_up',
         ),
     );
 }

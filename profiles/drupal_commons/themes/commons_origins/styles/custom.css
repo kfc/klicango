@@ -33,6 +33,18 @@ body .ui-widget-content .long input[type="text"]{
 	margin-top: 14px;
 	display: inline-block;
 }
+#auth-block #sign_up{
+	text-decoration: none;
+	text-transform: uppercase;
+	font: 14px Arial;
+	color: #96c12b;
+	margin-top: 14px;
+	display: inline-block;
+}
+
+.signup-left {
+  margin-right: 25px !important;
+}
 
 #middle .inner .links {
     display: none;

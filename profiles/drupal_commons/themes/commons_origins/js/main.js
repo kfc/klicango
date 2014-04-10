@@ -17,7 +17,7 @@ $(function() {
                success : function (data, textStatus, jqXHR) {   
                     $('body').append(data);
                }, 
-               complete : function (jqXHR, textStatus) {  
+               complete : function (jqXHR, textStatus) {
                     $('#dialog-' + e.target.id).dialog({
                 		  autoOpen: false,
                       width: $('#dialog-' + e.target.id).attr('width'),
@@ -49,7 +49,6 @@ $(function() {
                         validateRemote(dialog_id, e);
                     });
                     $('#dialog-' + e.target.id).dialog('open');
-
                     if (e.target.id == '') {
                       $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 482});
                     }

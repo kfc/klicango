@@ -28,7 +28,7 @@
     </div>
     <div class="form-item form-type-checkbox form-item-field-suggestion-und" onclick="$('.facebook-log-in').toggleClass('active');" >
         <input type="checkbox" id="field-pro" name="field-pro" value="1" class="form-checkbox" />
-        <label class="option" for="field-pro">Im a pro</label>
+        <label class="option" for="field-pro">Im a pro</label>
     </div>
     
     <div class="form-submit">
@@ -52,51 +52,56 @@
         }
     }
 </script>-->
-<div id="dialog-log_in" title="LOGIN" width="410">
+
+
+<div id="dialog-sign_up" title="SIGN UP" width="410">
     <form>
         <div class="form-item facebook-log-in active">
-          <?php
-            echo fboauth_action_display('connect', '/');
-          ?>
+           <?php
+              echo fboauth_action_display('connect', '/');
+            ?>
         </div>
 
         <div class="or-separator">
             <span>or</span>
         </div>
 
-        <div class="form-item placeholder">
-            <input type="text" name="name" placeholder="Email">
+        <div class="form-item form-type-checkbox form-item-field-suggestion-und">
+            <input type="checkbox" id="field-pro" name="field-pro" value="1" class="form-checkbox"> <label class="option" for="field-pro">I'm a pro</label>
         </div>
 
-        <div class="clearfix"></div>
-
-        <div class="form-item placeholder">
-            <input type="password" name="pass" placeholder="Password">
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="form-item login-links">
-            <!--<a id="forgot-pass" href="" name="forgot-pass">Forgot your password?</a>-->
-        </div>
-        
         <div class="form-submit">
-            <input type="submit" value="Log in">
+            <a href="javascript:void(0);" id="signup" onclick="signUp();">Sign up</a>
         </div>
 
         <div class="form-item form-text">
-            En cliquant sur “Log with Facebook” ou “Log in”, j’accepte les  <a href="/page/mentions-l%C3%A9gales">conditions générales</a>.
+            Some text some text some text some text some text <a href="">some text</a>
         </div>
 
         <div class="form-item form-sepatrate-text">
-            Don’t have an account? <a href="javascript:void(0)" id="signup-link">Sign up</a>
+            Already have an account? <a href="javascript:void(0);" id="login-link">Log in</a>
         </div>
     </form>
 </div>
+
 <script type="text/javascript">
-  $('#signup-link').click(function(e) {
-    e.preventDefault();
-    $("#dialog-log_in").dialog("close");
-    $("#sign_up").click();
-  });
+    function signUp() {
+        $('#dialog-log_in').dialog('close'); 
+        if($('#field-pro').prop('checked')) {
+            showDialog('professional_user_register');
+        } else {
+            showDialog('end_user_register');
+        }
+    }
+    
+    $(document).ready(function(){
+      $('#field-pro').change(function(){
+        $('.facebook-log-in').toggleClass('active');
+      });
+      $('#login-link').click(function(e) {
+        e.preventDefault();
+        $("#dialog-sign_up").dialog("close");
+        $("#log_in").click();
+      });
+    });
 </script>

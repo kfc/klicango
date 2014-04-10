@@ -81,6 +81,9 @@
 	<div id="auth-block">
 		<a class="popup" id="log_in" href="">LOGIN</a>
 	</div>
+  <div id="auth-block" class="signup-left">
+		<a class="popup" id="sign_up" href="">SIGN UP</a>
+	</div>
 <?php
     endif;
 ?>

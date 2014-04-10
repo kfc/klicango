@@ -217,7 +217,7 @@ div.clear-fix{
 }
 #search-form{
 	float: right;
-	margin: 11px 55px 0 0;
+	margin: 11px 25px 0 0;
 }
 #auth-block{
 	float: right;
@@ -1182,38 +1182,38 @@ div.calendar-calendar{
 	color: #858586;
 }
 
-#login-form .form-item.login-links a#forgot-pass{
+#dialog-log_in .form-item.login-links a#forgot-pass{
 	font: 11px Arial;
 	color: #96c12b;
 	text-decoration: none;
 }
-#login-form .form-submit{
+#dialog-log_in .form-submit{
 	width: 100%;
 	clear: both;
 	display: inline-block;
 }
-#login-form .form-item.login-links a#forgot-pass:hover{
+#dialog-log_in .form-item.login-links a#forgot-pass:hover{
 	text-decoration: underline;
 }
-#login-form .form-item.login-links{
+#dialog-log_in .form-item.login-links{
 	float: left;
 }
-#login-form .form-item.login-links label{
+#dialog-log_in .form-item.login-links label{
 	width: 150px;
 }
-#login-form div.form-type-checkbox{
+#dialog-log_in div.form-type-checkbox{
 	float: right;
 	clear: none;
 	padding-top: 4px;
 	width: 141px;
 }
-#login-form div.form-type-checkbox label{
+#dialog-log_in div.form-type-checkbox label{
 	line-height: 14px;
 }
-body #login-form.ui-widget-content .form-submit input[type="submit"]{
+body #dialog-log_in.ui-widget-content .form-submit input[type="submit"]{
 	float: left;
 }
-body #login-form.ui-widget-content .form-submit a#signup{
+body #dialog-log_in.ui-widget-content .form-submit a#signup{
 	background: none;
 	font: bold 12px/30px Arial;
 	color: #35332f;
@@ -1234,14 +1234,14 @@ body #login-form.ui-widget-content .form-submit a#signup{
 	text-align: center;
 	text-decoration: none;
 }
-body #login-form.ui-widget-content .form-item.facebook-log-in{
+body #dialog-log_in.ui-widget-content .form-item.facebook-log-in{
 	padding-top: 15px;
 }
-body #login-form form{
+body #dialog-log_in form{
 	width: 322px;
 margin: 0 auto;
 }
-body #login-form.ui-widget-content .form-item.facebook-log-in a{
+body #dialog-log_in.ui-widget-content .form-item.facebook-log-in a{
 	background: #c1c0c0;
 	font: bold 12px/30px Arial;
 	color: #FFF;
@@ -1268,6 +1268,95 @@ span.submit-or{
 	color: #35332f;
 	padding-left: 15px;
 }
+
+#dialog-sign_up .form-item.login-links a#forgot-pass{
+	font: 11px Arial;
+	color: #96c12b;
+	text-decoration: none;
+}
+#dialog-sign_up .form-submit{
+	width: 100%;
+	clear: both;
+	display: inline-block;
+}
+#dialog-sign_up .form-item.login-links a#forgot-pass:hover{
+	text-decoration: underline;
+}
+#dialog-sign_up .form-item.login-links{
+	float: left;
+}
+#dialog-sign_up .form-item.login-links label{
+	width: 150px;
+}
+#dialog-sign_up div.form-type-checkbox{
+	float: right;
+	clear: none;
+	padding-top: 4px;
+	width: 141px;
+}
+#dialog-sign_up div.form-type-checkbox label{
+	line-height: 14px;
+}
+body #dialog-sign_up.ui-widget-content .form-submit input[type="submit"]{
+	float: left;
+}
+body #dialog-sign_up.ui-widget-content .form-submit a#signup{
+	background: none;
+	font: bold 12px/30px Arial;
+	color: #35332f;
+	float: right;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	width: 139px;
+	height: 30px;
+	border: 1px solid #bebebe;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	-o-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-icab-border-radius: 3px;
+	border-radius: 3px;
+	text-align: center;
+	text-decoration: none;
+}
+body #dialog-sign_up.ui-widget-content .form-item.facebook-log-in{
+	padding-top: 15px;
+}
+body #dialog-sign_up form{
+	width: 322px;
+margin: 0 auto;
+}
+body #dialog-sign_up.ui-widget-content .form-item.facebook-log-in a{
+	background: #c1c0c0;
+	font: bold 12px/30px Arial;
+	color: #FFF;
+	float: right;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	width: 320px;
+	height: 30px;
+	border: 1px solid #aab0bf;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	-o-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-icab-border-radius: 3px;
+	border-radius: 3px;
+	text-align: center;
+	text-decoration: none;
+	margin: 0 auto;
+}
+span.submit-or{
+	font: 12px/30px Arial;
+	color: #35332f;
+	padding-left: 15px;
+}
+
+
 div.activity-stream-list.left{
 	width: 405px;
 	float: left;
@@ -1751,3 +1840,52 @@ div.event-gratuity{
  .pager li.toprev {margin-right: 4px;}
   .pager li a {color: #808285; text-decoration: none;}
 /*End tickets list styles*/
+
+/*New login styles*/
+body #dialog-sign_up.ui-widget-content .form-item.facebook-log-in {padding-top: 0;}
+ body #dialog-sign_up.ui-widget-content .form-item.facebook-log-in.active a {background-color: #365999;}
+.ui-dialog #dialog-sign_up form .form-item.placeholder input[type="text"],
+.ui-dialog #dialog-sign_up form .form-item.placeholder input[type="password"] {margin-right: 0; width: 310px;}
+.or-separator {height: 1px; background: #b5b5b5; position: relative; margin: 4px 0 25px 0;}
+ .or-separator span {width: 25px; text-align: center; display: block; background: #FFF; color: #808285; position: absolute; left: 50%; margin-left: -13px; font-size: 0.833em; margin-top: -9px;}
+
+body #dialog-sign_up.ui-widget-content .form-submit input[type="submit"] {width: 322px; color: #FFF;}
+body #dialog-sign_up.ui-widget-content .form-text {margin: 20px 0 10px 0;}
+ body #dialog-sign_up.ui-widget-content .form-text a {color: #96C12B; text-decoration: none;}
+
+body #dialog-sign_up.ui-widget-content .form-sepatrate-text {font-family: Arial, Helvetica, sans-serif; color: #858586; margin-bottom: 15px; font-size: 12px; display: block; border-top: solid 1px #b5b5b5; margin: 0 -44px 0 -44px; padding: 10px 44px 20px 44px;}
+ body #dialog-sign_up.ui-widget-content .form-sepatrate-text a {color: #96C12B; text-decoration: none;}
+
+#dialog-sign_up div.form-type-checkbox {float: none;}
+ #dialog-sign_up div.form-type-checkbox .jq-checkbox {}
+ body #dialog-sign_up.ui-widget-content .form-item label {float: none; text-align: left; width: auto; vertical-align: top; margin-left: 2px; font-weight: normal;}
+
+body #dialog-sign_up.ui-widget-content .form-submit a#signup {float: none; width: 320px; display: block;}
+
+body #dialog-log_in.ui-widget-content .form-item.facebook-log-in {padding-top: 0;}
+ body #dialog-log_in.ui-widget-content .form-item.facebook-log-in.active a {background-color: #365999;}
+.ui-dialog #dialog-log_in form .form-item.placeholder input[type="text"],
+.ui-dialog #dialog-log_in form .form-item.placeholder input[type="password"] {margin-right: 0; width: 310px;}
+.or-separator {height: 1px; background: #b5b5b5; position: relative; margin: 4px 0 25px 0;}
+ .or-separator span {width: 25px; text-align: center; display: block; background: #FFF; color: #808285; position: absolute; left: 50%; margin-left: -13px; font-size: 0.833em; margin-top: -9px;}
+
+body #dialog-log_in.ui-widget-content .form-submit input[type="submit"] {width: 322px; color: #FFF;}
+body #dialog-log_in.ui-widget-content .form-text {margin: 20px 0 10px 0;}
+ body #dialog-log_in.ui-widget-content .form-text a {color: #96C12B; text-decoration: none;}
+
+body #dialog-log_in.ui-widget-content .form-sepatrate-text {font-family: Arial, Helvetica, sans-serif; color: #858586; margin-bottom: 15px; font-size: 12px; display: block; border-top: solid 1px #b5b5b5; margin: 0 -44px 0 -44px; padding: 10px 44px 20px 44px;}
+ body #dialog-log_in.ui-widget-content .form-sepatrate-text a {color: #96C12B; text-decoration: none;}
+
+#dialog-log_in div.form-type-checkbox {float: none;}
+ #dialog-log_in div.form-type-checkbox .jq-checkbox {}
+ body #dialog-log_in.ui-widget-content .form-item label {float: none; text-align: left; width: auto; vertical-align: top; margin-left: 2px; font-weight: normal;}
+
+body #dialog-log_in.ui-widget-content .form-submit a#signup {float: none; width: 320px; display: block;}
+
+/*End new login styles*/
+
+/*New quick search styles*/
+#search-form {background: #FFF; border: 1px solid #7C7B78; border-radius: 3px; color: #858484; height: 19px;}
+ #search-form input[type="text"] {border: none; vertical-align: top; width: 127px;}
+ #search-form input[type="submit"] {border: none; background: url(../images/search_icon.gif); width: 20px; height: 19px; padding: 0; cursor: pointer;}
+/*New quick search styles*/
