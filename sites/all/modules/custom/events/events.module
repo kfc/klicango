@@ -1718,27 +1718,29 @@ function events_change_event_user_set_accept_status($uid, $event_id){
 function event_collect_money_callback($event, $ajax = true){
     
     global $user;
-    $return = array('success' => true);
-/*    if (!$facebook) {
-      $result = db_query('SELECT id FROM friends_invitations WHERE (sender_id = %d AND user_id = %d) OR (sender_id = %d AND user_id = %d)', $user->uid, $fid, $fid, $user->uid);
-    } else {
-      $result = db_query('SELECT id FROM friends_invitations WHERE (sender_id = %d AND facebook_id = %d) OR (sender_id = %d AND facebook_id = %d)', $user->uid, $fid, $fid, $user->uid);
-    }
-    if (!$is_friend = db_result($result)) {
-        if (!$facebook) {
-          $data = array('sender_id' => $user->uid, 'user_id' => $fid, 'status' => 1);
-        } else {
-          $data = array('sender_id' => $user->uid, 'facebook_id' => $fid, 'status' => 1);
-        }
-        $return['success'] = drupal_write_record('friends_invitations', $data);
-    } else {
-        $return['success'] = false;
-    }
-    if($return['success']){
-      klicango_send_email('friend_request', $fid, null );
-    }   */
+    $total = 0;
+    $c = variable_get('events_min_commission', 0.5);
+    $tickets_sold = array();
+    $return = array('success' => false);
     
-    klicango_send_email('collect_money_notification', NULL, $event);
+    $result = db_query("SELECT payment.ticket_id, ticket.title, ticket.price, SUM(payment.quantity) AS qty_total 
+                        FROM events_payment AS payment
+                        INNER JOIN events_tickets AS ticket ON (ticket.id = payment.ticket_id AND ticket.event_id = %d )
+                        WHERE payment.status = 'succ' AND payment.collected = 0 
+                        GROUP BY payment.ticket_id
+                        ORDER BY ticket.id", $event->nid);
+    while($row = db_fetch_array($result)) {
+      $tickets_sold[] = $row;
+      $total += $row['qty_total'] * ($row['price'] - max(0.03 * $row['price'], $c));
+    }
+    
+    if ($total > 0){
+        $return = array('success' => true);
+        $event->tickets_sold = $tickets_sold;
+        $event->total = $total;
+        klicango_send_email('collect_money_notification', $user->uid, $event);    
+    }
+
     
     if ($ajax) {
         echo json_encode($return);
