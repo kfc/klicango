@@ -1576,6 +1576,17 @@ function event_ticket_list($event){
       $total += $row['qty_total'] * ($row['price'] - max(0.03 * $row['price'], $c));
     }
     
+    $collected = 0;
+    $result = db_query("SELECT payment.ticket_id, ticket.title, ticket.price, SUM(payment.quantity) AS qty_total 
+                        FROM events_payment AS payment
+                        INNER JOIN events_tickets AS ticket ON (ticket.id = payment.ticket_id AND ticket.event_id = %d )
+                        WHERE payment.status = 'succ' AND  payment.collected = 1
+                        GROUP BY payment.ticket_id
+                        ORDER BY ticket.id", $event->nid);
+    while($row = db_fetch_array($result)) {
+      $collected += $row['qty_total'] * ($row['price'] - max(0.03 * $row['price'], $c));
+    }
+    
     
     $sql = "SELECT
             tickets.id AS ticket_id, tickets.title, tickets.price,
@@ -1593,10 +1604,13 @@ function event_ticket_list($event){
     
      $people_going = events_get_event_attenders($event->nid);
      unset($people_going['going'][$event->uid]);
+    
+    $money['total']= $total;
+    $money['collected']= $collected;  
       
     $pager = theme('pager', $per_page, NULL);
           
-    return theme('event_ticket_list', $event, $total, $people_going, $tickets_sold,  $tickets, $pager);  
+    return theme('event_ticket_list', $event, $money, $people_going, $tickets_sold,  $tickets, $pager);  
 }
  
  
@@ -1738,7 +1752,12 @@ function event_collect_money_callback($event, $ajax = true){
         $return = array('success' => true);
         $event->tickets_sold = $tickets_sold;
         $event->total = $total;
-        klicango_send_email('collect_money_notification', $user->uid, $event);    
+        klicango_send_email('collect_money_notification', $user->uid, $event);
+        
+        db_query('UPDATE events_payment AS ep
+                INNER JOIN events_tickets AS et ON (et.id = ep.ticket_id)
+                SET ep.collected = 1 
+                WHERE  et.event_id = %d AND ep.status = "succ"', $event->nid);    
     }
 
     

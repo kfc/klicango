@@ -54,15 +54,27 @@
          <div class="price-block t-price">
             <div class="col">
                <div class="col-content">
+                  <?php echo t('Total:');?>
+               </div>
+            </div>
+            <div class="col">
+               <div class="col-content">
+                  <?php echo $total['total'];?> &euro;
+               </div>
+            </div>
+         </div>
+         <div class="price-block t-price">
+            <div class="col">
+               <div class="col-content">
                   <?php echo t('Total collected:');?>
                </div>
             </div>
             <div class="col">
                <div class="col-content">
-                  <?php echo $total;?> &euro;
+                  <?php echo $total['collected'];?> &euro;
                </div>
             </div>
-         </div>
+         </div>         
          <div class="price-block t-people">
             <div class="col">
                <div class="col-content">
@@ -89,7 +101,9 @@
             </div>
          </div>
          <?php endforeach; ?>
+         <?php if(($total['total'] - $total['collected']) > 0):?>
          <div class="result-link"><a href="#" class="red-button" id="collect-money">collect money</a></div>
+         <?php endif;?>
       </div>
    </div>
    <?php if($tickets):?>
