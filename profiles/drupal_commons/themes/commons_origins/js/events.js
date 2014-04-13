@@ -804,7 +804,7 @@ function proceedCollectMoneySubmit(object, event_id) {
         $('#collect-money-message').dialog('option', 'title', Drupal.t('Collect money'));
         $(object).removeAttr('onclick');
         $(object).text(Drupal.t('Close'));    
-        $(object).attr( "onclick", '$("#collect-money-message").dialog("close")');
+        $(object).attr( "onclick", '$("#collect-money-message").dialog("close");  location.reload();');
       }
      },
   });
