@@ -38,6 +38,17 @@ function customization_menu(){
     'file' => 'customization.admin.inc',
   );
   
+  $items['admin/settings/collect_money'] = array(
+    'title' => 'Collect money settings',
+    'description' => 'Settings collect money functionality.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('customization_collect_money_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'customization.admin.inc',
+  );  
+  
  $items['comment_delete/%'] = array(
     'type' => MENU_CALLBACK,
     'page callback' => 'customization_comment_delete',
@@ -929,6 +940,30 @@ function klicango_send_email($type, $to_uid,  $object){
         mail($recepient->mail, $subject, $msg, $headers);
         return;
         break;
+        
+      case 'collect_money_notification':
+        $event = node_load($object->event_id);
+        $venue = user_load($event->uid);
+        profile_load_profile($venue);
+        $to = variable_get('collect_money_to', 'sales@klicango.fr');
+        $from = variable_get('collect_money_from', 'no-reply@klicango.fr');
+                
+        $text = '<div>'.t('!loc_name wants to collect money for !event', array('!loc_name' => $venue->name, '!event' => $event->title)).'<br>';
+        $text .= '<br>'.date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
+        $text .= '<br><div style="font-size: 80%">'.l(t('View event on Klicango'),'node/'.$event->nid,array('absolute'=>TRUE)).'<br></div>';
+        $text .= "</div>";
+        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        
+        $subject =  t('!loc_name wants to collect money for !event', array('!loc_name' => $venue->name, '!event' => $event->title)) ;
+        
+        $headers = "Content-Type: text/html; charset=\"utf-8\"\r\n";
+        $headers .= "From: " . $from . "\r\n";
+        $headers .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+        
+        $msg .= $text . "\r\n\r\n";
+        mail($to, $subject, $msg, $headers);
+        return;
+        break;        
         
       case 'invite_to_event':
         $event = node_load($object->event_id);

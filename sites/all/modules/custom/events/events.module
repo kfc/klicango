@@ -129,6 +129,15 @@ function events_menu(){
       'access arguments' => array(1),
     ),
     
+     'collect-money/%node' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'event_collect_money_callback',
+      'page arguments' => array(1),
+      'access callback' => 'user_is_event_author',
+      'access arguments' => array(1),
+    ),  
+   
+    
   );
   return $items; 
 }
@@ -1704,4 +1713,37 @@ function events_change_event_user_set_accept_status($uid, $event_id){
       else{
         $res = drupal_write_record('events_users', $data);          
       }                      
+}
+
+function event_collect_money_callback($event, $ajax = true){
+    
+    global $user;
+    $return = array('success' => true);
+/*    if (!$facebook) {
+      $result = db_query('SELECT id FROM friends_invitations WHERE (sender_id = %d AND user_id = %d) OR (sender_id = %d AND user_id = %d)', $user->uid, $fid, $fid, $user->uid);
+    } else {
+      $result = db_query('SELECT id FROM friends_invitations WHERE (sender_id = %d AND facebook_id = %d) OR (sender_id = %d AND facebook_id = %d)', $user->uid, $fid, $fid, $user->uid);
+    }
+    if (!$is_friend = db_result($result)) {
+        if (!$facebook) {
+          $data = array('sender_id' => $user->uid, 'user_id' => $fid, 'status' => 1);
+        } else {
+          $data = array('sender_id' => $user->uid, 'facebook_id' => $fid, 'status' => 1);
+        }
+        $return['success'] = drupal_write_record('friends_invitations', $data);
+    } else {
+        $return['success'] = false;
+    }
+    if($return['success']){
+      klicango_send_email('friend_request', $fid, null );
+    }   */
+    
+    klicango_send_email('collect_money_notification', NULL, $event);
+    
+    if ($ajax) {
+        echo json_encode($return);
+        exit; 
+    } else {
+        return $return;
+    }    
 }

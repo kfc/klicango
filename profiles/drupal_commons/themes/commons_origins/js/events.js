@@ -116,7 +116,17 @@ $(function() {
     width: 484,
     height: 175,
     modal: true,
-  });  
+  });
+  
+  $("#collect-money-message" ).dialog({
+    autoOpen: false,
+    width: 484,
+    modal: true,
+    close: function() {
+     $(".scroll-pane").hide();
+     $("#search-friends").hide();
+      }
+  });
   
   
   $("#add-friends-form-user-page").dialog({
@@ -233,7 +243,17 @@ $(function() {
       $( "#event-tickets-form" ).dialog( "open" );
     })
   }
-  bindCreateEventWithTickets()
+  bindCreateEventWithTickets();
+  
+  function bindCollectMoneyMessage() {
+    $("#collect-money").unbind('click');
+    $("#collect-money").click(function(e){
+      e.preventDefault();
+      $( "#collect-money-message" ).dialog( "open" );
+    })
+  }
+  bindCollectMoneyMessage();
+  
   
   $("#modify-event-link")
     .click(function(e) {
@@ -771,4 +791,21 @@ function getParameterByName(url, name) {
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(url);
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function proceedCollectMoneySubmit(object, event_id) {
+   $.ajax({
+     type: 'GET',
+     dataType: 'json',
+     url: '/collect-money/' + event_id,                  
+     success : function (data, textStatus, jqXHR) { 
+      if (data.success == 1) {
+        $('#collect-money-message .form-text').html(Drupal.t('Your request has been registered.<br /> Our team will process it very shortly. Thanks.'));
+        $('#collect-money-message').dialog('option', 'title', Drupal.t('Collect money'));
+        $(object).removeAttr('onclick');
+        $(object).text(Drupal.t('Close'));    
+        $(object).attr( "onclick", '$("#collect-money-message").dialog("close")');
+      }
+     },
+  });
 }

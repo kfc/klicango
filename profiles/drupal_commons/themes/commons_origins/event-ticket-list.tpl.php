@@ -89,7 +89,7 @@
             </div>
          </div>
          <?php endforeach; ?>
-         <div class="result-link"><a href="#" class="red-button">collect money</a></div>
+         <div class="result-link"><a href="#" class="red-button" id="collect-money">collect money</a></div>
       </div>
    </div>
    <?php if($tickets):?>
@@ -122,4 +122,9 @@
        </div>
        <?php endif;?>
    <?php endif;?>
+</div>
+
+<div id="collect-money-message" title="<?php echo t('Collect money confirmation');?>">
+    <div class="form-text">informing about commission for funds collection</div>
+    <a href="javascript: void(0);" class="collect-money-proceed black-button" onclick="proceedCollectMoneySubmit(this, <?php echo $event->nid; ?>)"><?php echo t('Proceed'); ?></a>
 </div>

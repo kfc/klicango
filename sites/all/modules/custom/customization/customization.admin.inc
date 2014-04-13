@@ -55,3 +55,26 @@ $form['homepage'] = array(
   
   return system_settings_form($form);
 }
+
+
+/**
+* Administration page for the collect money
+*/
+function customization_collect_money_settings() {
+      
+  $form['collect_money_to'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email is sent to'),
+    '#default_value' => variable_get('collect_money_to', 'sales@klicango.fr'),
+    '#description' => '',
+  );
+  
+  $form['collect_money_from'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email is sent from'),
+    '#default_value' => variable_get('collect_money_from', 'no-reply@klicango.fr'),
+    '#description' => '',
+  );
+  
+  return system_settings_form($form);
+}
