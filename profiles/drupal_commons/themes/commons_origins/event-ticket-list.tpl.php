@@ -5,7 +5,7 @@
          <div class="col-content">
             <div class="image-section">
                <span class="image"><?php if(!empty($event->picture)) :?><img src="<?php echo imagecache_create_url('profile_picture_big', $event->picture); ?>" width="58" height="58"><?php endif; ?></span>
-               <span class="text"><?php echo(!empty($owner['first_name']) ? $owner['first_name'] : '');?> <strong><?php echo(!empty($owner['city']) ? $owner['city'] : '');?></strong></span>
+               <span class="text"><?php echo(!empty($owner['first_name']) ? $owner['first_name'] : '');?> <br /><strong><?php echo(!empty($owner['city']) ? $owner['city'] : '');?></strong></span>
             </div>
             <div class="tickets-logo"><img src="<?php echo base_path() . path_to_theme(); ?>/images/tickets_logo.gif" width="155" height="27"></div>
          </div>
@@ -50,7 +50,7 @@
          </div>
       </div>
       <div class="col col-double">
-         <h2><?php echo $event->title?></h2>
+         <h2><?php echo l($event->title , 'node/' . $event->nid); ?></h2>
          <div class="price-block t-price">
             <div class="col">
                <div class="col-content">
@@ -78,7 +78,7 @@
          <div class="price-block t-people">
             <div class="col">
                <div class="col-content">
-                  <?php echo t('People going:');?>
+                    <a class="going-users-link" id="event_<?php echo $event->nid;?>" href="javascript: void(0);"><?php echo t('People going:');?></a> 
                </div>
             </div>
             <div class="col">
@@ -102,7 +102,7 @@
          </div>
          <?php endforeach; ?>
          <?php if(($total['total'] - $total['collected']) > 0):?>
-         <div class="result-link"><a href="#" class="red-button" id="collect-money">collect money</a></div>
+         <div class="result-link"><a href="#" class="red-button" id="collect-money"><?php echo ('collect money'); ?></a></div>
          <?php endif;?>
       </div>
    </div>
@@ -138,7 +138,7 @@
    <?php endif;?>
 </div>
 
-<div id="collect-money-message" title="<?php echo t('Collect money confirmation');?>">
-    <div class="form-text">informing about commission for funds collection</div>
+<div id="collect-money-message" title="<?php echo t('Collect money confirmation'); ?>">
+    <div class="form-text" style="margin-bottom: 0px;"><?php echo t(variable_get('collect_money_confirmation')); ?></div>
     <a href="javascript: void(0);" class="collect-money-proceed black-button" onclick="proceedCollectMoneySubmit(this, <?php echo $event->nid; ?>)"><?php echo t('Proceed'); ?></a>
 </div>

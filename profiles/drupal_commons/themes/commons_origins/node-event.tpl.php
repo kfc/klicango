@@ -69,7 +69,7 @@
         }
         ?>
         <?php if(!empty($_GET['paybox'])):?>
-        <div id="paybox-message"><div class="form-text">
+        <div id="paybox-message" title=" <?php echo t('Payment confirmation');?>"><div class="form-text">
         <?php
         switch ($_GET['paybox']) {
             case 'effectue' :
@@ -83,7 +83,9 @@
                 break;
         }
         ?>
-        </div></div>>
+        </div>
+        <a href="javascript: void(0);" class="black-button" onclick="$('#paybox-message').dialog('close');"><?php echo t('Close'); ?></a>
+        </div>
         <?php endif;?>
         <?php if(!empty($node->field_content_images) && !empty($node->field_content_images[0]['filepath'])):?>
             <div class="public-event-top-banner">
