@@ -953,7 +953,7 @@ function klicango_send_email($type, $to_uid,  $object){
         $text .= l(t('View event on Klicango'),'node/'.$event->nid,array('absolute'=>TRUE)).'<br><br>';
         $text .= t('Total money collected') .' : <strong>' . $event->total . '</strong><br>';
         foreach($event->tickets_sold as $ticket_sold){
-              $text .= $ticket_sold['title']. ' (' .$ticket_sold['price'] . ')&euro; :' . $ticket_sold['qty_total'].'<br>'; 
+              $text .= $ticket_sold['title']. ' (' .$ticket_sold['price'] . ' &euro;):' . $ticket_sold['qty_total'].'<br>'; 
         }
 
         $text .= "</div>";
