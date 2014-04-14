@@ -1,4 +1,5 @@
 var last_search;
+var ajax_start = true;
 // redirect from Facebook canvas
 if (top.location!= self.location) {
     top.location = self.location
@@ -119,6 +120,7 @@ $(function() {
       if(this.value.length > 1) {
          last_search = this.value;
          var current_search = this.value;
+         ajax_start = false;
          $('#find-events-wrapper .search-for-friends').addClass('loading');
          $.ajax({
              type: 'GET',
@@ -139,6 +141,7 @@ $(function() {
                 			$("#find-events-wrapper .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
                 			$('#find-events-wrapper .search-for-friends').removeClass('loading');
                       //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top
+                      ajax_start = true;
                   }  
              }, 
           }); 
@@ -386,6 +389,9 @@ function setActiveEvent(event_id) {
 }
 
 function loadJoinFriends(offset, limit, search) {
+        if (search != '') {
+          ajax_start = false;
+        }
         $.ajax({
            type: 'GET',
            dataType: 'html',
@@ -418,6 +424,7 @@ function loadJoinFriends(offset, limit, search) {
               $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable").css({"height" : 436, "top" : 200});
               $(".ui-dialog-content.ui-widget-content").css({"height" : 463});
               $(".friends-join .scroll-pane").mCustomScrollbar("update");
+              ajax_start = true;
            }, 
         });  
     $("#invite-friends-form #search-friends").show();
@@ -609,6 +616,10 @@ function loadFindEvents(offset, limit) {
 }
 
 $(document).on({
-    ajaxStart: function() { $("body").addClass("loading"); },
+    ajaxStart: function() {
+      if (ajax_start != false) { 
+        $("body").addClass("loading");
+      } 
+    },
     ajaxStop: function() { if (!loader) $("body").removeClass("loading"); }    
 });

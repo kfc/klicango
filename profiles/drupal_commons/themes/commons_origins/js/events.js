@@ -497,6 +497,7 @@ $(function() {
  
     $('#invite-friends-form #search-friends').keyup(function () {
         if(this.value.length > 1) {
+           ajax_start = false;
            last_search = this.value;
            var current_search = this.value;
            $('#invite-friends-form .search-for-friends').addClass('loading');
@@ -531,6 +532,7 @@ $(function() {
                       $("#invite-friends-form .scroll-pane").mCustomScrollbar("update"); //update scrollbar according to newly loaded content
                       $('#invite-friends-form .search-for-friends').removeClass('loading');
                         //$(".scroll-pane").mCustomScrollbar("scrollTo","top",{scrollInertia:200}); //scroll to top
+                      ajax_start = true;
                     }  
                }, 
             }); 
