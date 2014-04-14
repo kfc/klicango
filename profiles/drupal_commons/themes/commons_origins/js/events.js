@@ -68,7 +68,7 @@ $(function() {
   
   $("#create-event-form.public-event" ).dialog({
     autoOpen: false,
-    height: 455,
+    height: 485,
     width: 484,
     modal: true,
     close: function() {
