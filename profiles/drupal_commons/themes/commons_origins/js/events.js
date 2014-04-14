@@ -230,7 +230,30 @@ $(function() {
     $("#create-event-tickets").unbind('click');
     $("#create-event-tickets").click(function(e){
       e.preventDefault();
-      $( "#event-tickets-form" ).dialog( "open" );
+      if ($('#datepicker-tickets')) {
+        $('#tickets_date_check').val($('#datepicker-tickets').val());
+      }
+      var form = $("#form_create_event");
+      var is_submitted = false;
+      $.ajax({
+        type: "POST",
+        url: '/check_event_form_values',
+        data:  $(form).serialize(),
+        dataType: 'json',
+        success: function(data){
+          if(data.isValid){  
+            $( "#create-event-form" ).dialog( "close" );
+            $( "#event-tickets-form" ).dialog( "open" );     
+          }
+          else{ 
+            $("#form_create_event input").removeClass('error')
+            $.each(data.errors, function( key, value){
+              $("#form_create_event input[name='"+key+"'], #form_create_event textarea[name='"+key+"']").addClass('error');
+              //$("#form_create_event input[name='"+key+"'], #form_create_event textarea[name='"+key+"']").attr('placeholder',value);
+            });
+          }
+        },
+      });
     })
   }
   bindCreateEventWithTickets()
@@ -315,6 +338,7 @@ $(function() {
         }
         else{ 
           $('#event-tickets-form').dialog("close");
+          $('#create-event-form').dialog("open");
           $("#form_create_event input").removeClass('error')
           $.each(data.errors, function( key, value){
             $("#form_create_event input[name='"+key+"'], #form_create_event textarea[name='"+key+"']").addClass('error');

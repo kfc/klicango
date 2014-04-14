@@ -162,7 +162,7 @@ drupal_add_js("var user_data = ".json_encode(array('location'=>$address, 'email'
      </select>
     </div>
     <div class="form-submit italic-disclamer-spaced-button">
-     <input type="submit" value="Create" id="event-tickets-close">
+     <input type="submit" value="<?php echo $is_owner ? 'Save' : 'Create'; ?>" id="event-tickets-close">
      <label>By clicking on "Create", I agree to the <a href="/page/conditions-ventes" target="_blank">conditions de ventes</a> for online sales within Klicango</label>
     </div>
   </div>
