@@ -129,6 +129,15 @@ function events_menu(){
       'access arguments' => array(1),
     ),
     
+     'collect-money/%node' => array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'event_collect_money_callback',
+      'page arguments' => array(1),
+      'access callback' => 'user_is_event_author',
+      'access arguments' => array(1),
+    ),  
+   
+    
   );
   return $items; 
 }
@@ -1567,6 +1576,17 @@ function event_ticket_list($event){
       $total += $row['qty_total'] * ($row['price'] - max(0.03 * $row['price'], $c));
     }
     
+    $collected = 0;
+    $result = db_query("SELECT payment.ticket_id, ticket.title, ticket.price, SUM(payment.quantity) AS qty_total 
+                        FROM events_payment AS payment
+                        INNER JOIN events_tickets AS ticket ON (ticket.id = payment.ticket_id AND ticket.event_id = %d )
+                        WHERE payment.status = 'succ' AND  payment.collected = 1
+                        GROUP BY payment.ticket_id
+                        ORDER BY ticket.id", $event->nid);
+    while($row = db_fetch_array($result)) {
+      $collected += $row['qty_total'] * ($row['price'] - max(0.03 * $row['price'], $c));
+    }
+    
     
     $sql = "SELECT
             tickets.id AS ticket_id, tickets.title, tickets.price,
@@ -1584,10 +1604,13 @@ function event_ticket_list($event){
     
      $people_going = events_get_event_attenders($event->nid);
      unset($people_going['going'][$event->uid]);
+    
+    $money['total']= $total;
+    $money['collected']= $collected;  
       
     $pager = theme('pager', $per_page, NULL);
           
-    return theme('event_ticket_list', $event, $total, $people_going, $tickets_sold,  $tickets, $pager);  
+    return theme('event_ticket_list', $event, $money, $people_going, $tickets_sold,  $tickets, $pager);  
 }
  
  
@@ -1704,4 +1727,44 @@ function events_change_event_user_set_accept_status($uid, $event_id){
       else{
         $res = drupal_write_record('events_users', $data);          
       }                      
+}
+
+function event_collect_money_callback($event, $ajax = true){
+    
+    global $user;
+    $total = 0;
+    $c = variable_get('events_min_commission', 0.5);
+    $tickets_sold = array();
+    $return = array('success' => false);
+    
+    $result = db_query("SELECT payment.ticket_id, ticket.title, ticket.price, SUM(payment.quantity) AS qty_total 
+                        FROM events_payment AS payment
+                        INNER JOIN events_tickets AS ticket ON (ticket.id = payment.ticket_id AND ticket.event_id = %d )
+                        WHERE payment.status = 'succ' AND payment.collected = 0 
+                        GROUP BY payment.ticket_id
+                        ORDER BY ticket.id", $event->nid);
+    while($row = db_fetch_array($result)) {
+      $tickets_sold[] = $row;
+      $total += $row['qty_total'] * ($row['price'] - max(0.03 * $row['price'], $c));
+    }
+    
+    if ($total > 0){
+        $return = array('success' => true);
+        $event->tickets_sold = $tickets_sold;
+        $event->total = $total;
+        klicango_send_email('collect_money_notification', $user->uid, $event);
+        
+        db_query('UPDATE events_payment AS ep
+                INNER JOIN events_tickets AS et ON (et.id = ep.ticket_id)
+                SET ep.collected = 1 
+                WHERE  et.event_id = %d AND ep.status = "succ"', $event->nid);    
+    }
+
+    
+    if ($ajax) {
+        echo json_encode($return);
+        exit; 
+    } else {
+        return $return;
+    }    
 }

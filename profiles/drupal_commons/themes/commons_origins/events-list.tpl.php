@@ -46,7 +46,7 @@
                             <?php
                             if(!empty($node->update_data['going_people'])){
                                 echo  t('+ @people (@total total)', array(
-                                        '@people' => format_plural($node->update_data['going_people'], '1 new man is going', '@count new people are going'),
+                                        '@people' => format_plural($node->update_data['going_people'], '1 new person is going', '@count new people are going'),
                                         '@total' => count($node->people_going['going'])));                                 
                             }
                             ?>
@@ -54,6 +54,7 @@
                     </div>
                     <?php if($node->field_event_tickets[0]['value'] == 1): ?>
                     <div class="price-block t-tickets-sold">
+                        <a href="<?php echo base_path(); ?>event-ticket-list/<?php echo($node->nid)?>">
                             <?php
                             if(!empty($node->update_data['new_tickets_count'])){
                                 echo  t('+ @new (@total total)', array(
@@ -61,6 +62,7 @@
                                         '@total' => $node->tickets_sold_total));                                 
                             }
                             ?>
+                        </a>   
                     </div>
                     <?php endif; ?>
                 </td>
@@ -121,12 +123,14 @@
                  </div>
                 <div class="going-friends">
                     <a href="javascript: void(0);" id="event_<?php echo $node->nid; ?>" class="going-users-link"> 
-                        <?php echo format_plural(count($node->people_going['going']), '1 man is going', '@count  people are going');?>
+                        <?php echo format_plural(count($node->people_going['going']), '1 person is going', '@count  people are going');?>
                     </a>
                 </div>
                 <?php if($node->field_event_tickets[0]['value'] == 1): ?>
                 <div class="price-block t-tickets-sold">
+                    <a href="<?php echo base_path(); ?>event-ticket-list/<?php echo($node->nid)?>">
                     <?php echo format_plural($node->tickets_sold_total, '1 ticket has been sold', '@count tickets have been sold'); ?>
+                    </a>
                 </div>
                 <?php endif; ?>
             </td>

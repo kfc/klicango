@@ -64,6 +64,17 @@ function klicango_pay_update_6100() {
   // No-op.
 }
 
+/**
+ * Add a collect money column to the events_payment table.
+ */
+function klicango_pay_update_6101() {
+  $ret = array();
+  if (db_table_exists('events_payment')) {
+    db_add_field($ret, 'events_payment', 'collected', array('type' => 'int', 'not null' => TRUE, 'default' => 0, 'size' => 'tiny'));
+  }
+  return $ret;
+}
+
 
 /**
  * Implements hook_install().

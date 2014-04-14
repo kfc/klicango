@@ -1803,15 +1803,19 @@ div.event-gratuity{
     .image-section .image img {vertical-align: top; margin-right: 8px;}
    .image-section .text {display: table-cell; vertical-align: bottom; width: 100%;}
    
-  .col h2 {font-weight: normal; font-size: 1.5em; margin-bottom: 20px;}
+  .col h2  {font-weight: normal; font-size: 1.5em; margin-bottom: 20px;}
+  .col h2 a  {color: black; text-decoration: none;}
    .tickets-top-time {color: #808285; font-size: 1.167em; margin-bottom: 20px;}
    .tickets-top-address {font-size: 0.917em; line-height: 1.455em;}
     .tickets-top-address .contact-info {color: #808285;}
      .tickets-top-address .contact-info a {color: #808285; text-decoration: none;}
    
   .t-price {color: #808285;}
-  .t-people {color: #96C12B;}
-  .t-tickets-sold {color: #F34921;}
+  .t-people, .t-people a{color: #96C12B;}
+  .t-people a {text-decoration: none;}
+  .t-people a:hover {text-decoration: underline;}
+    
+  .t-tickets-sold, .t-tickets-sold a {color: #F34921;}
   .t-tickets-sold-bus {color: #F34921;}
   .result-link {margin-top: 20px;}
 
