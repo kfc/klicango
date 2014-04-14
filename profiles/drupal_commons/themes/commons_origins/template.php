@@ -254,7 +254,10 @@ function commons_origins_calendar_empty_day($curday, $view) {
 function commons_origins_pager_previous($text, $limit, $element = 0, $interval = 1, $parameters = array()) {
   global $pager_page_array;
   $output = '';
-  $text = t('‹ back');
+  if(arg(0) != 'event-ticket-list'){
+      $text = t('‹ back');
+  }
+
   // If we are anywhere but the first page
   if ($pager_page_array[$element] > 0) {
     $page_new = pager_load_array($pager_page_array[$element] - $interval, $element, $pager_page_array);
