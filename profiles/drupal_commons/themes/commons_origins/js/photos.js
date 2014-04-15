@@ -51,7 +51,7 @@ $(function() {
 
       function loadPhotoComments(link){
         //$("#comment-wrapper").html('');
-        
+        ajax_start = false;
         var url = $(link).attr("href"); 
         $.ajax({
           type: "POST",
@@ -88,7 +88,7 @@ $(function() {
               
             bindCommentSubmit();
             bindLoginUserLink();    
-            
+            ajax_start = true;
           },
         });  
         
