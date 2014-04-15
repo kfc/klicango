@@ -262,9 +262,10 @@ $(function() {
         success: function(data){
           if(data.isValid){  
             $( "#create-event-form" ).dialog( "close" );
+            $('#datepicker-tickets').val($('#datepicker').val());
             $( "#event-tickets-form" ).dialog( "open" );     
           }
-          else{ 
+          else { 
             $("#form_create_event input").removeClass('error')
             $.each(data.errors, function( key, value){
               $("#form_create_event input[name='"+key+"'], #form_create_event textarea[name='"+key+"']").addClass('error');
@@ -366,13 +367,21 @@ $(function() {
           $(form).submit();  
         }
         else{ 
-          $('#event-tickets-form').dialog("close");
-          $('#create-event-form').dialog("open");
-          $("#form_create_event input").removeClass('error')
+          $("#form_create_event input").removeClass('error');
+          var date_error = false;
           $.each(data.errors, function( key, value){
-            $("#form_create_event input[name='"+key+"'], #form_create_event textarea[name='"+key+"']").addClass('error');
-            //$("#form_create_event input[name='"+key+"'], #form_create_event textarea[name='"+key+"']").attr('placeholder',value);
+            if (key == "date") {
+              $("input[name='tickets_date']").addClass('error');
+              date_error = true;
+            } else {
+              $("#form_create_event input[name='"+key+"'], #form_create_event textarea[name='"+key+"']").addClass('error');  
+            }
           });
+          
+          if (!date_error) {
+            $('#event-tickets-form').dialog("close");
+            $('#create-event-form').dialog("open");
+          }
         }
       },
     });
