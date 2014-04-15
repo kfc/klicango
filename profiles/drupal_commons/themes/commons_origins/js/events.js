@@ -64,6 +64,15 @@ $(function() {
   
   bindDatepicker();
   
+  function bindBuyTicketsAnon() {
+    $('.buy-ticket-anon').click(function(e){
+      e.preventDefault();
+      $('#log_in').click();
+    });
+  }
+  
+  bindBuyTicketsAnon();
+  
   $('.post-box #filesContainer .profile-upload').styler({browseText: 'Add photos', multipleFilesText : 'photos'});
   
   $("#create-event-form.public-event" ).dialog({

@@ -208,7 +208,7 @@
                 if (!empty($node->tickets_number)) {
                   $max_tickets -= $node->tickets_number;
                 }
-                if (!empty($node->ticket_types) && in_array('individual', $user->roles, true) && $max_tickets > 0) {
+                if (!empty($node->ticket_types) && ((in_array('individual', $user->roles, true) && $max_tickets > 0) || $user->uid == 0)) {
               ?>
                 <form action="<?php print url('paybox_process_page');?>" method="post">
                   <div class="buy-tickets-form-wrapper">
@@ -231,7 +231,7 @@
                     </select>
                    </div>
                    <input type="hidden" name="event_nid" value="<?php echo $node->nid; ?>" />
-                   <div class="form-submit"><input type="submit" value="<?php echo (!empty($node->tickets_number) ? t('Buy more tickets') : t('Buy tickets')); ?>"></div>
+                   <div class="form-submit"><input type="submit" <?php echo ($user->uid == 0 ? 'class="buy-ticket-anon"' : ''); ?> value="<?php echo (!empty($node->tickets_number) ? t('Buy more tickets') : t('Buy tickets')); ?>"></div>
                   </div>
                  </form>
               <?php 
