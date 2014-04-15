@@ -115,6 +115,7 @@
          <span class="table-column ticket"><?php echo t('Ticket'); ?></span>
          <span class="table-column anchor"><?php echo '#'; ?></span>
          <span class="table-column sale-date"><?php echo t('Sale date'); ?></span>
+         <span class="table-column paybox-id"><?php echo t('Paybox ID'); ?></span>         
          <span class="borders"></span>
       </div>
       <ul class="tickets-table">
@@ -126,6 +127,7 @@
             <span class="table-column ticket"><?php echo $ticket['title']; ?> (<?php echo $ticket['price']; ?>&euro;)</span>
             <span class="table-column anchor"><?php echo $ticket['quantity']; ?></span> 
             <span class="table-column sale-date"><?php echo date('d/m/Y', $ticket['response_time']); ?></span>
+            <span class="table-column paybox-id"><?php echo _paybox_get_ref_by_pid($event->nid, $ticket['ticket_id'], $ticket['payment_id']); ?></span>
          </li>   
       <?php endforeach;?>
       </ul>
