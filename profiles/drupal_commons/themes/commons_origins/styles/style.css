@@ -1828,12 +1828,13 @@ div.event-gratuity{
 
  .tickets-table-wrapper .table-column {float: left; margin-left: 1%;}
  .tickets-table-wrapper .table-column:first-child {margin-left: 0;}
- .tickets-table-wrapper .table-column.last-name {width: 18%;}
- .tickets-table-wrapper .table-column.first-name {width: 18%;}
- .tickets-table-wrapper .table-column.email {width: 25%;}
- .tickets-table-wrapper .table-column.ticket {width: 20%;}
- .tickets-table-wrapper .table-column.anchor {width: 4%;}
- .tickets-table-wrapper .table-column.sale-date {width: 10%;}
+ .tickets-table-wrapper .table-column.last-name {width: 16%;}
+ .tickets-table-wrapper .table-column.first-name {width: 16%;}
+ .tickets-table-wrapper .table-column.email {width: 20%;}
+ .tickets-table-wrapper .table-column.ticket {width: 16%;}
+ .tickets-table-wrapper .table-column.anchor {width: 3%;}
+ .tickets-table-wrapper .table-column.sale-date {width: 7%;}
+ .tickets-table-wrapper .table-column.paybox-id {width: 16%;}
 
 .pager {text-align: center; font-size: 1.167em; color: #96C12B;}
  .pager li {display: inline-block;}
