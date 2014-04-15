@@ -909,11 +909,11 @@ function klicango_send_email($type, $to_uid,  $object){
         $pdf = events_generate_pdf_ticket($object->event_id, $object->ticket_type, $to_uid);
         
         $text = '<div style="padding-bottom: 10px;">'.theme_imagecache('search_result_image', $venue->picture).'</div><div style="">';
-        $text .= t('You have bought a ticket to').' '.l($event->title, 'node/'.$event->nid, array('absolute'=>TRUE)) . '(' . l($venue->first_name, 'user/'.$venue->uid, array('absolute'=>TRUE)) . ')';
+        $text .= l($venue->first_name, 'user/'.$venue->uid, array('absolute'=>TRUE)) . t(' thanks you for buying ').' ' . $object->ticket_number . ' ' . $object->ticket_title . ' (' . $object->ticket_price . ') for '.l($event->title, 'node/'.$event->nid, array('absolute'=>TRUE));
         $text .= '<br>'.date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
         //$text .= (count($people['going'])+count($people['invited'])).' '.t('people are going');
-        $text .= '<br><br><div style="font-size: 80%">'.l(t('View event on Klicango'),'node/'.$event->nid,array('absolute'=>TRUE)).'<br>';
-        $text .= '<br><br><div style="font-size: 80%">'.l(t('Print ticket'),'print_coupon/'.$event->nid,array('absolute'=>TRUE, 'target' => '_blank', 'query' => array('uid' => $recepient->uid, 'type' => $object->ticket_type, 'check' => variable_get('ticket_' . $object->event_id . '_' . $object->ticket_type . '_' . $to_uid)))).'<br>';
+        $text .= '<br><br><div style="font-size: 120%">'.l(t('View event on Klicango'),'node/'.$event->nid,array('absolute'=>TRUE)).'<br>';
+        $text .= '<br><br><div style="font-size: 100%">'.l(t('Print ticket'),'print_coupon/'.$event->nid,array('absolute'=>TRUE, 'target' => '_blank', 'query' => array('uid' => $recepient->uid, 'type' => $object->ticket_type, 'check' => variable_get('ticket_' . $object->event_id . '_' . $object->ticket_type . '_' . $to_uid)))).'<br>';
         $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
         $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
@@ -950,7 +950,7 @@ function klicango_send_email($type, $to_uid,  $object){
                 
         $text = '<div>'.t('!loc_name wants to collect money for !event', array('!loc_name' => l($venue->first_name, 'user/' . $venue->uid, array('absolute' => TRUE)), '!event' => $event->title)).'<br>';
         $text .= date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
-        $text .= l(t('View event on Klicango'),'node/'.$event->nid,array('absolute'=>TRUE)).'<br><br>';
+        $text .= '<div style="font-size: 120%">' . l(t('View event on Klicango'),'node/'.$event->nid,array('absolute'=>TRUE)).'</div><br><br>';
         $text .= t('Total money collected') .' : <strong>' . $event->total . '</strong><br>';
         foreach($event->tickets_sold as $ticket_sold){
               $text .= $ticket_sold['title']. ' (' .$ticket_sold['price'] . ' &euro;):' . $ticket_sold['qty_total'].'<br>'; 
@@ -977,7 +977,7 @@ function klicango_send_email($type, $to_uid,  $object){
         $text .= l($user->first_name.' '.$user->surname, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('invites you to').' '.l($event->title, 'node/'.$event->nid, array('absolute'=>TRUE));
         $text .= '<br>'.date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
         $text .= (count($people['going'])+count($people['invited'])).' '.t('people are invited');
-        $text .= '<br><br><div style="font-size: 80%">'.l(t('View invitation on Klicango'),'private',array('absolute'=>TRUE)).'<br>';
+        $text .= '<br><br><div style="font-size: 120%">'.l(t('View invitation on Klicango'),'private',array('absolute'=>TRUE)).'<br>';
         $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
         $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
@@ -988,7 +988,7 @@ function klicango_send_email($type, $to_uid,  $object){
       case 'friend_request':
         $text = '<div style="padding-right: 10px;">'.theme_imagecache('search_result_image', $user->picture).'</div><div style="">';
         $text .= l($user->first_name.' '.$user->surname, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('wants to be your friend on Klicango.');
-        $text .= '<br><br><div style="font-size: 80%">'.l(t('View invitation on Klicango'),'friends',array('absolute'=>TRUE)).'<br>';
+        $text .= '<br><br><div style="font-size: 120%">'.l(t('View invitation on Klicango'),'friends',array('absolute'=>TRUE)).'<br>';
         $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
         $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
@@ -1002,7 +1002,7 @@ function klicango_send_email($type, $to_uid,  $object){
         $text .= l($user->first_name, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('invites you to').' '.l($event->title, 'node/'.$event->nid, array('absolute'=>TRUE));
         $text .= '<br>'.date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
         //$text .= (count($people['going'])+count($people['invited'])).' '.t('people are going');
-        $text .= '<br><br><div style="font-size: 80%">'.l(t('View invitation on Klicango'),'public',array('absolute'=>TRUE)).'<br>';
+        $text .= '<br><br><div style="font-size: 120%">'.l(t('View invitation on Klicango'),'public',array('absolute'=>TRUE)).'<br>';
         $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
         $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
@@ -1013,7 +1013,7 @@ function klicango_send_email($type, $to_uid,  $object){
      case 'photo_comment':
         $text = '<div style="padding-right: 10px;">'.theme_imagecache('comment_image', $object->file->filepath).'</div><div style="">';
         $text .= l($user->first_name.' '.$user->surname, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('commented on your photo.');
-        $text .= '<br><br><div style="font-size: 80%">'.l(t('View photo on Klicango'),'node/'.$object->event_id,array('absolute'=>TRUE,'query'=>array('open_photo'=>$object->file->fid))).'<br>';
+        $text .= '<br><br><div style="font-size: 120%">'.l(t('View photo on Klicango'),'node/'.$object->event_id,array('absolute'=>TRUE,'query'=>array('open_photo'=>$object->file->fid))).'<br>';
         $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
         $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";

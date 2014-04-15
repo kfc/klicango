@@ -400,6 +400,10 @@ function klicango_pay_offsite_auto(){
               $object = new stdClass();
               $object->event_id = $event_id;
               $object->ticket_type = $order->ticket_id;
+              $object->ticket_number = $order->quantity;
+              $object->ticket_price = $order->cents/100;
+              $object->ticket_title = db_result(db_query('SELECT title FROM events_tickets WHERE ticket_id = %d AND event_id = %d', $order->ticket_id, $event_id));
+              
               klicango_send_email('ticket_notification', $order->customer_uid, $object);
               
               // Log: failed to load the transaction.
