@@ -455,7 +455,7 @@ function _paybox_get_ref_by_pid($event_id, $ticket_id, $payment_id){
     $W = str_pad($event_id, 6, '0', STR_PAD_LEFT); 
     $X = str_pad($ticket_id, 6, '0', STR_PAD_LEFT); 
     $Y = str_pad($payment_id, 6, '0', STR_PAD_LEFT);
-    return $W . $Y . $X; 
+    return $W . $X . $Y; 
   
 }
 
