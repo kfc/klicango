@@ -79,14 +79,15 @@ function _klicango_pay_back_page(){
     $destination = $_GET['destination'];
     $result = $_GET['result'];
     $row = new stdClass();
+    $pid = _paybox_get_pid_by_ref($_GET['order']);
     switch ($result) {
         case 'effectue' :
-            $order = klicango_pay_order_load($_GET['order']);
+            $order = klicango_pay_order_load($pid);
             $order->status = ($order->status == PAYBOX_SUCCESS) ? PAYBOX_SUCCESS : PAYBOX_LOCK;
             klicango_pay_order_save($order);       
             break;
         case 'refuse' :
-            $order = klicango_pay_order_load($_GET['order']);
+            $order = klicango_pay_order_load($pid);
             $order->status = PAYBOX_FAIL;
             $order->response_time = time();
             klicango_pay_order_save($order);
@@ -94,7 +95,7 @@ function _klicango_pay_back_page(){
             watchdog('klicango_pay', 'Payment has been refused with %code. %message', array('%code' => $_GET['error'], '%message' => $mess), WATCHDOG_WARNING);       
             break;
         case 'annule' :
-            $order = klicango_pay_order_load($_GET['order']);
+            $order = klicango_pay_order_load($pid);
             $order->response_time = time();
             $order->status = PAYBOX_CANCEL;
             klicango_pay_order_save($order);
@@ -146,7 +147,7 @@ function klicango_pay_request($price, $quantity, $ticket_id, $customer_uid, $eve
             'PBX_IDENTIFIANT' => $id,
             'PBX_TOTAL' => $cents,
             'PBX_DEVISE' => '978',
-            'PBX_CMD' => $order->pid,
+            'PBX_CMD' => _paybox_get_ref_by_pid($event_nid, $ticket_id, $order->pid),
             'PBX_PORTEUR' => $user->mail,
             'PBX_RETOUR' => 'error:E;order:R;total:M;trans:T;auto:A;tarif:M;abonnement:B;pays:Y;sign:K',
             'PBX_HASH' => 'SHA512',
@@ -382,7 +383,8 @@ function klicango_pay_is_paybox_server(){
 * as soon as the payment is finished (either accepted or rejected).  
 */
 function klicango_pay_offsite_auto(){
-    if ($order = klicango_pay_order_load($_GET['order'])) {
+    $pid = _paybox_get_pid_by_ref($_GET['order']);
+    if ($order = klicango_pay_order_load($pid)) {
         $order->response_time = time();
         if(klicango_pay_check_sign($_SERVER['QUERY_STRING'])) {
              // Save return message.
@@ -441,5 +443,25 @@ function klicango_pay_offsite_auto(){
 
     // Output an empty HTML page.
     return NULL;    
+}
+
+
+/*
+ Paybox reference ID = WWWWWWXXXXXXYYYYYY 
+ where WWWWWW = event ID, XXXXXX = ticket ID, YYYYYY = transaction ID. 
+ For example 000042000032000721, where 42 is event ID, 32 ticket ID, 721 transaction ID    
+ */  
+function _paybox_get_ref_by_pid($event_id, $ticket_id, $payment_id){
+    $W = str_pad($event_id, 6, '0', STR_PAD_LEFT); 
+    $X = str_pad($ticket_id, 6, '0', STR_PAD_LEFT); 
+    $Y = str_pad($payment_id, 6, '0', STR_PAD_LEFT);
+    return $W . $Y . $X; 
+  
+}
+
+function _paybox_get_pid_by_ref($PBX_CMD){
+    $raw_pid = substr((string)$PBX_CMD, -6);
+    $pid = (int)ltrim($raw_pid, '0');
+    return $pid;    
 }
 
