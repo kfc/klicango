@@ -235,8 +235,8 @@
                 <div class="going-status-button" id="event-action-button"><a class="add-event-link" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t('Add to my calendar')?></a></div>
               
               <?php elseif(events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED):?>
-                <div class="going-status-button" id="event-action-button">
-                  <a class="remove-event-link" title="<?php echo $title?>" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
+                <div class="going-status-button" id="<?php echo (!empty($node->tickets_number) ? 'event-action-button-static' : 'event-action-button'); ?>">
+                  <a class="remove-event-link <?php echo (!empty($node->tickets_number) ? 'static' : ''); ?>" <?php echo (!empty($node->tickets_number) ? 'onclick="return false;" style="cursor: default;"' : ''); ?> title="<?php echo $title?>" <?php echo ( ($node->uid != $user->uid) ? 'href="/event_action?event_id='.$node->nid.'"' :'');?>><?php echo t("I'm going")?></a>
                 </div>
               <?php endif;?>
             </div>

@@ -141,7 +141,8 @@ nav.main_menu > ul.menu > li{
 	padding: 0;
 }
 #header .container{
-	width: 1280px;
+	max-width: 1280px;
+  min-width: 900px;
 	margin: 0 auto;
 }
 nav.main_menu > ul.menu > li > a{
