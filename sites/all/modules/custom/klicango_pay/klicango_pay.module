@@ -452,15 +452,15 @@ function klicango_pay_offsite_auto(){
  For example 000042000032000721, where 42 is event ID, 32 ticket ID, 721 transaction ID    
  */  
 function _paybox_get_ref_by_pid($event_id, $ticket_id, $payment_id){
-    $W = str_pad($event_id, 6, '0', STR_PAD_LEFT); 
-    $X = str_pad($ticket_id, 6, '0', STR_PAD_LEFT); 
-    $Y = str_pad($payment_id, 6, '0', STR_PAD_LEFT);
+    $W = str_pad($event_id, 7, '0', STR_PAD_LEFT); 
+    $X = str_pad($ticket_id, 7, '0', STR_PAD_LEFT); 
+    $Y = str_pad($payment_id, 7, '0', STR_PAD_LEFT);
     return $W . $X . $Y; 
   
 }
 
 function _paybox_get_pid_by_ref($PBX_CMD){
-    $raw_pid = substr((string)$PBX_CMD, -6);
+    $raw_pid = substr((string)$PBX_CMD, -7);
     $pid = (int)ltrim($raw_pid, '0');
     return $pid;    
 }
