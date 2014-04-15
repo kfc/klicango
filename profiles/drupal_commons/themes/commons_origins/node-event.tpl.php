@@ -119,6 +119,13 @@
                     <img src="/profiles/drupal_commons/themes/commons_origins/images/logo-klicango-bw.png" alt="" />
                   <?php endif;?>
                 </div>
+                <?php if((events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED && events_get_user_tickets($node)) || (!empty($_GET['uid']) && !empty($_GET['type']) && events_get_user_tickets($node, $_GET['uid'], $_GET['check'], $_GET['type']))):?>
+                  <?php foreach ($node->tickets as $ticket) : ?>
+                    <?php if(!empty($_GET['type']) && $_GET['type'] == $ticket['ticket_id']) : ?>
+                      <div class="public-event-reference"><?php echo $ticket['reference_id']; ?></div>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                <?php endif;?>
               </div>
               <div class="second-column public-event-col">
                 <div class="public-event-date-time">

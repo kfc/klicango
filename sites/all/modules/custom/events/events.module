@@ -724,7 +724,7 @@ function events_get_user_tickets(&$node, $uid = 0, $check = 0, $type = 0) {
     global $user;
     $uid = $user->uid;
   } 
-  $result = db_query('SELECT ep.pid, ep.ticket_id, tt.title, tt.price, SUM(ep.quantity) AS quantity, ep.status 
+  $result = db_query('SELECT tt.event_id, ep.pid, ep.ticket_id, tt.title, tt.price, SUM(ep.quantity) AS quantity, ep.status 
                       FROM events_tickets AS tt, events_payment AS ep 
                       WHERE ep.ticket_id = tt.id AND ep.customer_uid = %d AND ep.status = "succ" 
                       AND ticket_id IN (
@@ -734,7 +734,8 @@ function events_get_user_tickets(&$node, $uid = 0, $check = 0, $type = 0) {
                       ', $uid, $node->nid);
   $node->tickets_number = 0;
   while($row = db_fetch_array($result)) {
-    $node->tickets[] = $row;
+    $row['reference_id'] = _paybox_get_ref_by_pid($row['event_id'], $row['ticket_id'], $row['pid']);
+    $node->tickets[$row['pid']] = $row;
     $node->tickets_number += $row['quantity'];
   }
   

@@ -19,7 +19,7 @@
         </div>
 
         <div class="form-item form-text">
-            En cliquant sur “Sign up with Facebook” ou “Sign up”, j’accepte les <a href="/page/mentions-l%C3%A9gales">conditions générales</a>.
+            En cliquant sur â€œSign up with Facebookâ€ ou â€œSign upâ€, jâ€™accepte les <a href="/page/mentions-l%C3%A9gales">conditions gÃ©nÃ©rales</a>.
         </div>
 
         <div class="form-item form-sepatrate-text">

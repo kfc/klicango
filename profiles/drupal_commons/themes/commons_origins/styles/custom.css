@@ -1340,3 +1340,6 @@ body.loading .modal {
   font: 14px/18px Arial;
 }
 
+.public-event-reference {
+  display: none;
+}
