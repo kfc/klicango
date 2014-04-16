@@ -1,10 +1,8 @@
 <div id="dialog-sign_up" title="SIGN UP" width="410">
     <form>
-        <div class="form-item facebook-log-in active">
-           <?php
-              echo fboauth_action_display('connect', '/');
-            ?>
-        </div>
+       <?php
+          echo fboauth_action_display('connect', '/', NULL, 'Sign up with Facebook');
+        ?>
 
         <div class="or-separator">
             <span>or</span>
@@ -41,7 +39,7 @@
     
     $(document).ready(function(){
       $('#field-pro').change(function(){
-        $('.facebook-log-in').toggleClass('active');
+        $('.facebook-sign-up').toggleClass('active');
       });
       $('#login-link').click(function(e) {
         e.preventDefault();
