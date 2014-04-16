@@ -189,7 +189,7 @@
                           $user_anon = user_load($_GET['uid']);
                         ?>
                       <?php endif; ?>
-                      <span class="ticket-type"><?php echo strtoupper($ticket['title']);?></span>
+                      <span class="ticket-type"><?php echo $ticket['quantity'] . ' x ' . htmlspecialchars($ticket['title']) . ' (' . $ticket['price'] . '&euro;)' ;?></span>
                       <?php if ($ticket['quantity'] == 1) : ?>
                         <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation is valid for !user only',array('!user'=>($user->uid != 0 ? $user->first_name : $user_anon->first_name).' '.($user->uid != 0 ? $user->surname : $user_anon->surname)))?></div>
                       <?php elseif ($ticket['quantity'] > 1) : ?>
