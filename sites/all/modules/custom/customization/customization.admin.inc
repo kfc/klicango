@@ -82,5 +82,12 @@ function customization_collect_money_settings() {
     '#default_value' => variable_get('collect_money_confirmation', 'Frist bank wire transfer is free of charge. Additional bank wire transfers are charged 1 &euro;. <br /><br />Are you sure you want to collect your money now?'), 
   );
   
+    
+  $form['collect_money_details_empty'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message if banking details is not filled'),
+    '#default_value' => variable_get('collect_money_details_empty', 'Please fill your banking details'), 
+  );
+  
   return system_settings_form($form);
 }
