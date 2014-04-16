@@ -112,6 +112,17 @@ function _klicango_pay_process_pay(){
         while ($row = db_fetch_object($result)){
             $ticket =  $row;
         }
+        
+        $sold = db_result(db_query('SELECT SUM(ep.quantity) FROM events_payment AS ep WHERE ep.ticket_id = %d AND ep.status = "succ"', $ticket->id));
+        $event = node_load($_POST['event_nid']);
+        //print_r($event);die();
+        $max_per_user = db_result(db_query('SELECT SUM(ep.quantity) FROM events_payment AS ep INNER JOIN  events_tickets AS et ON et.id = ep.ticket_id AND et.event_id = %d WHERE ep.customer_uid = %d AND ep.status = "succ"', $event->nid, $user->uid));
+        if(($sold + $_POST['quantity'] > $ticket->quantity) || ($max_per_user > $event->field_tickets_per_user['0']['value'])){
+            $destination = 'node/' . $_POST['event_nid'];
+            $query = array('paybox' => 'error'); 
+            drupal_goto($destination, $query);
+        }
+
         if(is_object($ticket)){
             klicango_pay_request($ticket->price, (int)$_POST['quantity'], $ticket->id, $user->uid, $_POST['event_nid']);
         }

@@ -81,6 +81,9 @@
             case 'annule' :
                 print(variable_get('paybox_annule_message', t('Payment canceled.')));
                 break;
+            case 'error' :
+                print(variable_get('klicango_pay_error_message', t('You already bought max number of tickets or all tickets sold')));
+                break;                
         }
         ?>
         </div>

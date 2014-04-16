@@ -60,23 +60,30 @@ function klicango_pay_settings_form() {
   );
 
   $form['klicango_pay_effectue_message'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
     '#title' => t('Message when payment succeeded'),
     '#default_value' => variable_get('klicango_pay_effectue_message', t('Payment completed. Thank you.')),
     '#required' => TRUE,
   );
 
   $form['klicango_pay_refuse_message'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
     '#title' => t('Message when payment was refused'),
     '#default_value' => variable_get('klicango_pay_refuse_message', t('Payment refused. Sorry.')),
     '#required' => TRUE,
   );
 
   $form['klicango_pay_annule_message'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
     '#title' => t('Message when payment was cancelled'),
     '#default_value' => variable_get('klicango_pay_annule_message', t('Payment cancelled.')),
+    '#required' => TRUE,
+  );
+  
+  $form['klicango_pay_error_message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message when user already bought max number of tickets or all tickets sold'),
+    '#default_value' => variable_get('klicango_pay_error_message', t('You already bought max number of tickets or all tickets sold')),
     '#required' => TRUE,
   );
 
