@@ -907,7 +907,7 @@ function klicango_send_email($type, $to_uid,  $object){
         $venue = user_load($event->uid);
         profile_load_profile($venue);
         $pdf = events_generate_pdf_ticket($object->event_id, $object->ticket_type, $to_uid);
-        
+        $msg = '';
         $text = '<div style="padding-bottom: 10px;">'.theme_imagecache('search_result_image', $venue->picture).'</div><div style="">';
         $text .= l($venue->first_name, 'user/'.$venue->uid, array('absolute'=>TRUE)) . t(' thanks you for buying ').' ' . $object->ticket_number . ' x ' . $object->ticket_title . ' (' . $object->ticket_price . '&euro;) for '.l($event->title, 'node/'.$event->nid, array('absolute'=>TRUE));
         $text .= '<br>'.date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
@@ -923,9 +923,8 @@ function klicango_send_email($type, $to_uid,  $object){
         $random_hash = md5(date('r', time())); 
         $attach_pdf_multipart = chunk_split( base64_encode( file_get_contents($path) ) );
         if ($pdf && $attach_pdf_multipart) {
-          $headers = "\r\nContent-Type: multipart/mixed; boundary=\"PHP-mixed-".$random_hash."\"";       
-          $headers .= "From: " . $venue->first_name . "  <" . $venue->mail . ">\r\n";
-          
+          $headers = "\r\nContent-Type: multipart/mixed; boundary=\"PHP-mixed-".$random_hash."\"";
+          $headers .= "From: " . $venue->first_name . "  <" . $venue->mail . ">\r\n";                 
           $msg .= "Content-Type: application/octet-stream; name=\"klicango-ticket.pdf\"\r\n";
           $msg .= "Content-Transfer-Encoding: base64\r\n";
           $msg .= "Content-Disposition: attachment\r\n";
@@ -934,8 +933,9 @@ function klicango_send_email($type, $to_uid,  $object){
           $msg .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
         } else {
           $headers = "Content-Type: text/html; charset=\"utf-8\"\r\n";
-          $headers .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
           $headers .= "From: " . $venue->first_name . "  <" . $venue->mail . ">\r\n";
+          $headers .= "Content-Transfer-Encoding: 7bit\r\n\r\n";  
+          
         }
         
         $msg .= $text . "\r\n\r\n";

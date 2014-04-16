@@ -1013,7 +1013,7 @@ function klicango_friends_show_friends() {
 
 function klicango_friends_add_friend_button($uid) {
   global $user;
-  if ($user->uid) {
+  if ($user->uid && in_array('individual', $user->roles, true)) {
     if (klicango_friends_are_friends($user->uid, $uid)) {
       $html = '<a class="already-invited" href="javascript: void(0);">' . t('Already friends') . '</a>';
     } else if (klicango_friends_request_sent($user->uid, $uid)) {
