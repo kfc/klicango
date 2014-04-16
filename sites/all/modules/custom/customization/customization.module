@@ -950,8 +950,9 @@ function klicango_send_email($type, $to_uid,  $object){
         $to = variable_get('collect_money_to', 'sales@klicango.fr');
         $from = variable_get('collect_money_from', 'no-reply@klicango.fr');
                 
-        $text = '<div>'.t('!loc_name wants to collect money for !event', array('!loc_name' => l($venue->first_name, 'user/' . $venue->uid, array('absolute' => TRUE)), '!event' => $event->title)).'<br>';
+        $text = '<div>'.t('!loc_name wants to collect money for !event', array('!loc_name' => l($venue->first_name, 'user/' . $venue->uid, array('absolute' => TRUE)), '!event' => l($event->title, 'node/' . $event->nid))).'<br>';
         $text .= date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
+        $text .= t('Event ID: !id', array(!id => $event->nid));
         $text .= '<div style="font-size: 120%">' . l(t('View event on Klicango'),'node/'.$event->nid,array('absolute'=>TRUE)).'</div><br><br>';
         $text .= t('Total money collected') .' : <strong>' . $event->total . '</strong><br>';
         foreach($event->tickets_sold as $ticket_sold){

@@ -115,7 +115,7 @@
          <span class="table-column ticket"><?php echo t('Ticket'); ?></span>
          <span class="table-column anchor"><?php echo '#'; ?></span>
          <span class="table-column sale-date"><?php echo t('Sale date'); ?></span>
-         <span class="table-column paybox-id"><?php echo t('Paybox ID'); ?></span>         
+         <span class="table-column paybox-id"><?php echo t('Transaction ID'); ?></span>         
          <span class="borders"></span>
       </div>
       <ul class="tickets-table">
