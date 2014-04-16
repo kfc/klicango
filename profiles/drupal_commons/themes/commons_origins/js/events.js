@@ -846,12 +846,19 @@ function proceedCollectMoneySubmit(object, event_id) {
      dataType: 'json',
      url: '/collect-money/' + event_id,                  
      success : function (data, textStatus, jqXHR) { 
-      if (data.success == 1) {
+      if (data.success == 1 && data.details == 1) {
+          console.log(data);
         $('#collect-money-message .form-text').html(Drupal.t('Your request has been registered.<br /> Our team will process it very shortly. Thanks.'));
         $('#collect-money-message').dialog('option', 'title', Drupal.t('Collect money'));
         $(object).removeAttr('onclick');
         $(object).text(Drupal.t('Close'));    
         $(object).attr( "onclick", '$("#collect-money-message").dialog("close");  location.reload();');
+      }
+      if(data.details == 0){
+         $('#collect-money-message .form-text').html(data.empty_text);
+         $('#collect-money-message').dialog('option', 'title', Drupal.t('Operation aborted'));
+         $(object).hide();
+         $(object).next().show();
       }
      },
   });

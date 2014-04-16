@@ -1736,30 +1736,37 @@ function event_collect_money_callback($event, $ajax = true){
     $total = 0;
     $c = variable_get('events_min_commission', 0.5);
     $tickets_sold = array();
-    $return = array('success' => false);
-    
-    $result = db_query("SELECT payment.ticket_id, ticket.title, ticket.price, SUM(payment.quantity) AS qty_total 
-                        FROM events_payment AS payment
-                        INNER JOIN events_tickets AS ticket ON (ticket.id = payment.ticket_id AND ticket.event_id = %d )
-                        WHERE payment.status = 'succ' AND payment.collected = 0 
-                        GROUP BY payment.ticket_id
-                        ORDER BY ticket.id", $event->nid);
-    while($row = db_fetch_array($result)) {
-      $tickets_sold[] = $row;
-      $total += $row['qty_total'] * ($row['price'] - max(0.03 * $row['price'], $c));
-    }
-    
-    if ($total > 0){
-        $return = array('success' => true);
-        $event->tickets_sold = $tickets_sold;
-        $event->total = $total;
-        klicango_send_email('collect_money_notification', $user->uid, $event);
+    $return = array('success' => false, 'details' => false);
+    $return['empty_text'] = t(variable_get('collect_money_details_empty', 'Please fill your banking details')); 
+    $details = dialog_builder_banking_data($user->uid);
+    if(!empty($details)){
+       $return['details'] = TRUE;
+       $result = db_query("SELECT payment.ticket_id, ticket.title, ticket.price, SUM(payment.quantity) AS qty_total 
+                            FROM events_payment AS payment
+                            INNER JOIN events_tickets AS ticket ON (ticket.id = payment.ticket_id AND ticket.event_id = %d )
+                            WHERE payment.status = 'succ' AND payment.collected = 0 
+                            GROUP BY payment.ticket_id
+                            ORDER BY ticket.id", $event->nid);
+        while($row = db_fetch_array($result)) {
+          $tickets_sold[] = $row;
+          $total += $row['qty_total'] * ($row['price'] - max(0.03 * $row['price'], $c));
+        }
         
-        db_query('UPDATE events_payment AS ep
-                INNER JOIN events_tickets AS et ON (et.id = ep.ticket_id)
-                SET ep.collected = 1 
-                WHERE  et.event_id = %d AND ep.status = "succ"', $event->nid);    
+        if ($total > 0){
+            $return['success'] = TRUE;
+            $event->tickets_sold = $tickets_sold;
+            $event->total = $total;
+            klicango_send_email('collect_money_notification', $user->uid, $event);
+            
+            db_query('UPDATE events_payment AS ep
+                    INNER JOIN events_tickets AS et ON (et.id = ep.ticket_id)
+                    SET ep.collected = 1 
+                    WHERE  et.event_id = %d AND ep.status = "succ"', $event->nid);    
+        }               
     }
+
+    
+ 
 
     
     if ($ajax) {

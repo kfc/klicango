@@ -143,4 +143,5 @@
 <div id="collect-money-message" title="<?php echo t('Collect money confirmation'); ?>">
     <div class="form-text" style="margin-bottom: 0px;"><?php echo t(variable_get('collect_money_confirmation')); ?></div>
     <a href="javascript: void(0);" class="collect-money-proceed black-button" onclick="proceedCollectMoneySubmit(this, <?php echo $event->nid; ?>)"><?php echo t('Proceed'); ?></a>
+    <a href="" class="popup black-button" id="professional_banking_details" style="display: none; "><?php echo t('My banking details'); ?></a>
 </div>
