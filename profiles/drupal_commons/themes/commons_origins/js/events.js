@@ -320,8 +320,10 @@ $(function() {
     $('#create-event-form input[type="checkbox"]').styler();
     // refresh select box
     $("#event-tickets-form select, #event-tickets-form input[type='text'], #event-tickets-form input[type='hidden']").each(function(){
-      if (form_data.data[$(this).attr('name')] != 0) {
+      if (form_data.data[$(this).attr('name')] != 0 && form_data.data[$(this).attr('name')] != '0') {
         $(this).val(form_data.data[$(this).attr('name')]);
+      } else {
+        $(this).val('');      
       }
       
       if(form_data.data[$(this).attr('name')] && $(this).hasClass('static')) {

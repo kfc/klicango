@@ -307,13 +307,17 @@ function fboauth_save($uid, $fbid) {
  *
  * @see theme_fboauth_action()
  */
-function fboauth_action_display($action_name, $redirect = NULL, $app_id = NULL) {
+function fboauth_action_display($action_name, $redirect = NULL, $app_id = NULL, $text = '') {
   // Use the default App ID if not specified.
   $app_id = isset($app_id) ? $app_id : variable_get('fboauth_id', '');
 
   $action = fboauth_action_load($action_name);
   $link = fboauth_action_link_properties($action_name, $redirect, $app_id);
+  if ($text) {
+    $link['title'] = $text;
+  }
   $theme = isset($action['theme']) ? $action['theme'] : array('fboauth_action__' . $action_name, 'fboauth_action');
+
   return theme($theme, $action, $link);
 }
 
@@ -399,6 +403,7 @@ function fboauth_action_url($path = NULL, array $options = array()) {
  * @see fboauth_link_properties()
  */
 function theme_fboauth_action($action, $link) {
+  var_dump(1); exit;
   // Because most Facebook actions initiate one-time actions, render it as a
   // button instead of a link. This makes for expected behavior that buttons
   // execute actions, not links.
@@ -426,6 +431,7 @@ function theme_fboauth_action__connect($action, $link) {
   $link['attributes']['class'] = isset($link['attributes']['class']) ? $link['attributes']['class'] : 'facebook-action-connect';
   $link['attributes']['rel'] = 'nofollow';
   $attributes = isset($link['attributes']) ? drupal_attributes($link['attributes']) : '';
+  var_dump(2); exit;
   $title = isset($link['title']) ? check_plain($link['title']) : '';
   $src = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://www.facebook.com/images/fbconnect/login-buttons/connect_light_medium_short.gif';
   return '<a ' . $attributes . ' href="' . $url . '"><img src="' . $src . '" alt="' . $title . '" /></a>';

@@ -1,11 +1,9 @@
 <div id="dialog-log_in" title="LOGIN" width="410">
     <form>
-        <div class="form-item facebook-log-in active">
           <?php
             echo fboauth_action_display('connect', '/');
           ?>
-        </div>
-
+        
         <div class="or-separator">
             <span>or</span>
         </div>

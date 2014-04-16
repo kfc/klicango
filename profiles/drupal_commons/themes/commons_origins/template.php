@@ -228,9 +228,14 @@ function commons_origins_fboauth_action__connect($action, $link) {
     $link['attributes']['class'] = isset($link['attributes']['class']) ? $link['attributes']['class'] : 'facebook-action-connect';
     $link['attributes']['rel'] = 'nofollow';
     $attributes = isset($link['attributes']) ? drupal_attributes($link['attributes']) : '';
-    $title = isset($link['title']) ? check_plain($link['title']) : '';
-    
-    return '<div class="form-item facebook-log-in active"><a ' . $attributes . ' onclick="if(!$(\'.facebook-log-in\').hasClass(\'active\')) return false;" href="' . $url . '">' . t('Log with Facebook') . '</a></div>';
+    $title = isset($link['title']) ? check_plain($link['title']) : 'Log in with Facebook';
+    $class = '';
+    $onclick = '';
+    if ( isset($link['title'])) {
+      $class = 'facebook-sign-up';
+      $onclick = 'if(!$(\'.facebook-sign-up\').hasClass(\'active\')) { return false;}';
+    }
+    return '<div class="form-item facebook-log-in ' . $class . '  active"><a ' . $attributes . ' onclick="' .  $onclick . '" href="' . $url . '">' . $title . '</a></div>';
 
 }  
 
