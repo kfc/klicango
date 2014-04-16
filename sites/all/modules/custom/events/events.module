@@ -1494,7 +1494,7 @@ function events_find() {
     $html = implode('', $events);
     
     $more_events = events_closest(1, array(), $offset+$limit, $search);
-    if (!empty($more_events)) {
+    if (!empty($more_events) && !$search) {
       $html .= '<tr><td colspan="3" style="text-align: center;"><a onclick="loadFindEvents(' . ($offset+$limit) . ', ' . $limit . ')" href="javascript: void(0);" class="show_more">' . t('Show more events') . '</a></td></tr>';
     }
     
