@@ -946,6 +946,7 @@ function klicango_send_email($type, $to_uid,  $object){
       case 'collect_money_notification':
         $event = $object;
         $venue = user_load($event->uid);
+        $bank = dialog_builder_banking_data($event->uid);
         profile_load_profile($venue);
         $to = variable_get('collect_money_to', 'sales@klicango.fr');
         $from = variable_get('collect_money_from', 'no-reply@klicango.fr');
@@ -955,6 +956,11 @@ function klicango_send_email($type, $to_uid,  $object){
         $text .= t('Event ID: !id', array('!id' => $event->nid));
         $text .= '<div style="font-size: 120%">' . l(t('View event on Klicango'),'node/'.$event->nid,array('absolute'=>TRUE)).'</div><br><br>';
         $text .= t('Total money collected') .' : <strong>' . $event->total . '</strong><br>';
+        $text .= t('Bank country') .' : <strong>' . (!empty($bank['country']) ? $bank['country'] : '-') . '</strong><br>';
+        $text .= t('Bank account owner') .' : <strong>' . (!empty($bank['owner']) ? $bank['owner'] : '-') . '</strong><br>';
+        $text .= t('Bank agency name') .' : <strong>' . (!empty($bank['agency']) ? $bank['agency'] : '-') . '</strong><br>';
+        $text .= t('IBAN') .' : <strong>' . (!empty($bank['iban']) ? $bank['iban'] : '-') . '</strong><br>';
+        $text .= t('BIC (or SWIFT)') .' : <strong>' . (!empty($bank['bic']) ? $bank['bic'] : '-') . '</strong><br>';
         foreach($event->tickets_sold as $ticket_sold){
               $text .= $ticket_sold['title']. ' (' .$ticket_sold['price'] . ' &euro;):' . $ticket_sold['qty_total'].'<br>'; 
         }
