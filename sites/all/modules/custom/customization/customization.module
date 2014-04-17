@@ -251,18 +251,6 @@ function customization_block($op = 'list', $delta = 0, $edit = array()) {
 }
 
 function customization_init() {
-  if (empty($_GET['check']) && !empty($_GET['generate'])) {
-    $object = new stdClass();
-    $object->event_id = 252;
-    $object->ticket_type = 21;
-    $object->ticket_number = 1;
-    $object->ticket_price = 20;
-    $object->ticket_title = 'Simple ticket';
-    klicango_send_email('ticket_notification', 44, $object);
-  }
-    
-    
-  
     if ($_GET['q'] == 'user/register') {
       drupal_goto('<front>');
     }
