@@ -952,8 +952,7 @@ function klicango_send_email($type, $to_uid,  $object){
           $headers .= "Content-Transfer-Encoding: 7bit\r\n\r\n";  
         }
         
-        //mail($recepient->mail, $subject, $msg, $headers);
-        var_dump(mail('e.zenko@colours.nl', $subject, $text, $headers)); exit;
+        mail($recepient->mail, $subject, $text, $headers);
         return;
         break;
         
