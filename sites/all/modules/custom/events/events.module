@@ -459,25 +459,24 @@ function create_event_if_valid(){
       if ($file = file_save_upload('photo')) {
         $event->field_content_images[0] = (array)$file;  
       }     
-      
       node_save($event);
       
       if ($edit_mode) {
         //save changes in tickets
         if (!empty($_POST['ticket_id_1'])) {
-          db_query('UPDATE events_tickets SET quantity = %d WHERE id = %d AND event_id = %d', $_POST['ticket_quantity_1'], $_POST['ticket_id_1'], $event->nid);
+          db_query('UPDATE events_tickets SET quantity = %d WHERE id = %d AND event_id = %d', ($_POST['ticket_quantity_1'] ? $_POST['ticket_quantity_1'] : -1), $_POST['ticket_id_1'], $event->nid);
         } else if(!empty($_POST['ticket_title_1']) && !empty($_POST['ticket_price_1'])) {
           db_query('INSERT INTO events_tickets (event_id, title, price, quantity) VALUES(%d, "%s", %f, %d)', $event->nid, $_POST['ticket_title_1'], $_POST['ticket_price_1'], ($_POST['ticket_quantity_1'] ? $_POST['ticket_quantity_1'] : -1));
         }
         
         if (!empty($_POST['ticket_id_2'])) {
-          db_query('UPDATE events_tickets SET quantity = %d WHERE id = %d AND event_id = %d', $_POST['ticket_quantity_2'], $_POST['ticket_id_2'], $event->nid);
+          db_query('UPDATE events_tickets SET quantity = %d WHERE id = %d AND event_id = %d', ($_POST['ticket_quantity_2'] ? $_POST['ticket_quantity_2'] : -1), $_POST['ticket_id_2'], $event->nid);
         } else if(!empty($_POST['ticket_title_2']) && !empty($_POST['ticket_price_2'])) {
           db_query('INSERT INTO events_tickets (event_id, title, price, quantity) VALUES(%d, "%s", %f, %d)', $event->nid, $_POST['ticket_title_2'], $_POST['ticket_price_2'], ($_POST['ticket_quantity_2'] ? $_POST['ticket_quantity_2'] : -1));
         }
         
         if (!empty($_POST['ticket_id_3'])) {
-          db_query('UPDATE events_tickets SET quantity = %d WHERE id = %d AND event_id = %d', $_POST['ticket_quantity_3'], $_POST['ticket_id_3'], $event->nid);
+          db_query('UPDATE events_tickets SET quantity = %d WHERE id = %d AND event_id = %d', ($_POST['ticket_quantity_3'] ? $_POST['ticket_quantity_3'] : -1), $_POST['ticket_id_3'], $event->nid);
         } else if(!empty($_POST['ticket_title_3']) && !empty($_POST['ticket_price_3'])) {
           db_query('INSERT INTO events_tickets (event_id, title, price, quantity) VALUES(%d, "%s", %f, %d)', $event->nid, $_POST['ticket_title_3'], $_POST['ticket_price_3'], ($_POST['ticket_quantity_3'] ? $_POST['ticket_quantity_3'] : -1));
         }
