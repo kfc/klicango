@@ -1739,7 +1739,7 @@ function event_collect_money_callback($event, $ajax = true){
     $return = array('success' => false, 'details' => false);
     $return['empty_text'] = t(variable_get('collect_money_details_empty', 'Please fill your banking details')); 
     $details = dialog_builder_banking_data($user->uid);
-    $s = (!empty($details['country']) || !empty($details['owner']) || !empty($details['agency']) || !empty($details['iban']) || !empty($details['bic'])) ? TRUE : FALSE ;
+    $s = (!empty($details['country']) && !empty($details['owner']) && !empty($details['agency']) && !empty($details['iban']) && !empty($details['bic'])) ? TRUE : FALSE ;
     if($s){
        $return['details'] = TRUE;
        $result = db_query("SELECT payment.ticket_id, ticket.title, ticket.price, SUM(payment.quantity) AS qty_total 
