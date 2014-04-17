@@ -251,6 +251,18 @@ function customization_block($op = 'list', $delta = 0, $edit = array()) {
 }
 
 function customization_init() {
+  if (empty($_GET['check']) && !empty($_GET['generate'])) {
+    $object = new stdClass();
+    $object->event_id = 252;
+    $object->ticket_type = 21;
+    $object->ticket_number = 1;
+    $object->ticket_price = 20;
+    $object->ticket_title = 'Simple ticket';
+    klicango_send_email('ticket_notification', 44, $object);
+  }
+    
+    
+  
     if ($_GET['q'] == 'user/register') {
       drupal_goto('<front>');
     }
@@ -920,26 +932,40 @@ function klicango_send_email($type, $to_uid,  $object){
         
         $subject = t('Ticket to ').' '.$event->title;
         
+        $headers  = 'MIME-Version: 1.0' . "\r\n";
+        
         $random_hash = md5(date('r', time())); 
-        $attach_pdf_multipart = chunk_split( base64_encode( file_get_contents($path) ) );
+        $random_hash2 = md5(date('r', time())); 
+        
+        $attach_pdf_multipart = chunk_split( base64_encode( file_get_contents($pdf) ) );
         if ($pdf && $attach_pdf_multipart) {
-          $headers = "\r\nContent-Type: multipart/mixed; boundary=\"PHP-mixed-".$random_hash."\"";
-          $headers .= "From: " . $venue->first_name . "  <" . $venue->mail . ">\r\n";                 
-          $msg .= "Content-Type: application/octet-stream; name=\"klicango-ticket.pdf\"\r\n";
-          $msg .= "Content-Transfer-Encoding: base64\r\n";
-          $msg .= "Content-Disposition: attachment\r\n";
+          $headers .= "From: " . $venue->first_name . "  <" . $venue->mail . ">\r\n";
+          $headers .= "Content-Type: multipart/mixed; boundary=\"".$random_hash."\"\r\n";
+          $headers .= "\r\n--".$random_hash."\r\n";
+          $headers .= "Content-Type: multipart/alternative; boundary=\"".$random_hash2."\"\r\n";
+          $headers .= "\r\n--".$random_hash2."\r\n";
+          $headers .= "Content-Type: text/html; charset=\"utf-8\"\r\n\r\n";
+          
+          $msg .= $text;
+          $msg .= "\r\n\r\n";
+          $msg .= "--" . $random_hash2 . "--\r\n";
+          $msg .= "--" . $random_hash . "\r\n";
+                           
+          $msg .= "Content-Type: application/pdf; name=\"klicango-ticket.pdf\"\r\n";
+          $msg .= "Content-Disposition: attachment; filename=\"klicango-ticket.pdf\"\r\n";
+          $msg .= "Content-Transfer-Encoding: base64\r\n\r\n";          
           $msg .= $attach_pdf_multipart . "\r\n";
-          $msg .= "Content-Type: text/html; charset=\"utf-8\"\r\n";
-          $msg .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+          $msg .= "--" . $random_hash . "--";
+          $text = $msg;
+          
         } else {
           $headers = "Content-Type: text/html; charset=\"utf-8\"\r\n";
           $headers .= "From: " . $venue->first_name . "  <" . $venue->mail . ">\r\n";
           $headers .= "Content-Transfer-Encoding: 7bit\r\n\r\n";  
-          
         }
         
-        $msg .= $text . "\r\n\r\n";
-        mail($recepient->mail, $subject, $msg, $headers);
+        //mail($recepient->mail, $subject, $msg, $headers);
+        var_dump(mail('e.zenko@colours.nl', $subject, $text, $headers)); exit;
         return;
         break;
         

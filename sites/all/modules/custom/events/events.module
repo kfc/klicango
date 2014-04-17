@@ -686,6 +686,7 @@ function events_generate_pdf_ticket($nid, $ticket_type, $uid) {
   $cmd = '"'. realpath($print_pdf_pdf_tool) ."\" --page-size A4 --orientation portrait --dpi 96 --disallow-local-file-access --footer-font-size 7 \"" . $base_url . "/print_coupon/" . $nid . "?type=" . $ticket_type . "&uid=" . $uid . "&check=" . $check . "\" -";
   $process = proc_open($cmd, $descriptor, $pipes, NULL, NULL);
   watchdog('print_pdf', var_export($process, true), array());
+  
   if (is_resource($process)) {
     $pdf = stream_get_contents($pipes[1]);
     fclose($pipes[1]);
