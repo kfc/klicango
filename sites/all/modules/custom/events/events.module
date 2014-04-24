@@ -461,6 +461,13 @@ function create_event_if_valid(){
       }     
       node_save($event);
       
+      //replace comma with decimal point
+      for ($iter = 1; $iter <= 3; $iter++) {
+        if (!empty($_POST['ticket_price_' . $iter])) {
+          $_POST['ticket_price_' . $iter] = str_replace(',', '.', $_POST['ticket_price_' . $iter]);
+        }
+      }
+      
       if ($edit_mode) {
         //save changes in tickets
         if (!empty($_POST['ticket_id_1'])) {
