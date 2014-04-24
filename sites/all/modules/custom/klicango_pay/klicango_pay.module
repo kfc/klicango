@@ -135,7 +135,7 @@ function _klicango_pay_process_pay(){
 function klicango_pay_request($price, $quantity, $ticket_id, $customer_uid, $event_nid){
     
     $user = user_load($customer_uid);
-    $cents = ((int)$price * 100 *(int)$quantity);
+    $cents = ((float)$price * 100 *(int)$quantity);
     $key =  variable_get('klicango_pay_PBX_HMAC_KEY');
     $sit = variable_get('klicango_pay_PBX_SITE');
     $rg = variable_get('klicango_pay_PBX_RANG');
