@@ -707,7 +707,7 @@ function events_generate_pdf_ticket($nid, $ticket_type, $uid) {
   }
 
   if (!empty($pdf)) {
-    $path = variable_get('file_public_path', conf_path() . '/files') . '/klicango_ticket_' . $user->uid . '_' . $nid . '_' . $ticket_type . '.pdf';
+    $path = variable_get('file_public_path', conf_path() . '/files') . '/klicango_ticket_' . $nid . '_' . $uid . '_' . $ticket_type . '.pdf';
     if(file_put_contents($path, $pdf)) {
       return $path;
     } else {

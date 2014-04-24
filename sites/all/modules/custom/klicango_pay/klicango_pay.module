@@ -410,16 +410,6 @@ function klicango_pay_offsite_auto(){
               $event_id = db_result(db_query('SELECT et.event_id FROM events_tickets AS et INNER JOIN events_payment AS ep ON ep.ticket_id = et.id AND ep.pid =%d', $order->pid));
               events_change_event_user_set_accept_status($order->customer_uid, $event_id);
               
-              //send email with ticket pdf
-              $object = new stdClass();
-              $object->event_id = $event_id;
-              $object->ticket_type = $order->ticket_id;
-              $object->ticket_number = $order->quantity;
-              $object->ticket_price = $order->cents/100;
-              $object->ticket_title = db_result(db_query('SELECT title FROM events_tickets WHERE id = %d AND event_id = %d', $order->ticket_id, $event_id));
-              
-              klicango_send_email('ticket_notification', $order->customer_uid, $object);
-              
               // Log: failed to load the transaction.
               $log = 'Success. $_GET array: %get';
               $log_vars = array(
@@ -449,6 +439,17 @@ function klicango_pay_offsite_auto(){
             $order->status = PAYBOX_FAIL;         
         }
         klicango_pay_order_save($order);
+        if (!empty($_GET['error']) && $_GET['error'] === '00000') {
+          //send email with ticket pdf
+          $object = new stdClass();
+          $object->event_id = $event_id;
+          $object->ticket_type = $order->ticket_id;
+          $object->ticket_number = $order->quantity;
+          $object->ticket_price = $order->cents/100;
+          $object->ticket_title = db_result(db_query('SELECT title FROM events_tickets WHERE id = %d AND event_id = %d', $order->ticket_id, $event_id));
+          
+          klicango_send_email('ticket_notification', $order->customer_uid, $object);
+        }
     }
     else {
         // Log: failed to load the transaction.

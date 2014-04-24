@@ -923,7 +923,7 @@ function klicango_send_email($type, $to_uid,  $object){
         $headers  = 'MIME-Version: 1.0' . "\r\n";
         
         $random_hash = md5(date('r', time())); 
-        $random_hash2 = md5(date('r', time())); 
+        $random_hash2 = md5(date('c', time())); 
         
         $attach_pdf_multipart = chunk_split( base64_encode( file_get_contents($pdf) ) );
         if ($pdf && $attach_pdf_multipart) {
