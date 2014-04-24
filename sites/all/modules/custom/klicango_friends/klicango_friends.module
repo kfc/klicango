@@ -175,6 +175,8 @@ function klicango_friends_join_friends() {
     if(!empty($friends['local']) && $offset == 0) {
       $potential_friends = klicango_friends_get_friends_intersections(array_keys($friends['local']));
       
+      $local_friends = array_keys($friends['local']);
+      
       if (!empty($_GET['search'])) {
         $found = array();
         foreach($potential_friends as $id => $value) {
@@ -189,7 +191,7 @@ function klicango_friends_join_friends() {
       }
       
       foreach ($potential_friends as $id => $matches) {      
-        if (!in_array($matches['id'], $local_invites)) {
+        if (!in_array($matches['id'], $local_invites) && !in_array($matches['id'], $local_friends)) {
           $html .= '<div class="person-item">';
           $html .= '<div class="person-thumbnail"><a href="' . url('user/' . $matches['id']) . '"><img src="' . imagecache_create_url('facebook_image_size', $matches['picture']) . '"/></a></div>';
           $html .= '<div class="person-name"><a href="' . url('user/' . $matches['id']) . '">'.$matches['name'].'</a><span class="fb-user" onclick="showFriends(' . $matches['id'] . ');">' . $matches['common'] . ' ' . ($matches['common'] == 1 ? t('friend in common') : t('friends in common')) . '</span></div>';
@@ -233,7 +235,7 @@ function klicango_friends_join_friends() {
       
       foreach ($users as $found) {
         $potential_ids = array_keys($potential_friends);
-        if (!in_array($found['uid'], $local_invites) && !in_array($found['uid'], $potential_ids)) {
+        if (!in_array($found['uid'], $local_invites) && !in_array($found['uid'], $potential_ids) && !in_array($found['uid'], $local_friends)) {
           $html .= '<div class="person-item">';
           $html .= '<div class="person-thumbnail"><a href="' . url('user/' . $found['uid']) . '"><img src="' . imagecache_create_url('facebook_image_size', $found['picture']) . '"/></a></div>';
           $html .= '<div class="person-name"><a href="' . url('user/' . $found['uid']) . '">'.$found['full_name'].'</a></div>';
