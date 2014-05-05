@@ -764,7 +764,7 @@ function klicango_friends_page() {
     if (in_array('professional', $user->roles)) {
       $ids = klicango_friends_get_friends('friends', 16);
     } else {
-      $ids = klicango_friends_get_friends('friends', 16, true);
+      $ids = klicango_friends_get_friends('friends', false, true);
     }
     if (!empty($ids)) {
         foreach ($ids as $friend) {
