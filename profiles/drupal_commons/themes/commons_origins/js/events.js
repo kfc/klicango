@@ -403,6 +403,7 @@ $(function() {
     var uid = getParameterByName(href, 'uid');
     var id = $(this).attr('id');
     if(date != '' && uid != ''){
+      ajax_start = false;
       $.ajax({
          type: 'GET',
          dataType: 'json',
@@ -434,6 +435,9 @@ $(function() {
             $(".view-content-event-calendar .date-heading h3").text(data.month_name);
             $("#date-heading-date-input").datepicker('setDate', date.substring(0,4)+'-'+date.substring(5,7)+'-01');
          }, 
+         complete : function() {
+          ajax_start = true;
+         }
       }); 
     }
   });
