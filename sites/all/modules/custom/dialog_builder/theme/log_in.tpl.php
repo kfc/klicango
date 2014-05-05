@@ -21,7 +21,7 @@
         <div class="clearfix"></div>
 
         <div class="form-item login-links">
-            <!--<a id="forgot-pass" href="" name="forgot-pass">Forgot your password?</a>-->
+            <a id="forgot-pass" href="/page/contact" name="forgot-pass">Forgot your password?</a>
         </div>
         
         <div class="form-submit">
