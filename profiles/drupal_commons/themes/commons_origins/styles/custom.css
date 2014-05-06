@@ -794,7 +794,7 @@ div.activity-stream-list.left .item-list .pager .pager-previous, .activity-strea
 .comment-post-submit-wrapper {
   position: absolute;
   right: 5px;
-  bottom: 0px;
+  bottom: -1px;
 }
 
 

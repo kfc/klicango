@@ -152,6 +152,14 @@ $(function() {
     $('#end_user_register').click();
   });
   
+	var commentField = $('#comment-post-body');    
+	commentField.height(commentField.get(0).scrollHeight);    
+	commentField.on('keyup input', function(){
+		var $this = $(this);
+		$this.height(1);
+		$this.height(this.scrollHeight);
+	});
+  
 });
 
 function loadFriends(offset, limit) {

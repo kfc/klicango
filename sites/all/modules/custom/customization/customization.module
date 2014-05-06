@@ -1018,6 +1018,17 @@ function klicango_send_email($type, $to_uid,  $object){
         $subject = t('Friend request from').' '.$user->first_name.' '.$user->surname;
         break;
       
+      case 'friend_request_accept':
+        $text = '<div style="padding-right: 10px;">'.theme_imagecache('search_result_image', $object->picture).'</div><div style="">';
+        $text .= l($object->first_name.' '.$object->surname, 'user/'.$object->uid, array('absolute'=>TRUE)).' '.t('accepted your friend request on Klicango.');
+        $text .= '<br><br><div style="font-size: 120%">'.l(t('View friends list on Klicango'),'friends',array('absolute'=>TRUE)).'<br>';
+        $text .= t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= "</div>";
+        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        
+        $subject = t('Friend request from').' '.$user->first_name.' '.$user->surname;
+        break;
+              
       case 'public_invitation':
         $event = $object;
         $text = '<div style="padding-bottom: 10px;">'.theme_imagecache('search_result_image', $user->picture).'</div><div style="">';

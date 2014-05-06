@@ -771,9 +771,10 @@ function klicango_friends_page() {
             $friend_data = user_load($friend);
             profile_load_profile($friend_data);
             $friend_data->friends_count = sizeof(klicango_friends_all_friends($friend));
-            $users[] = $friend_data;
+            $users[strtolower($friend_data->first_name . ' ' . $friend_data->surname)] = $friend_data;
         }
     }
+    ksort($users);
     
     $html .= theme('klicango_friends_friends', $users, false);
     
@@ -834,8 +835,9 @@ function klicango_friends_get_friends($type, $limit = false, $only_individual = 
                                   UNION (SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3)
                                   ORDER BY RAND() LIMIT 0, %d', $user->uid, $user->uid, $limit);  
               } else {
-                $result = db_query('SELECT user_id AS uid FROM friends_invitations WHERE sender_id = %d AND status = 3
-                                  UNION SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3', $user->uid, $user->uid);
+                $result = db_query('(SELECT user_id AS uid FROM friends_invitations WHERE sender_id = %d AND status = 3)
+                                  UNION (SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3)
+                                  ORDER BY RAND()', $user->uid, $user->uid);
               }
               
             } else {
@@ -845,6 +847,12 @@ function klicango_friends_get_friends($type, $limit = false, $only_individual = 
                                   UNION (SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3
                                   AND user_id IN (SELECT uid FROM users_roles WHERE rid = 6))
                                   ORDER BY RAND() LIMIT 0, %d', $user->uid, $user->uid, $limit);
+              } else {
+                $result = db_query('(SELECT user_id AS uid FROM friends_invitations WHERE sender_id = %d AND status = 3 AND 
+                                  user_id IN (SELECT uid FROM users_roles WHERE rid = 6))
+                                  UNION (SELECT sender_id AS uid FROM friends_invitations WHERE user_id = %d AND status = 3
+                                  AND user_id IN (SELECT uid FROM users_roles WHERE rid = 6))
+                                  ORDER BY RAND()', $user->uid, $user->uid);
               }
             }
             while ($row = db_fetch_array($result)) {
@@ -865,6 +873,7 @@ function klicango_friends_friend_accept() {
     } else {
         $data = array('uid' => $sender_id, 'fid' => $user->uid);
         drupal_write_record('friends', $data);
+        //klicango_send_email('friend_request_accept', $sender_id, $user);
         $inv_status = 3;
     }
     $result = db_query('UPDATE friends_invitations SET status = %d WHERE sender_id = %d AND user_id = %d', $inv_status, $sender_id, $user->uid);

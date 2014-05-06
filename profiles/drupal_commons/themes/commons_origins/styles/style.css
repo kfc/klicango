@@ -472,6 +472,32 @@ div.post-box form input[type="text"]{
 	outline: none;
 	padding: 8px 10px 0;
 }
+div.post-box form .textareaWrapper{
+	background: url(../images/postbox_top.png) 0 0 no-repeat;
+	padding-top: 13px;
+}
+div.post-box form .textareaWrapper .bottom {
+	background: url(../images/postbox_bottom.png) 0 0 no-repeat;
+	height: 4px;
+}
+div.post-box form .textareaEl {
+	background: url(../images/postbox_repeat.png) 0 0 repeat-y;
+	padding-right: 30px;
+	padding-left: 10px;
+}
+div.post-box form textarea{
+	background: none;
+	width: 100%;
+	/*height: 29px;*/
+	border: none;
+	outline: none;
+	padding: 0;
+	resize: none;
+	vertical-align: top;
+	font-size: 13.333px;
+	font-family: 'MS Shell Dlg';
+	height: 18px;
+}
 .selectbox.jqselect,
 .jq-selectbox.jqselect{
 	float: left;
