@@ -93,7 +93,20 @@ function dialog_builder_log_in_validate($variables) {
 }
 
 function dialog_builder_professional_banking_details_validate($variables, $server_check = false) {
-  drupal_json(array('success' => true, 'action' => 'submit'));
+  $required = array('country', 'rwe', 'owner', 'agency', 'iban', 'bic');
+  foreach($required as $field) {
+        if (empty($variables[$field]) || $variables[$field] == '0') {
+            $errors[$field] = 1;
+        }
+    }
+  if (!empty($errors)) {
+        if ($server_check) {
+            return false;
+        }
+        drupal_json(array('success' => false, 'message' => t('Fields marked in red are missing or incorrect '), 'id' => array_keys($errors)));
+    } else {    
+        drupal_json(array('success' => true, 'action' => 'submit'));
+    }
 }
 
 function dialog_builder_end_user_register_validate($variables, $server_check = false) {    
