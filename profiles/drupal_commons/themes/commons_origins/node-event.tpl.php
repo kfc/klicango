@@ -73,13 +73,13 @@
         <?php
         switch ($_GET['paybox']) {
             case 'effectue' :
-                print(variable_get('paybox_effectue_message', t('Payment completed. Thank you.')));
+                print(variable_get('klicango_pay_effectue_message', t('Payment completed. Thank you.')));
                 break;
             case 'refuse' :
-                print(variable_get('paybox_refuse_message', t('Payment refused. Sorry.')));
+                print(variable_get('klicango_pay_refuse_message', t('Payment refused. Sorry.')));
                 break;
             case 'annule' :
-                print(variable_get('paybox_annule_message', t('Payment canceled.')));
+                print(variable_get('klicango_pay_annule_message', t('Payment canceled.')));
                 break;
             case 'error' :
                 print(variable_get('klicango_pay_error_message', t('You already bought max number of tickets or all tickets sold')));
