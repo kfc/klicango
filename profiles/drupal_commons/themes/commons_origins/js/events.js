@@ -291,6 +291,7 @@ $(function() {
   $("#modify-event-link")
     .click(function(e) {
     e.preventDefault();
+    console.log(form_data);
     $("#create-event-form input[type='text'], #create-event-form input[type='hidden']").each(function(){
       $(this).val(form_data.data[$(this).attr('name')]);
     });

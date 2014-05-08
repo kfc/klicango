@@ -873,7 +873,7 @@ function klicango_friends_friend_accept() {
     } else {
         $data = array('uid' => $sender_id, 'fid' => $user->uid);
         drupal_write_record('friends', $data);
-        //klicango_send_email('friend_request_accept', $sender_id, $user);
+        klicango_send_email('friend_request_accept', $sender_id, $user);
         $inv_status = 3;
     }
     $result = db_query('UPDATE friends_invitations SET status = %d WHERE sender_id = %d AND user_id = %d', $inv_status, $sender_id, $user->uid);

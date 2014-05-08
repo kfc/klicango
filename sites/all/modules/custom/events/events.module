@@ -633,16 +633,23 @@ function event_post_comment(){
         }
       }
     }
-    
-    /*echo '<pre>';
-    print_r($_FILES);
-    print_r($comment);
-    die();*/
-    
+        
     node_save($comment);
     if($comment->nid > 0){
       $comment->comment_target_nid = (int)$_POST['comment_target_nid']; 
        nodecomment_save($comment);
+       
+       $people_going = events_get_event_attenders((int)$_POST['comment_target_nid']);
+       $event = node_load((int)$_POST['comment_target_nid']);
+       foreach($people_going['going'] as $uid => $person) {
+          if ($uid != $user->uid) {
+            if (!empty($comment->field_comment_photo) && $comment->field_comment_photo[0] != NULL) {
+              klicango_send_email('event_photo_added', $uid, $event);
+            } else {
+              klicango_send_email('event_comment_added', $uid, $event);
+            }  
+          }
+       }
     }
     drupal_goto('node/'.$_POST['comment_target_nid']);
   }
@@ -1293,7 +1300,7 @@ function events_get_event_form_data($node){
   $data['tickets_per_user'] = $node->field_tickets_per_user[0]['value'];
   $data['tickets'] = !empty($node->field_event_tickets) ? $node->field_event_tickets[0]['value'] : 0;
   
-  events_tickets_load($node);
+  events_tickets_load($node, true);
   $i = 1;
   foreach ($node->ticket_types as $val) {
     $data['ticket_id_' . $i] = $val['id'];
@@ -1553,9 +1560,9 @@ function events_delete_event($event_id = null){
 }
 
 
-function events_tickets_load(&$event) {
+function events_tickets_load(&$event, $edit = false) {
   if (empty($event->ticket_types)){
-    if ($event->field_event_tickets[0]['value'] && (strtotime($event->field_tickets_date[0]['value']) > time())) {
+    if ($event->field_event_tickets[0]['value'] && (strtotime($event->field_tickets_date[0]['value']) > time() || $edit)) {
       $result = db_query('SELECT * FROM events_tickets WHERE event_id = %d ORDER BY id ASC', $event->nid);
       while($row = db_fetch_array($result)) {
         $event->ticket_types[] = array('id' => $row['id'], 'title' => $row['title'], 'price' => $row['price'], 'quantity' => $row['quantity']);
