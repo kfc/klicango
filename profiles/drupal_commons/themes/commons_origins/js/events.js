@@ -262,7 +262,10 @@ $(function() {
         success: function(data){
           if(data.isValid){  
             $( "#create-event-form" ).dialog( "close" );
-            $('#datepicker-tickets').val($('#datepicker').val());
+            if($('#datepicker-tickets').val() == '') {
+              $('#datepicker-tickets').val($('#datepicker').val());  
+            }
+            
             $( "#event-tickets-form" ).dialog( "open" );     
           }
           else { 
@@ -291,7 +294,6 @@ $(function() {
   $("#modify-event-link")
     .click(function(e) {
     e.preventDefault();
-    console.log(form_data);
     $("#create-event-form input[type='text'], #create-event-form input[type='hidden']").each(function(){
       $(this).val(form_data.data[$(this).attr('name')]);
     });
