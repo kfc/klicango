@@ -1001,9 +1001,9 @@ function klicango_send_email($type, $to_uid,  $object){
         $text .= '<br>'.date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
         $text .= $object->going.' '.t('people are invited');
         $text .= '<br><br><div style="font-size: 120%">'.l(t('View invitation on Klicango'),'private',array('absolute'=>TRUE)).'<br></div>';
-        $text .= '<div style="font-size: 80%">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= '<div style="font-size: 80%; padding-top: 15px;">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
-        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        $text .= "<div style='margin-top:1px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
         
         $subject = t('Invitation to ').' '.$event->title;
         break;
@@ -1014,9 +1014,9 @@ function klicango_send_email($type, $to_uid,  $object){
         $text = '<div style="padding-bottom: 10px;">'.theme_imagecache('search_result_image', $user->picture).'</div><div style="">';
         $text .= l($user->first_name.' '.$user->surname, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('added photos to ').' '.l($event->title, 'node/'.$event->nid, array('absolute'=>TRUE));
         $text .= '<br><br><div style="font-size: 120%">'.l(t('View photos on Klicango'),'node/'.$event->nid,array('absolute'=>TRUE)).'<br></div>';
-        $text .= '<div style="font-size: 80%">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= '<div style="font-size: 80%; padding-top: 15px;">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
-        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        $text .= "<div style='margin-top:1px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
         
         $subject = t('Photos added to event ').' '.$event->title;
         break;
@@ -1027,9 +1027,9 @@ function klicango_send_email($type, $to_uid,  $object){
         $text = '<div style="padding-bottom: 10px;">'.theme_imagecache('search_result_image', $user->picture).'</div><div style="">';
         $text .= l($user->first_name.' '.$user->surname, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('added comment to ').' '.l($event->title, 'node/'.$event->nid, array('absolute'=>TRUE));
         $text .= '<br><br><div style="font-size: 120%">'.l(t('View comment on Klicango'),'node/'.$event->nid,array('absolute'=>TRUE)).'<br></div>';
-        $text .= '<div style="font-size: 80%">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= '<div style="font-size: 80%; padding-top: 15px;">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
-        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        $text .= "<div style='margin-top:1px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
         
         $subject = t('Comment added to event ').' '.$event->title;
         break;
@@ -1039,9 +1039,9 @@ function klicango_send_email($type, $to_uid,  $object){
         $text = '<div style="padding-right: 10px;">'.theme_imagecache('search_result_image', $user->picture).'</div><div style="">';
         $text .= l($user->first_name.' '.$user->surname, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('wants to be your friend on Klicango.');
         $text .= '<br><br><div style="font-size: 120%">'.l(t('View invitation on Klicango'),'friends',array('absolute'=>TRUE)).'<br></div>';
-        $text .= '<div style="font-size: 80%">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= '<div style="font-size: 80%; padding-top: 15px;">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
-        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        $text .= "<div style='margin-top:1px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
         
         $subject = t('Friend request from').' '.$user->first_name.' '.$user->surname;
         break;
@@ -1050,9 +1050,9 @@ function klicango_send_email($type, $to_uid,  $object){
         $text = '<div style="padding-right: 10px;">'.theme_imagecache('search_result_image', $object->picture).'</div><div style="">';
         $text .= l($object->first_name.' '.$object->surname, 'user/'.$object->uid, array('absolute'=>TRUE)).' '.t('accepted your friend request on Klicango.');
         $text .= '<br><br><div style="font-size: 120%">'.l(t('View friends list on Klicango'),'friends',array('absolute'=>TRUE)).'<br></div>';
-        $text .= '<div style="font-size: 80%">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= '<div style="font-size: 80%; padding-top: 15px;">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
-        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        $text .= "<div style='margin-top:1px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
         
         $subject = t('Friend request accepted by').' '.$user->first_name.' '.$user->surname;
         break;
@@ -1064,9 +1064,9 @@ function klicango_send_email($type, $to_uid,  $object){
         $text .= '<br>'.date('l, F j H:i', strtotime($event->field_date[0]['value'])).'<br>';
         $text .= $event->invited.' '.t('people are invited');
         $text .= '<br><br><div style="font-size: 120%">'.l(t('View invitation on Klicango'),'public',array('absolute'=>TRUE)).'<br></div>';
-        $text .= '<div style="font-size: 80%">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= '<div style="font-size: 80%; padding-top: 15px;">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
-        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        $text .= "<div style='margin-top:1px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
         
         $subject = t('Invitation to ').' '.$event->title;
         break;
@@ -1075,9 +1075,9 @@ function klicango_send_email($type, $to_uid,  $object){
         $text = '<div style="padding-right: 10px;">'.theme_imagecache('comment_image', $object->file->filepath).'</div><div style="">';
         $text .= l($user->first_name.' '.$user->surname, 'user/'.$user->uid, array('absolute'=>TRUE)).' '.t('commented on your photo.');
         $text .= '<br><br><div style="font-size: 120%">'.l(t('View photo on Klicango'),'node/'.$object->event_id,array('absolute'=>TRUE,'query'=>array('open_photo'=>$object->file->fid))).'<br></div>';
-        $text .= '<div style="font-size: 80%">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
+        $text .= '<div style="font-size: 80%; padding-top: 15px;">' . t('This message was sent to ').l($recepient->mail,'mailto:'.$recepient->mail).'</div>';
         $text .= "</div>";
-        $text .= "<div style='margin-top:15px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
+        $text .= "<div style='margin-top:1px; font-size: 80%'>Powered by <img src='http://".$_SERVER['HTTP_HOST']."/profiles/drupal_commons/themes/commons_origins/images/logo.png'></div>";
         
         $subject = t('Comment on your photo');
         break; 
