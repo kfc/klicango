@@ -10,7 +10,10 @@
     <div class="comment-post-body">
       <div class="textareaWrapper">
         <span class="comment-post-submit-wrapper">
-          <a href="#" title="Add comment" id="comment-post-submit"><img src="/profiles/drupal_commons/themes/commons_origins/images/enter-icon.png" ></a>
+          <a href="#" title="Add comment" id="comment-post-submit" class="comment-submit">
+            <!--img src="/profiles/drupal_commons/themes/commons_origins/images/enter-icon.png"-->
+            publish
+          </a>
         </span>
         <div class="textareaEl"><textarea name="comment_body" id="comment-post-body"></textarea></div>
         <div class="bottom"></div>

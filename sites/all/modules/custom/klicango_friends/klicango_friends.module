@@ -359,6 +359,10 @@ function klicango_friends_invite_local_friends($data = array()) {
         $object->sender_id = $user->uid;
         $object->event_id = $data['event_id'];
         $object->status = 1;
+        
+        $people = events_get_event_attenders($data['event_id']);
+        $going = count($people['going'])+count($people['invited'])+sizeof($recipients);
+        $object->going = $going;
         foreach ($recipients as $local_uid) {
             if ($local_uid) {
                 $object->user_id = $local_uid;

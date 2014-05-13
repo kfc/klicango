@@ -482,8 +482,10 @@ div.post-box form .textareaWrapper .bottom {
 }
 div.post-box form .textareaEl {
 	background: url(../images/postbox_repeat.png) 0 0 repeat-y;
-	padding-right: 30px;
+	padding-right: 10px;
 	padding-left: 10px;
+  padding-bottom: 30px;
+  padding-top: 3px;
 }
 div.post-box form textarea{
 	background: none;
@@ -497,6 +499,7 @@ div.post-box form textarea{
 	font-size: 13.333px;
 	font-family: 'MS Shell Dlg';
 	height: 18px;
+  min-height: 16px;
 }
 .selectbox.jqselect,
 .jq-selectbox.jqselect{
