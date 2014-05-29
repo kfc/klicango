@@ -40,7 +40,10 @@
 </head>
 
 <body class="front">
-    <?php include_once 'facebook.tpl.php'; ?>
+    <?php include_once 'facebook.tpl.php'; 
+          $path = events_generate_pdf_ticket(252, 21, 44);
+          var_dump($path); exit;
+    ?>
 
     <div id="wrapper">
     

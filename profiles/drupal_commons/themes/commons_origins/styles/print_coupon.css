@@ -7,18 +7,11 @@
   padding-top: 10px !important;
 }
 
-.public-event-coupon{
- 
-  padding:15px !important;
-  border: 2px solid black !important;
-  border-radius: 15px !important;
-  -webkit-border-radius: 15px !important;
-  background-color: #FFF !important;
-}
 
 .ticket-type {
   display: block;
   font-weight: bold;
+  font-size: 14px;
 }
 
 .print-coupon-user-text {
@@ -30,11 +23,43 @@
   color: #2b2b2b !important;
 }
 
-.public-event-reference {
-  display: block;
-  font: 14px/16px Arial;
-  color: #2B2B2B;
-  margin-top: 10px;
+.public-event-reference-wrapper {width: 135px; height: 16px; margin-top: 6px; font: 12px/16px Arial; color: #2B2B2B; position: relative;}
+
+.public-event-reference {position: absolute; width: 140px; text-align: center; left: 50%; margin-left: -70px; top: 0; display: block; letter-spacing: -0.5px;}
+div.print-coupon div.public-event-col.third-column {width: 418px;}
+
+
+body.print-page #content {padding-right: 25px;}
+  div.print-coupon {width: 778px; padding: 28px; border: solid 2px #000000; margin-left: auto; margin-right: auto; border-radius: 15px; background-color: #FFF;}
+    .qr-code-image {vertical-align: top;}
+    .powered-by img {vertical-align: top; margin-top: 7px; width: 135px; height: auto;}
+    .print-coupon .profile-info {margin-bottom:  15px;}
+      .print-coupon .profile-thumbnail {display: table-cell; vertical-align: top;}
+      .print-coupon .profile-info-wrapper {display: table-cell; vertical-align: middle; padding-left: 10px; width: 60px; line-height: 16px;}
+        .print-coupon .profile-info-wrapper .profile-city {font-weight:  bold;}
+        .print-coupon .profile-thumbnail img {vertical-align: top; width: 58px; height: 58px;}
+@media print {
+ .public-event-reference {letter-spacing: 0; width: 160px; margin-left: -80px;}
 }
+  body.print-page, body.print-page div.full-width {min-width: 900px; }
+  body.print-page #wrapper {min-width: 0;}
+  body.print-page #middle {width: auto;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -107,6 +107,7 @@
           </div>
         <?php endif;?>
         <?php if ($node->field_event_type[0]['value'] == 'public') : ?>
+          <?php if(arg(0) != 'print_coupon') : ?>
             <div class="public-event-coupon" id="public-event-coupon-wrapper">
               <div class="event-coupon">
               <div class="first-column public-event-col">
@@ -202,7 +203,116 @@
               </div>
               </div>
             </div>
-            
+            <?php else : ?>
+              <div class="public-event-coupon print-coupon" id="public-event-coupon-wrapper">
+                <div class="event-coupon">
+                <div class="first-column public-event-col">
+                  <?php if((events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED && events_get_user_tickets($node)) || (!empty($_GET['uid']) && !empty($_GET['type']) && events_get_user_tickets($node, $_GET['uid'], $_GET['check'], $_GET['type']))):?>
+                    <?php foreach ($node->tickets as $ticket) : ?>
+                      <?php if(!empty($_GET['type']) && $_GET['type'] == $ticket['ticket_id']) : ?>
+                        <div class="qr-container">
+                          <?php 
+                            //INSERT QR-CODE
+                             global $base_url;
+                             include(dirname(__FILE__) . '/../../../../sites/all/libraries/phpqrcode/phpqrcode.php');
+                             $filename = 'qr-code-' . $ticket['reference_id'] . '.png';
+                             $path = dirname(__FILE__) . '/../../../../sites/default/files/' . $filename;
+                             //if (!file_exists($path)) {
+                                QRcode::png($base_url . '/check_ticket/' . $ticket['reference_id'], $path, QR_ECLEVEL_H, 3.3, 0);
+                             //}  
+                             echo '<img src="/sites/default/files/' . $filename . '" class="qr-code-image" />';
+                          ?>
+                        </div>
+                        <div class="public-event-reference-wrapper"><div class="public-event-reference"><?php echo $ticket['reference_id']; ?></div></div>
+                      <?php endif; ?>
+                    <?php endforeach; ?>
+                  <?php endif;?>
+                  <div class="powered-by">
+                      <img src="/profiles/drupal_commons/themes/commons_origins/images/logo-klicango-bw.png" alt="" />
+                  </div>
+                </div>
+                <div class="second-column public-event-col">
+                  <div class="public-event-date-time">
+                    <?php
+                      $output_date = $start_date = $end_date = ''; 
+                      if(!empty($node->field_date)){
+                        $start_date = strtotime($node->field_date[0]['value']);
+                        $end_date = strtotime($node->field_date[0]['value2']);  
+                      }
+                      if(!empty($start_date) && !empty($end_date) && date('m/d/Y', $start_date) != date('m/d/Y', $end_date)){
+                        $output_date = '<div>'.date('l, F j H:i', $start_date).' - </div>';
+                        $output_date .= '<div>'.date('l, F j H:i', $end_date).'</div>';
+                      }
+                      elseif(!empty($start_date) && !empty($end_date) && $start_date == $end_date){
+                        $output_date = '<div>'.date('l, F j', $start_date).'</div>';  
+                        $output_date .= '<div>'.date('H:i', $start_date).'</div>';  
+                      }
+                      elseif(!empty($start_date) && !empty($end_date) && date('m/d/Y', $start_date) == date('m/d/Y', $end_date)){
+                        $output_date = '<div>'.date('l, F j', $start_date).'</div>';
+                        $output_date .= '<div>'.date('H:i', $start_date).' - '.date('H:i', $end_date).'</div>';  
+                      }
+                      elseif(!empty($start_date) && !empty($end_date) && $start_date == $end_date){
+                        $output_date = '<div>'.date('l, F j H:i', $start_date).'</div>';
+                      }
+                      elseif(!empty($start_date) && empty($end_date)){
+                        $output_date = '<div>'.date('l, F j H:i', $start_date).'</div>';
+                      }
+                      echo $output_date;  
+                    ?>
+                  
+                  </div>
+                  
+                  <div class="profile-info">
+                    <div class="profile-thumbnail"><a href="/user/<?php echo $node->uid; ?>"><?php echo theme_imagecache('user_picture_meta', $location_info->picture);?></a></div>
+                    <div class="profile-info-wrapper">
+                      <div class="profile-name"><?php echo $location_info->first_name;?></div>
+                      <div class="profile-city">City<?php echo $location_info->profile_location;?></div>
+                    </div>
+                  </div>
+                  
+                  <?php if(!empty($node->field_location) && !empty($node->field_location[0]['value'])): ?>
+                    <div class="public-event-address"><?php echo $node->field_location[0]['safe']?><br/></div>
+                  <?php endif;?>
+                  <div class="public-event-contacts">
+                    <?php if(!empty($node->field_event_contact_phone) && !empty($node->field_event_contact_phone[0]['value'])): ?>
+                      <?php echo t('tel:').' '.$node->field_event_contact_phone[0]['safe']?>
+                    <?php endif;?>
+                    <br>
+                    <?php if(!empty($node->field_event_email) && !empty($node->field_event_email[0]['value'])): ?>
+                      <?php echo t('email:').' <a href="mailto:'.$node->field_event_email[0]['safe'].'">'.$node->field_event_email[0]['safe'].'</a>'?>
+                    <?php endif;?>
+                    
+                  </div>
+                </div>
+                <div class="third-column public-event-col">
+                  <div class="public-event-title"><?php echo $title?></div>
+                  <div class="public-event-description"><?php echo nl2br($node->field_event_details[0]['safe'])?></div>
+                  <div class="public-event-gratuity"><?php echo $node->field_event_gratuity[0]['safe']?></div>
+                  <?php if((events_get_event_status_for_user($node->nid, $user->uid) == EVENT_STATUS_ACCEPTED && events_get_user_tickets($node)) || (!empty($_GET['uid']) && !empty($_GET['type']) && events_get_user_tickets($node, $_GET['uid'], $_GET['check'], $_GET['type']))):?>
+                    <div class="public-event-ticket-wrapper">
+                    <?php foreach ($node->tickets as $ticket) : ?>
+                      <div class="public-event-ticket"><?php echo $ticket['quantity']; ?> x <?php echo $ticket['title'];?> (<?php echo $ticket['price'];?>&euro;) <a href="/print_coupon/<?php echo $node->nid; ?>?type=<?php echo $ticket['ticket_id']?>" target="_blank" class="public-event-coupon-print"><?php echo t('[print]')?></a></div>
+                      <?php if(!empty($_GET['type']) && $_GET['type'] == $ticket['ticket_id']) : ?>
+                        <?php profile_load_profile($user); ?>
+                        <?php if (!empty($_GET['uid'])) : ?>
+                          <?php 
+                            $user_anon = user_load($_GET['uid']);
+                          ?>
+                        <?php endif; ?>
+                        <span class="ticket-type"><?php echo $ticket['quantity'] . ' x ' . htmlspecialchars($ticket['title']) . ' (' . $ticket['price'] . '&euro;)' ;?></span>
+                        <?php if ($ticket['quantity'] == 1) : ?>
+                          <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation is valid for !user only',array('!user'=>($user->uid != 0 ? $user->first_name : $user_anon->first_name).' '.($user->uid != 0 ? $user->surname : $user_anon->surname)))?></div>
+                        <?php elseif ($ticket['quantity'] > 1) : ?>
+                          <div class="public-event-description print-coupon-user-text"><?php echo t('Invitation is valid for !user and !x more guests only',array('!user'=>($user->uid != 0 ? $user->first_name : $user_anon->first_name).' '.($user->uid != 0 ? $user->surname : $user_anon->surname), '!x' => ($ticket['quantity'] - 1)))?></div>
+                        <?php endif; ?>
+                      <?php endif; ?>
+                    <?php endforeach; ?>
+                    </div>
+                  <?php endif;?>
+                </div>
+                </div>
+              </div>
+            <?php endif; ?>
             <div class="buy-tickets-wrapper">
               <?php
                 events_tickets_load($node);

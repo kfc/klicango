@@ -42,7 +42,7 @@
 	<script src="/profiles/drupal_commons/themes/commons_origins/js/jquery.mousewheel.js"></script>
 </head>
 
-<body class="not-front">
+<body class="not-front <?php if(arg(0) == 'print_coupon') echo 'print-page'; ?>">
     <?php include_once 'facebook.tpl.php'; ?>    
     <div id="wrapper">
     
