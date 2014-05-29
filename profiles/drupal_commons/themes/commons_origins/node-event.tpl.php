@@ -266,7 +266,7 @@
                     <div class="profile-thumbnail"><a href="/user/<?php echo $node->uid; ?>"><?php echo theme_imagecache('user_picture_meta', $location_info->picture);?></a></div>
                     <div class="profile-info-wrapper">
                       <div class="profile-name"><?php echo $location_info->first_name;?></div>
-                      <div class="profile-city">City<?php echo $location_info->profile_location;?></div>
+                      <div class="profile-city"><?php echo $location_info->profile_location;?></div>
                     </div>
                   </div>
                   
